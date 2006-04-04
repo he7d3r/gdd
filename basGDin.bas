@@ -5,20 +5,21 @@ Public Enum Tipo_De_Objeto
  PONTO_DE_INTERSECÇÃO
  SEGMENTO
  VETOR
- RETA
  SEMI_RETA
+ RETA
  TRIÂNGULO
  POLÍGONO
  POLÍGONO_REGULAR
- EIXOS
  CIRCUNFERÊNCIA
  ARCO
  CÔNICA
- PERPENDICULAR
  PARALELA
+ PERPENDICULAR
+ MEDIATRIZ
  PONTO_MEDIO
  BISSETRIZ_PONTOS
  BISSETRIZ_RETAS
+ 
  COMPASSO
  REFLEXÃO
  SIMETRIA
@@ -26,6 +27,7 @@ Public Enum Tipo_De_Objeto
  INVERSO_CIRCUNFERÊNCIA
  TEXTO
  ÂNGULO
+ EIXOS
 End Enum
 
 Private Type Objeto
@@ -46,29 +48,48 @@ Public Const PI = 3.14159265358979
 Public Const DEG = 1.74532925199433E-02 'PI / 180
 Public Const Twips_por_Cm = 576
 Public Const Twips_por_Polegada = 1440
-Public Const Twips_por_Pontos = 20
+Public Const Twips_por_Ponto = 20
+Public Const MAX_X = 10
+Public Const MAX_Y = 10
 
-Public Centro_X, Centro_Y As Single
-Public Tamanho_X, Tamanho_Y As Single
+Public TwipsPerPixelX_INICIAL As Single, TwipsPerPixelY_INICIAL As Single
+Public Centro_X As Single, Centro_Y As Single
+Public Visivel_X As Single, Visivel_Y As Single 'Dimensoes que a tela parece ter
 Public Zoom As Single
-Public inc_Mov, inc_Trans As Single
+Public inc_Mov As Single, inc_Trans As Single
 
 Public Obj() As Objeto
+Public P() As Long
+Public Objeto_Prox As Long
 
 Public Sub Inicializar_Parametros()
 'Atribui o valor inicial dos principais parametros.
 'Futuramente, chamará a função que lê um arquivo de dados salvo.
-'
+
  inc_Mov = 0.05
  inc_Trans = 1
+ Objeto_Prox = 0
  
  Centro_X = 0#
  Centro_Y = 0#
- Tamanho_X = 10#
- Tamanho_Y = 10#
+ 
+ TwipsPerPixelX_INICIAL = Screen.TwipsPerPixelX
+ TwipsPerPixelY_INICIAL = Screen.TwipsPerPixelY
+ 'O form mede N twips, cada cm contém M twips, logo o form mede N/M cm's
+ 
+ 'Mede a largura e a altura da área de desenho em "pixels"
+ Visivel_X = frmTela_Desenho.ScaleWidth - frmTela_Desenho.VScroll1.Width
+ Visivel_Y = frmTela_Desenho.ScaleHeight - _
+      (frmTela_Desenho.tbrObjetos.Height + frmTela_Desenho.HScroll1.Height)
+ 'Converte a largura e a altura da área de desenho para "centímetros"
+ Visivel_X = Visivel_X * TwipsPerPixelX_INICIAL / Twips_por_Cm
+ Visivel_Y = Visivel_Y * TwipsPerPixelY_INICIAL / Twips_por_Cm
+ 
  Zoom = 1#
  'Cria os objetos essenciais
  ReDim Obj(1 To 2)
+ ReDim P(1 To 1) As Long
+ 
  With Obj(1)
   '.Tipo = PONTO
   ReDim .P_int(1 To 2)

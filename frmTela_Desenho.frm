@@ -5,23 +5,67 @@ Begin VB.Form frmTela_Desenho
    ClientHeight    =   7185
    ClientLeft      =   165
    ClientTop       =   555
-   ClientWidth     =   11415
+   ClientWidth     =   11400
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MousePointer    =   2  'Cross
    ScaleHeight     =   479
    ScaleMode       =   3  'Pixel
-   ScaleWidth      =   761
+   ScaleWidth      =   760
    StartUpPosition =   2  'CenterScreen
    WhatsThisHelp   =   -1  'True
+   Begin VB.PictureBox picCanto 
+      Appearance      =   0  'Flat
+      BackColor       =   &H00E0E0E0&
+      BorderStyle     =   0  'None
+      ForeColor       =   &H80000008&
+      Height          =   300
+      Left            =   11040
+      MousePointer    =   1  'Arrow
+      ScaleHeight     =   300
+      ScaleWidth      =   300
+      TabIndex        =   3
+      Top             =   6840
+      Width           =   300
+   End
+   Begin VB.Timer Timer1 
+      Enabled         =   0   'False
+      Interval        =   5
+      Left            =   960
+      Top             =   2760
+   End
+   Begin VB.VScrollBar VScroll1 
+      Height          =   2265
+      LargeChange     =   10
+      Left            =   0
+      Max             =   -50
+      Min             =   50
+      MousePointer    =   1  'Arrow
+      TabIndex        =   2
+      TabStop         =   0   'False
+      Top             =   2160
+      Width           =   300
+   End
+   Begin VB.HScrollBar HScroll1 
+      Height          =   300
+      LargeChange     =   10
+      Left            =   360
+      Max             =   50
+      Min             =   -50
+      MousePointer    =   1  'Arrow
+      TabIndex        =   1
+      TabStop         =   0   'False
+      Top             =   1800
+      Width           =   2265
+   End
    Begin MSComctlLib.Toolbar tbrObjetos 
       Align           =   1  'Align Top
       Height          =   675
       Left            =   0
       TabIndex        =   0
       Top             =   0
-      Visible         =   0   'False
-      Width           =   11415
-      _ExtentX        =   20135
+      Width           =   11400
+      _ExtentX        =   20108
       _ExtentY        =   1191
       ButtonWidth     =   1058
       ButtonHeight    =   1032
@@ -149,8 +193,8 @@ Begin VB.Form frmTela_Desenho
       MousePointer    =   1
    End
    Begin MSComctlLib.ImageList ImageList1 
-      Left            =   0
-      Top             =   600
+      Left            =   375
+      Top             =   2160
       _ExtentX        =   1005
       _ExtentY        =   1005
       BackColor       =   -2147483643
@@ -256,18 +300,21 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
- Select Case KeyCode
-  Case 27
-   tbrObjetos.Buttons(1).Value = tbrPressed
-  Case Else
-   MsgBox KeyCode
- End Select
-End Sub
-Private Sub Form_Load()
-
+Private Const TAM_BARRA = 20
+Private Sub Form_Initialize()
  Call Inicializar_Parametros
- Me.BackColor = vbWhite
+  With Me
+  .BackColor = vbWhite
+  HScroll1.Move .ScaleLeft, .ScaleTop + .ScaleHeight - TAM_BARRA, .ScaleWidth - TAM_BARRA, TAM_BARRA
+  VScroll1.Move .ScaleLeft + .ScaleWidth - TAM_BARRA, .ScaleTop + tbrObjetos.Height, TAM_BARRA, .ScaleHeight - tbrObjetos.Height - TAM_BARRA
+  HScroll1.Min = -MAX_X: HScroll1.Max = MAX_X
+  VScroll1.Min = MAX_Y: VScroll1.Max = -MAX_Y
+ End With
+
+End Sub
+
+Private Sub Form_LostFocus()
+MsgBox "form.lostfocus"
 End Sub
 
 Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
@@ -277,38 +324,99 @@ Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y A
  '-Seleção avançada é parte de um outro botão
 End Sub
 
-Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
- Dim N, N_Obj As Integer
- Dim Cor_Ponto_XY As Long
- 
- Cor_Ponto_XY = Me.Point(X, Y)
- 
- If Cor_Ponto_XY = Me.BackColor Then Exit Sub
- 
- Me.Caption = ""
- N_Obj = UBound(Obj)
- For N = 1 To N_Obj
-  With Obj(N)
-   If .Mostrar Then
-    If Cor_Ponto_XY = .Cor Then
-     If .Tipo = PONTO Or .Tipo = PONTO_DE_INTERSECÇÃO Or .Tipo = PONTO_MEDIO Or .Tipo = PONTO_SOBRE Then
-      'Me.MousePointer = vbSizeAll
-      'If (X - .P_int(1)) ^ 2 + (Y - .P_int(2)) ^ 2 < 0.1 Then Me.Caption = "Ponto" & N: Exit For
-     End If
-    End If
-   End If
-  End With
- Next N
-' Me.MousePointer = vbCrosshair
- Me.Caption = Me.Caption & " " & X & " " & Y
-End Sub
-
 Private Sub Form_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
 'Incluir rotinas para:
 '-adicionar objetos
 '-Selecionar objetos
 '-Finalizar uma seleção múltipla
-
+'
+'Se um ponto clicado na tela ainda não existe em Obj(), criar um e guarda seu Id em P()
+  
+  
+  Exit Sub
+  
+  
+  
+  Ferramenta = 0 'Item de menu atualmente selecionado.
+  Select Case Ferramenta
+    Case PONTO
+    'Param=1
+      ReDim Preserve Obj(1 To 1 + UBound(Obj))
+      With Obj(UBound(Obj))
+        '.Tipo = PONTO
+        '.Nome = ""
+        '.N_Param = 0
+        ReDim .P_int(1 To 2)
+        .P_int(1) = P(1)
+        .P_int(2) = P(2)
+        .Espessura = 4#
+        .Mostrar = True
+        
+        '.Traço(0) = 1: .Traço(2) = 1'Irrelevante para pontos. Usar como X,O, . ou + ...
+      End With
+    Case PONTO_SOBRE
+     'Param=2
+    Case PONTO_DE_INTERSECÇÃO
+    'Param=2
+    Case SEGMENTO, VETOR
+    'Param=2
+      With Obj(UBound(Obj))
+        .Tipo = Ferramenta 'SEGMENTO ou VETOR
+        .Nome = ""
+        .N_Param = 2
+        ReDim .P_ext(1 To .N_Param)
+        .P_ext(1) = P(1): .P_ext(2) = P(2) '(x,y) do ponto  inicial
+        .P_ext(3) = P(3): .P_ext(4) = P(4) '(x,y) do ponto  final
+        
+        .Traço(1) = 1: .Traço(2) = 1
+        .Cor = 0
+        .Espessura = 4#
+        .Mostrar = True
+      End With
+    Case RETA
+    'Param=2
+    Case SEMI_RETA
+    'Param=2
+    Case TRIÂNGULO
+    'Param=3
+    Case POLÍGONO
+    'Param=N
+    Case POLÍGONO_REGULAR
+    'Param=3
+    Case EIXOS
+    'Param=3
+    Case CIRCUNFERÊNCIA
+    'Param=2
+    Case ARCO
+    'Param=3
+    Case CÔNICA
+    'Param=5
+    Case PERPENDICULAR
+    'Param=2
+    Case PARALELA
+    'Param=2
+    Case PONTO_MEDIO
+    'Param=1 ou 2
+    Case BISSETRIZ_PONTOS
+    'Param=3
+    Case BISSETRIZ_RETAS
+    'Param=2
+    Case COMPASSO
+    'Param=2 ou 3
+    Case REFLEXÃO
+    'Param=2
+    Case SIMETRIA
+    'Param=2
+    Case TRANSLAÇÃO
+    'Param=2
+    Case INVERSO_CIRCUNFERÊNCIA
+    'Param=2
+    Case TEXTO
+    'Param=1 + texto
+    Case ÂNGULO
+    'Param=2 ou 3
+    Case Else
+  End Select
 End Sub
 
 Private Sub Form_Paint()
@@ -321,7 +429,7 @@ Private Sub Form_Paint()
    Select Case .Tipo
    Case PONTO
     Me.DrawWidth = .Espessura
-    Me.PSet (Cv_X(.P_int(1)), Cv_Y(.P_int(2))) ', .Cor
+    Me.PSet (Pixel_X(.P_int(1)), Pixel_Y(.P_int(2))) ', .Cor
     
    Case PONTO_SOBRE
    
@@ -379,30 +487,109 @@ Private Sub Form_Paint()
   End With
  Next N
  
- For N = 0 To Tamanho_X \ 2
-  Me.PSet (Cv_X(CSng(N)), Cv_Y(0))
-  Me.PSet (Cv_X(0), Cv_Y(CSng(N)))
+ 
+ 'Me.PSet (Pixel_X(Visivel_X / 2), Pixel_Y(Visivel_Y / 2)), vbGreen
+ 
+ 
+ For N = 0 To 10
+  Me.PSet (Pixel_X(CSng(N)), Pixel_Y(0))
+ Next N
+ For N = 1 To 10
+  Me.PSet (Pixel_X(0), Pixel_Y(CSng(N))), vbRed
  Next N
 
-End Sub
-Private Function Cv_X(X_real As Single) As Long
-'como forçar que a unidade padrão pareça medir 1 centímetro sobre a tela???
-'Antigo: Cv_X = CLng(X_real * Zoom * (Me.ScaleWidth / Tamanho_X))
- Dim Pixel_por_Cm_X As Single
 
- Pixel_por_Cm_X = Twips_por_Cm / Screen.TwipsPerPixelX
- Cv_X = CLng(X_real * Zoom * Pixel_por_Cm_X)
+End Sub
+
+Private Sub Aponta_Objeto(ByVal X As Single, ByVal Y As Single)
+ Const DIST_MIN = 0.4
+ Dim N, N_Obj As Integer
+ Dim Cor_Ponto_XY As Long
+ 
+ Cor_Ponto_XY = Me.Point(X, Y)
+ If Cor_Ponto_XY = Me.BackColor Then Exit Sub
+ 
+ X = Cm_X(X): Y = Cm_Y(Y)
+ N_Obj = UBound(Obj)
+ For N = 1 To N_Obj
+  With Obj(N)
+   If .Mostrar Then
+    If Cor_Ponto_XY = .Cor Then
+     If .Tipo = PONTO Or .Tipo = PONTO_DE_INTERSECÇÃO Or .Tipo = PONTO_MEDIO Or .Tipo = PONTO_SOBRE Then
+      'Me.MousePointer = vbSizeAll
+      If Abs(X - .P_int(1)) + Abs(Y - .P_int(2)) < DIST_MIN Then Objeto_Prox = N: Exit Sub
+     End If
+    End If
+   End If
+  End With
+ Next N
+ Objeto_Prox = 0
+End Sub
+
+Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+ If Objeto_Prox > 0 Then Exit Sub
+  'Exibe Rótulo
+ ' Me.MousePointer = vbCrosshair
+ Me.Caption = Format(Cm_X(X), "0.0") & " " & Format(Cm_Y(Y), "0.0")
+
+If Screen.TwipsPerPixelX <> TwipsPerPixelX_INICIAL Then
+ MsgBox "TwipsPerPixelX mudou de " & TwipsPerPixelX_INICIAL & "para " & Screen.TwipsPerPixelX
+End If
+If Screen.TwipsPerPixelY <> TwipsPerPixelY_INICIAL Then
+ MsgBox "TwipsPerPixelY mudou de " & TwipsPerPixelY_INICIAL & "para " & Screen.TwipsPerPixelY
+End If
+End Sub
+Private Sub Form_Resize()
+ Dim Visivel_antes_X, Visivel_antes_Y As Single
+
+ Visivel_antes_X = Visivel_X
+ Visivel_antes_Y = Visivel_Y
+ With Me
+  'Mede a largura e a altura da área de desenho em "pixels"
+  Visivel_X = .ScaleWidth - .VScroll1.Width
+  Visivel_Y = .ScaleHeight - (tbrObjetos.Height + HScroll1.Height)
+  'Converte a largura e a altura da área de desenho para "centímetros"
+  Visivel_X = Visivel_X * TwipsPerPixelX_INICIAL / Twips_por_Cm
+  Visivel_Y = Visivel_Y * TwipsPerPixelY_INICIAL / Twips_por_Cm
+  'Atualiza as coordenadas que correspondem ao centro do form.
+  Centro_X = Centro_X + (Visivel_X - Visivel_antes_X) / 2
+  Centro_Y = Centro_Y - (Visivel_Y - Visivel_antes_Y) / 2
+  
+  .Cls
+  .Refresh
+  
+  On Error Resume Next
+  HScroll1.Move .ScaleLeft, .ScaleTop + .ScaleHeight - TAM_BARRA, .ScaleWidth - TAM_BARRA, TAM_BARRA
+  VScroll1.Move .ScaleLeft + .ScaleWidth - TAM_BARRA, .ScaleTop + tbrObjetos.Height, TAM_BARRA, .ScaleHeight - tbrObjetos.Height - TAM_BARRA
+  picCanto.Move .ScaleLeft + .ScaleWidth - TAM_BARRA, .ScaleTop + .ScaleHeight - TAM_BARRA
+  On Error GoTo 0
+  Timer1.Enabled = True
+ End With
+End Sub
+Private Function Pixel_X(X_real As Single) As Single
+'Incluir uma constante Pixel_por_Cm_X e outra Pixel_por_Cm_Y em algum lugar do programa...
+
+ Pixel_X = (Me.ScaleWidth - VScroll1.Width) / 2 + _
+       Zoom * Twips_por_Cm * (X_real - Centro_X) / TwipsPerPixelX_INICIAL
  
 End Function
-Private Function Cv_Y(Y_real As Single) As Long
- Dim Pixel_por_Cm_X As Single
-
- Pixel_por_Cm_Y = Twips_por_Cm / Screen.TwipsPerPixelY
- aspec = -Me.ScaleWidth / (tbrObjetos.Height + Me.ScaleHeight)
- Cv_Y = CLng(-Y_real * aspec * Zoom * (tbrObjetos.Height + Me.ScaleHeight) / Tamanho_Y)
+Private Function Pixel_Y(Y_real As Single) As Single
+ Pixel_Y = tbrObjetos.Height + (Me.ScaleHeight - tbrObjetos.Height - HScroll1.Height) / 2 _
+     - Zoom * Twips_por_Cm * (Y_real - Centro_Y) / TwipsPerPixelY_INICIAL
+ 
 End Function
-
+Private Function Cm_X(P_X As Single) As Single
+  Cm_X = Centro_X + TwipsPerPixelX_INICIAL * (P_X - (Me.ScaleWidth - VScroll1.Width) / 2) / _
+         (Zoom * Twips_por_Cm)
+         
+End Function
+Private Function Cm_Y(P_Y As Single) As Single
+  Cm_Y = Centro_Y - TwipsPerPixelY_INICIAL * (P_Y - tbrObjetos.Height - (Me.ScaleHeight - tbrObjetos.Height - HScroll1.Height) / 2) / _
+         (Zoom * Twips_por_Cm)
+         
+End Function
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
+Exit Sub
  Select Case MsgBox("Deseja salvar as alterações?", vbQuestion + vbYesNoCancel, "Finalizando o aplicativo...")
  Case vbCancel
   Cancel = True
@@ -413,29 +600,75 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   'SalvarArquivo
  End Select
 End Sub
-
-Private Sub Form_Resize()
-'Parametriza a tela, obtendo com coordenadas inteiras (pixels):
-'(-+)|(++)
-'---------
-'(--)|(+-)
-
-'Dados:
-'* (C_X, C_Y):  O Pixel central corresponde a esse ponto em medidas reais.
-'* Pixels_X por Pixels_Y: Dimensões da tela de desenho
-
-Me.Caption = Me.ScaleLeft & ", " & Me.ScaleTop & " : " & Me.ScaleWidth & " x " & Me.ScaleHeight
-Me.Caption = Me.Caption & "   Twips: " & Me.Width & " x " & Me.Height
-
-Exit Sub
- With Me
-  .Cls
-  .ScaleHeight = -Abs(.ScaleHeight)
-  .ScaleTop = Abs(tbrObjetos.Height - .ScaleHeight) \ 2
-  .ScaleLeft = -.ScaleWidth \ 2
-  .Refresh
-  '.Caption = "TAM: " & .ScaleWidth & " x " & .ScaleHeight _
-  ' & "   CENTRO: " & Cv_X(0) & ", " & Cv_Y(0)
- End With
- 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+ Select Case KeyCode
+  Case vbKeyEscape
+   tbrObjetos.Buttons(1).Value = tbrPressed
+  Case vbKeyDown
+   If VScroll1.Value <> -MAX_Y Then VScroll1.Value = VScroll1.Value - VScroll1.SmallChange
+  Case vbKeyUp
+   If VScroll1.Value <> MAX_Y Then VScroll1.Value = VScroll1.Value + VScroll1.SmallChange
+  Case vbKeyLeft
+   If HScroll1.Value <> -MAX_X Then HScroll1.Value = HScroll1.Value - HScroll1.SmallChange
+  Case vbKeyRight
+   If HScroll1.Value <> MAX_X Then HScroll1.Value = HScroll1.Value + HScroll1.SmallChange
+  Case vbKeyPageDown
+   If VScroll1.Value - VScroll1.LargeChange > -MAX_Y Then
+    VScroll1.Value = VScroll1.Value - VScroll1.LargeChange
+   Else
+    VScroll1.Value = -MAX_Y
+   End If
+  Case vbKeyPageUp
+   If VScroll1.Value + VScroll1.LargeChange < MAX_Y Then
+    VScroll1.Value = VScroll1.Value + VScroll1.LargeChange
+   Else
+    VScroll1.Value = MAX_Y
+   End If
+  Case Else
+   'MsgBox KeyCode
+ End Select
 End Sub
+
+
+Private Sub tbrObjetos_ButtonClick(ByVal Button As MSComctlLib.Button)
+ Select Case UBound(P)
+ Case 1
+ 'Button.Index
+ Case Else
+ 
+ End Select
+End Sub
+
+Private Sub Timer1_Timer()
+'Esse timer s'o existe para contornar um defeito na rotina Resize...
+'O programa nao conhece a altura real da barra no instante do redimensionamento, só depois
+With Me
+ On Error Resume Next
+ VScroll1.Move .ScaleLeft + .ScaleWidth - TAM_BARRA, .ScaleTop + tbrObjetos.Height, TAM_BARRA, .ScaleHeight - tbrObjetos.Height - TAM_BARRA
+ On Error GoTo 0
+ Timer1.Enabled = False
+End With
+End Sub
+
+Private Sub HScroll1_Change()
+ Centro_X = HScroll1.Value
+ Me.Refresh
+End Sub
+Private Sub HScroll1_Scroll()
+'Incluir mais valores entre os extremos de MAX_X e -MAX_X permitirá um scroll mais suave
+'Conferir compatibilidade com o Zoom
+ Centro_X = HScroll1.Value
+ Me.Refresh
+End Sub
+
+Private Sub VScroll1_Change()
+ Centro_Y = VScroll1.Value
+ Me.Refresh
+End Sub
+Private Sub VScroll1_Scroll()
+'Incluir mais valores entre os extremos de MAX_Y e -MAX_Y permitirá um scroll mais suave
+'Conferir compatibilidade com o Zoom
+ Centro_Y = VScroll1.Value
+ Me.Refresh
+End Sub
+
