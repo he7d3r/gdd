@@ -75,116 +75,116 @@ Begin VB.Form frmTela_Desenho
       BeginProperty Buttons {66833FE8-8583-11D1-B16A-00C0F0283628} 
          NumButtons      =   19
          BeginProperty Button1 {66833FEA-8583-11D1-B16A-00C0F0283628} 
-            Key             =   "Ponteiro"
+            Key             =   "PONTEIRO"
             Object.ToolTipText     =   "Seleção de objetos"
             ImageIndex      =   1
             Style           =   2
             Value           =   1
          EndProperty
          BeginProperty Button2 {66833FEA-8583-11D1-B16A-00C0F0283628} 
-            Key             =   "Ponto_livre"
+            Key             =   "PONTO"
             Object.ToolTipText     =   "Ponto livre"
             ImageIndex      =   2
             Style           =   2
          EndProperty
          BeginProperty Button3 {66833FEA-8583-11D1-B16A-00C0F0283628} 
-            Key             =   "Ponto_sobre"
+            Key             =   "PONTO_SOBRE"
             Object.ToolTipText     =   "Ponto sobre objeto"
             ImageIndex      =   3
             Style           =   2
          EndProperty
          BeginProperty Button4 {66833FEA-8583-11D1-B16A-00C0F0283628} 
-            Key             =   "Ponto_inter"
+            Key             =   "PONTO_DE_INTERSECÇÃO"
             Object.ToolTipText     =   "Pontos de Interseção"
             ImageIndex      =   4
             Style           =   2
          EndProperty
          BeginProperty Button5 {66833FEA-8583-11D1-B16A-00C0F0283628} 
-            Key             =   "Segmento"
+            Key             =   "SEGMENTO"
             Object.ToolTipText     =   "Segmento de reta"
             ImageIndex      =   5
             Style           =   2
          EndProperty
          BeginProperty Button6 {66833FEA-8583-11D1-B16A-00C0F0283628} 
-            Key             =   "Vetor"
+            Key             =   "VETOR"
             Object.ToolTipText     =   "Vetor"
             ImageIndex      =   6
             Style           =   2
          EndProperty
          BeginProperty Button7 {66833FEA-8583-11D1-B16A-00C0F0283628} 
-            Key             =   "Semi_reta"
-            Object.ToolTipText     =   "Segmento de reta"
+            Key             =   "SEMI_RETA"
+            Object.ToolTipText     =   "Semi-reta"
             ImageIndex      =   7
             Style           =   2
          EndProperty
          BeginProperty Button8 {66833FEA-8583-11D1-B16A-00C0F0283628} 
-            Key             =   "Reta"
+            Key             =   "RETA"
             Object.ToolTipText     =   "Vetor"
             ImageIndex      =   8
             Style           =   2
          EndProperty
          BeginProperty Button9 {66833FEA-8583-11D1-B16A-00C0F0283628} 
-            Key             =   "Trângulo"
+            Key             =   "TRIÂNGULO"
             Object.ToolTipText     =   "Triângulo"
             ImageIndex      =   9
             Style           =   2
          EndProperty
          BeginProperty Button10 {66833FEA-8583-11D1-B16A-00C0F0283628} 
-            Key             =   "Polígono"
+            Key             =   "POLÍGONO"
             Object.ToolTipText     =   "Polígono"
             ImageIndex      =   10
             Style           =   2
          EndProperty
          BeginProperty Button11 {66833FEA-8583-11D1-B16A-00C0F0283628} 
-            Key             =   "Polígono_regular"
+            Key             =   "POLÍGONO_REGULAR"
             Object.ToolTipText     =   "Polígono Regular"
             ImageIndex      =   11
             Style           =   2
          EndProperty
          BeginProperty Button12 {66833FEA-8583-11D1-B16A-00C0F0283628} 
-            Key             =   "Circunferência"
+            Key             =   "CIRCUNFERÊNCIA"
             Object.ToolTipText     =   "Circunferência"
             ImageIndex      =   12
             Style           =   2
          EndProperty
          BeginProperty Button13 {66833FEA-8583-11D1-B16A-00C0F0283628} 
-            Key             =   "Arco"
+            Key             =   "ARCO"
             Object.ToolTipText     =   "Arco de circunferência"
             ImageIndex      =   13
             Style           =   2
          EndProperty
          BeginProperty Button14 {66833FEA-8583-11D1-B16A-00C0F0283628} 
-            Key             =   "Cônica"
+            Key             =   "CÔNICA"
             Object.ToolTipText     =   "Cônica por 5 pontos"
             ImageIndex      =   14
             Style           =   2
          EndProperty
          BeginProperty Button15 {66833FEA-8583-11D1-B16A-00C0F0283628} 
-            Key             =   "Reta_paralela"
+            Key             =   "PARALELA"
             Object.ToolTipText     =   "Reta paralela "
             ImageIndex      =   15
             Style           =   2
          EndProperty
          BeginProperty Button16 {66833FEA-8583-11D1-B16A-00C0F0283628} 
-            Key             =   "Reta_perpendicular"
+            Key             =   "PERPENDICULAR"
             Object.ToolTipText     =   "Reta perpendicular"
             ImageIndex      =   16
             Style           =   2
          EndProperty
          BeginProperty Button17 {66833FEA-8583-11D1-B16A-00C0F0283628} 
-            Key             =   "Medriatriz"
+            Key             =   "MEDIATRIZ"
             Object.ToolTipText     =   "Medriatriz"
             ImageIndex      =   17
             Style           =   2
          EndProperty
          BeginProperty Button18 {66833FEA-8583-11D1-B16A-00C0F0283628} 
-            Key             =   "Ponto_médio"
+            Key             =   "PONTO_MÉDIO"
             Object.ToolTipText     =   "Ponto médio"
             ImageIndex      =   18
             Style           =   2
          EndProperty
          BeginProperty Button19 {66833FEA-8583-11D1-B16A-00C0F0283628} 
-            Key             =   "Bissetriz"
+            Key             =   "BISSETRIZ"
             Object.ToolTipText     =   "Bissetriz"
             ImageIndex      =   19
             Style           =   2
@@ -300,9 +300,17 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+Option Explicit
+
 Private Const TAM_BARRA = 20
+'Private Const
+'Private Const
+
+
 Private Sub Form_Initialize()
+ 
  Call Inicializar_Parametros
+
   With Me
   .BackColor = vbWhite
   HScroll1.Move .ScaleLeft, .ScaleTop + .ScaleHeight - TAM_BARRA, .ScaleWidth - TAM_BARRA, TAM_BARRA
@@ -310,36 +318,169 @@ Private Sub Form_Initialize()
   HScroll1.Min = -MAX_X: HScroll1.Max = MAX_X
   VScroll1.Min = MAX_Y: VScroll1.Max = -MAX_Y
  End With
+ 
 
 End Sub
 
-Private Sub Form_LostFocus()
-MsgBox "form.lostfocus"
+Private Sub Aponta_Objeto(ByVal X As Single, ByVal Y As Single)
+ Const DIST_MIN = 0.4
+ Dim N, N_Obj As Integer
+ Dim Cor_Ponto_XY As Long
+ 
+ 'Se NUNCA for pintado um objeto de BRANCO, pode-se incluir isso:
+ 'If Cor_Ponto_XY = Me.BackColor Then Exit Sub
+ 
+ X = Cm_X(X): Y = Cm_Y(Y)
+ 
+ 'Ocorre erro se não houver objetos.
+ 'Mas Obj() tem (ao menos) um ponto e um par de eixos
+ N_Obj = UBound(Obj)
+ 
+ For N = 1 To N_Obj
+  With Obj(N)
+   If .Mostrar <> OCULTO Then
+    Select Case .Tipo
+     Case PONTO, PONTO_SOBRE, PONTO_DE_INTERSECÇÃO, PONTO_MÉDIO
+      'Me.MousePointer = vbSizeAll
+      If Abs(X - .P_int(1)) + Abs(Y - .P_int(2)) < DIST_MIN Then Objeto_Localizado = N: Exit Sub
+     Case SEGMENTO, VETOR
+     
+     Case SEMI_RETA
+     
+     Case RETA, PARALELA, PERPENDICULAR, MEDIATRIZ, BISSETRIZ_PONTOS, BISSETRIZ_RETAS
+     
+    End Select
+   End If
+  End With
+ Next N
+ Objeto_Localizado = NENHUM
 End Sub
-
 Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
- 'Incluir rotina para:
- '-Iniciar seleção múltipla.
+'se (botao = seta)
+'  se (aponta objeto)
+'   destaque objeto da lista. //colorido ou animado.
+'   guarda: Ainda NÃO foi usada a seta provosória. (isso está no lugar certo?)
+'   se (shift pressionado)
+'    adiciona à seleção atual
+'    [ seleção é uma matriz ou uma PROPRIEDADE dos objetos? ]
+'   senão
+'    seleciona apenas este objeto
+'  senao
+'   inicia seleção múltipla //guarde x,y
+'senão
+'  cancele todas as seleções atuais
+'  [nao faça nada até ser movido o mouse]
+
  '-Permitir seleção personalizada, com caixas de verificação para tipos de objetos...
  '-Seleção avançada é parte de um outro botão
+ 
+ Dim I As Long
+ 
+ Select Case tbrObjetos.Tag
+  Case "PONTEIRO"
+   'Atualiza seleção atual
+   If Objeto_Localizado <> NENHUM Then
+    If Shift And vbShiftMask Then
+     Obj(Objeto_Localizado).Mostrar = (SELECIONADO + PADRAO) - Obj(Objeto_Localizado).Mostrar
+    Else
+     Obj(Objeto_Localizado).Mostrar = SELECIONADO
+     'Dica: Tente trocar "UBound(Obj)" por uma variável pública
+     'Cancele todas as demais seleções
+     For I = 1 To UBound(Obj)
+      If (Obj(I).Mostrar = SELECIONADO) And (I <> Objeto_Localizado) Then Obj(I).Mostrar = PADRAO
+     Next I
+    End If
+   End If
+  'Isto deve estar no MouseMOVE ou aqui???
+  Case "SEGMENTO", "VETOR", "SEMI_RETA", "RETA", _
+       "TRIÂNGULO", "POLÍGONO", "POLÍGONO_REGULAR", _
+       "CIRCUNFERÊNCIA", "ARCO", "CÔNICA"
+   'Estes são os objetos que exibem prévia de sua posição enquanto são criados
+   'Só representam problema no "Padrão Cabri" de construção: botao-->parametros
+   'Solução simples no KSeg: Parâmetros-->Botao
+  Case Else
+  'Cancele todas as seleções
+   For I = 1 To UBound(Obj)
+    If (Obj(I).Mostrar = SELECIONADO) Then Obj(I).Mostrar = PADRAO
+   Next I
+ End Select
+  
 End Sub
+Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+'se (não está clicado)
+'  se (aponta algum objeto)
+'   se (botao = seta)
+'    exibe lista de possíveis objetos para seleção
+'   senao
+'    exibe menu de ajuda para a construção (indicando o objeto necessário)
+'senão, se (iniciada seleção múltipla)
+'  desenhe retângulo pontilhado
+'senão se (selecionado apenas um objeto)
+'  se (botao = seta)
+'     se (é livre)
+'      mova objeto e calcule a nova posição de todos os que dependem dele
+'     senão
+'      Kaseg: move construção inteira (ou parte dela, definida de forma "obscura" ***)
+'      Cabri: Não faz nada, nem avisa
+'      Opção: Mover toda a construção OU indicar movimento proibido
+'  senao
+'   seleciona seta provisóriamente (enquanto estiver clicado)
+'senão
+'    Transladar os pontos LIVRES que definem os objetos (indiretamente ou não)
+'
+'*** Parece mover todos os pontos DEPENDENTES dele,
+'juntamente com os LIVRES dos quais depende. Todos sofrem "translação".
 
+If Button = NENHUM Then
+ Call Aponta_Objeto(X, Y)
+ If Objeto_Localizado <> NENHUM Then
+  
+ End If
+End If
+
+ If Objeto_Localizado <> NENHUM Then Exit Sub
+  'Exibe Rótulo
+ ' Me.MousePointer = vbCrosshair
+ Me.Caption = Format(Cm_X(X), "0.0") & " " & Format(Cm_Y(Y), "0.0")
+
+If Screen.TwipsPerPixelX <> TwipsPerPixelX_INICIAL Then
+ MsgBox "TwipsPerPixelX mudou de " & TwipsPerPixelX_INICIAL & "para " & Screen.TwipsPerPixelX
+End If
+If Screen.TwipsPerPixelY <> TwipsPerPixelY_INICIAL Then
+ MsgBox "TwipsPerPixelY mudou de " & TwipsPerPixelY_INICIAL & "para " & Screen.TwipsPerPixelY
+End If
+End Sub
 Private Sub Form_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
 'Incluir rotinas para:
 '-adicionar objetos
 '-Selecionar objetos
 '-Finalizar uma seleção múltipla
 '
-'Se um ponto clicado na tela ainda não existe em Obj(), criar um e guarda seu Id em P()
+
+  
+'Se (iniciada seleção múltipla)
+' Efetiva seleção (destaca todos os obj com ALGUM ponto dentro do retângulo de seleção)
+'Senão se (botao=seta provisoria)
+' retorna ao botao anterior
+' guarda: Foi usada a seta provosória.
+' (apenas foram movidos alguns objetos. Nada a fazer)
+'senao
+' Cria pontos e objetos para as diversas ferramentas
+' Se (Aponta_Objeto)
+'   Se (é possível por um ponto sobre o objeto apontado)
+'     Cria ponto sobre o objeto
+' Se um ponto clicado na tela ainda não existe em Obj(), criar um e guarda seu Id em P()
+' [tem algumas considerações????]
+' [exceções????]
   
   
   Exit Sub
   
   
   
-  Ferramenta = 0 'Item de menu atualmente selecionado.
-  Select Case Ferramenta
-    Case PONTO
+  'Ferramenta = 0 'Item de menu atualmente selecionado.
+  Select Case tbrObjetos.Tag
+    Case "PONTO"
     'Param=1
       ReDim Preserve Obj(1 To 1 + UBound(Obj))
       With Obj(UBound(Obj))
@@ -350,7 +491,7 @@ Private Sub Form_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As 
         .P_int(1) = P(1)
         .P_int(2) = P(2)
         .Espessura = 4#
-        .Mostrar = True
+        .Mostrar = PADRAO
         
         '.Traço(0) = 1: .Traço(2) = 1'Irrelevante para pontos. Usar como X,O, . ou + ...
       End With
@@ -361,7 +502,7 @@ Private Sub Form_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As 
     Case SEGMENTO, VETOR
     'Param=2
       With Obj(UBound(Obj))
-        .Tipo = Ferramenta 'SEGMENTO ou VETOR
+        .Tipo = tbrObjetos.Buttons(tbrObjetos.Tag) 'SEGMENTO ou VETOR
         .Nome = ""
         .N_Param = 2
         ReDim .P_ext(1 To .N_Param)
@@ -371,7 +512,7 @@ Private Sub Form_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As 
         .Traço(1) = 1: .Traço(2) = 1
         .Cor = 0
         .Espessura = 4#
-        .Mostrar = True
+        .Mostrar = PADRAO
       End With
     Case RETA
     'Param=2
@@ -395,7 +536,7 @@ Private Sub Form_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As 
     'Param=2
     Case PARALELA
     'Param=2
-    Case PONTO_MEDIO
+    Case PONTO_MÉDIO
     'Param=1 ou 2
     Case BISSETRIZ_PONTOS
     'Param=3
@@ -418,10 +559,36 @@ Private Sub Form_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As 
     Case Else
   End Select
 End Sub
+Private Sub tbrObjetos_ButtonClick(ByVal Button As MSComctlLib.Button)
+ 'Se (existem objetos selecionados)
+ '  Se (determinam a construção do botão atual)
+ '    Cria objeto a partir dos atuais (aqui, no mouseUP, ou em ambos???)
+ '  Senão
+ '    Desfaça a seleção atual
+ 'Senão
+ '  Inicia construção
+ '  (pode exibir CheckList que indique os objetos necessários)
+ 
+ 'Convenção: Tag guarda um nome igual aos da enumeração pública de tipos dos objetos
+ tbrObjetos.Tag = Button.Key
 
+ 'UBound(P) = Número de objetos selecionados atualmente
+ 'como verificar se está vazio??? Estará vazio em algum momento???
+ Select Case UBound(P)
+ Case 1
+ 
+ Case 2
+ 
+ Case 3
+
+ Case Else
+
+ End Select
+
+End Sub
 Private Sub Form_Paint()
  Dim N, N_Obj As Integer
- 
+ 'Tornar publico esse valor, atualizando quando adicionar ou remover objetos
  N_Obj = UBound(Obj)
  
  For N = 1 To N_Obj
@@ -461,7 +628,7 @@ Private Sub Form_Paint()
    
    Case PARALELA
    
-   Case PONTO_MEDIO
+   Case PONTO_MÉDIO
    
    Case BISSETRIZ_PONTOS
    
@@ -500,47 +667,8 @@ Private Sub Form_Paint()
 
 
 End Sub
-
-Private Sub Aponta_Objeto(ByVal X As Single, ByVal Y As Single)
- Const DIST_MIN = 0.4
- Dim N, N_Obj As Integer
- Dim Cor_Ponto_XY As Long
- 
- Cor_Ponto_XY = Me.Point(X, Y)
- If Cor_Ponto_XY = Me.BackColor Then Exit Sub
- 
- X = Cm_X(X): Y = Cm_Y(Y)
- N_Obj = UBound(Obj)
- For N = 1 To N_Obj
-  With Obj(N)
-   If .Mostrar Then
-    If Cor_Ponto_XY = .Cor Then
-     If .Tipo = PONTO Or .Tipo = PONTO_DE_INTERSECÇÃO Or .Tipo = PONTO_MEDIO Or .Tipo = PONTO_SOBRE Then
-      'Me.MousePointer = vbSizeAll
-      If Abs(X - .P_int(1)) + Abs(Y - .P_int(2)) < DIST_MIN Then Objeto_Prox = N: Exit Sub
-     End If
-    End If
-   End If
-  End With
- Next N
- Objeto_Prox = 0
-End Sub
-
-Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
- If Objeto_Prox > 0 Then Exit Sub
-  'Exibe Rótulo
- ' Me.MousePointer = vbCrosshair
- Me.Caption = Format(Cm_X(X), "0.0") & " " & Format(Cm_Y(Y), "0.0")
-
-If Screen.TwipsPerPixelX <> TwipsPerPixelX_INICIAL Then
- MsgBox "TwipsPerPixelX mudou de " & TwipsPerPixelX_INICIAL & "para " & Screen.TwipsPerPixelX
-End If
-If Screen.TwipsPerPixelY <> TwipsPerPixelY_INICIAL Then
- MsgBox "TwipsPerPixelY mudou de " & TwipsPerPixelY_INICIAL & "para " & Screen.TwipsPerPixelY
-End If
-End Sub
 Private Sub Form_Resize()
- Dim Visivel_antes_X, Visivel_antes_Y As Single
+ Dim Visivel_antes_X As Single, Visivel_antes_Y As Single
 
  Visivel_antes_X = Visivel_X
  Visivel_antes_Y = Visivel_Y
@@ -559,11 +687,12 @@ Private Sub Form_Resize()
   .Refresh
   
   On Error Resume Next
+  'Como evitar que desapareça a área de desenho ao diminuir a largura e altura?
   HScroll1.Move .ScaleLeft, .ScaleTop + .ScaleHeight - TAM_BARRA, .ScaleWidth - TAM_BARRA, TAM_BARRA
   VScroll1.Move .ScaleLeft + .ScaleWidth - TAM_BARRA, .ScaleTop + tbrObjetos.Height, TAM_BARRA, .ScaleHeight - tbrObjetos.Height - TAM_BARRA
   picCanto.Move .ScaleLeft + .ScaleWidth - TAM_BARRA, .ScaleTop + .ScaleHeight - TAM_BARRA
   On Error GoTo 0
-  Timer1.Enabled = True
+  'Timer1.Enabled = True
  End With
 End Sub
 Private Function Pixel_X(X_real As Single) As Single
@@ -588,18 +717,6 @@ Private Function Cm_Y(P_Y As Single) As Single
          (Zoom * Twips_por_Cm)
          
 End Function
-Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
-Exit Sub
- Select Case MsgBox("Deseja salvar as alterações?", vbQuestion + vbYesNoCancel, "Finalizando o aplicativo...")
- Case vbCancel
-  Cancel = True
- Case vbNo
-  Cancel = False
- Case vbYes
-  Cancel = True
-  'SalvarArquivo
- End Select
-End Sub
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
  Select Case KeyCode
   Case vbKeyEscape
@@ -629,18 +746,8 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
  End Select
 End Sub
 
-
-Private Sub tbrObjetos_ButtonClick(ByVal Button As MSComctlLib.Button)
- Select Case UBound(P)
- Case 1
- 'Button.Index
- Case Else
- 
- End Select
-End Sub
-
 Private Sub Timer1_Timer()
-'Esse timer s'o existe para contornar um defeito na rotina Resize...
+'Esse timer só existe para contornar um defeito na rotina Resize...
 'O programa nao conhece a altura real da barra no instante do redimensionamento, só depois
 With Me
  On Error Resume Next
@@ -671,4 +778,15 @@ Private Sub VScroll1_Scroll()
  Centro_Y = VScroll1.Value
  Me.Refresh
 End Sub
-
+Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
+Exit Sub
+ Select Case MsgBox("Deseja salvar as alterações?", vbQuestion + vbYesNoCancel, "Finalizando o aplicativo...")
+ Case vbCancel
+  Cancel = True
+ Case vbNo
+  Cancel = False
+ Case vbYes
+  Cancel = True
+  'SalvarArquivo
+ End Select
+End Sub

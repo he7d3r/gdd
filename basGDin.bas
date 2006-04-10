@@ -16,7 +16,7 @@ Public Enum Tipo_De_Objeto
  PARALELA
  PERPENDICULAR
  MEDIATRIZ
- PONTO_MEDIO
+ PONTO_MÉDIO
  BISSETRIZ_PONTOS
  BISSETRIZ_RETAS
  
@@ -29,6 +29,11 @@ Public Enum Tipo_De_Objeto
  ÂNGULO
  EIXOS
 End Enum
+Public Enum Aparência
+ OCULTO
+ PADRAO
+ SELECIONADO
+End Enum
 
 Private Type Objeto
  Id As Integer 'Identifica exclusivamente cada objeto. Igual ao indice da matriz?
@@ -37,7 +42,7 @@ Private Type Objeto
  Cor As Long 'Cor utilizada para desenhar na tela
  Espessura As Byte 'Raio dos pontos ou a largura de curvas e contornos
  Traço(1 To 2) As Byte 'Tipo de pontilhado
- Mostrar As Boolean 'Indica se o objeto será exibido
+ Mostrar As Aparência 'Indica como o objeto será exibido
  Nome As String 'Um rótulo para exibição em tela
  P_ext() As Integer 'Indices dos parametros (objetos)dos quais depende
  P_int() As Single 'Coordenadas e angulos livres
@@ -51,6 +56,7 @@ Public Const Twips_por_Polegada = 1440
 Public Const Twips_por_Ponto = 20
 Public Const MAX_X = 10
 Public Const MAX_Y = 10
+Public Const NENHUM = 0
 
 Public TwipsPerPixelX_INICIAL As Single, TwipsPerPixelY_INICIAL As Single
 Public Centro_X As Single, Centro_Y As Single
@@ -60,7 +66,7 @@ Public inc_Mov As Single, inc_Trans As Single
 
 Public Obj() As Objeto
 Public P() As Long
-Public Objeto_Prox As Long
+Public Objeto_Localizado As Long
 
 Public Sub Inicializar_Parametros()
 'Atribui o valor inicial dos principais parametros.
@@ -68,7 +74,7 @@ Public Sub Inicializar_Parametros()
 
  inc_Mov = 0.05
  inc_Trans = 1
- Objeto_Prox = 0
+ Objeto_Localizado = NENHUM
  
  Centro_X = 0#
  Centro_Y = 0#
@@ -88,6 +94,7 @@ Public Sub Inicializar_Parametros()
  Zoom = 1#
  'Cria os objetos essenciais
  ReDim Obj(1 To 2)
+  
  ReDim P(1 To 1) As Long
  
  With Obj(1)
@@ -96,7 +103,7 @@ Public Sub Inicializar_Parametros()
   .P_int(1) = 0#
   .P_int(2) = 0#
   .Espessura = 4#
-  .Mostrar = True
+  .Mostrar = PADRAO
   .Nome = "Origem"
   '.Traço(0) = 1: .Traço(2) = 1'Irrelevante para pontos. Usar como X,O, . ou + ...
  End With
@@ -107,7 +114,7 @@ Public Sub Inicializar_Parametros()
   .P_int(1) = 0#: .P_int(2) = 1#
   .P_int(3) = 1#: .P_int(4) = 0#
   .Espessura = 1
-  .Mostrar = True
+  .Mostrar = PADRAO
   .Nome = "Eixo padrão"
   .Traço(1) = 1: .Traço(2) = 1
   .N_Param = 1
