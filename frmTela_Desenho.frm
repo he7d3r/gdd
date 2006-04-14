@@ -14,6 +14,31 @@ Begin VB.Form frmTela_Desenho
    ScaleWidth      =   760
    StartUpPosition =   2  'CenterScreen
    WhatsThisHelp   =   -1  'True
+   Begin VB.Frame Frame1 
+      Caption         =   "Frame1"
+      Height          =   1335
+      Left            =   0
+      TabIndex        =   4
+      Top             =   720
+      Visible         =   0   'False
+      Width           =   1575
+      Begin VB.CheckBox Check2 
+         Caption         =   "Check2"
+         Height          =   375
+         Left            =   240
+         TabIndex        =   6
+         Top             =   720
+         Width           =   1215
+      End
+      Begin VB.CheckBox Check1 
+         Caption         =   "Check1"
+         Height          =   375
+         Left            =   240
+         TabIndex        =   5
+         Top             =   360
+         Width           =   1215
+      End
+   End
    Begin VB.PictureBox picCanto 
       Appearance      =   0  'Flat
       BackColor       =   &H00E0E0E0&
@@ -32,7 +57,7 @@ Begin VB.Form frmTela_Desenho
       Enabled         =   0   'False
       Interval        =   5
       Left            =   960
-      Top             =   2760
+      Top             =   3240
    End
    Begin VB.VScrollBar VScroll1 
       Height          =   2265
@@ -43,7 +68,7 @@ Begin VB.Form frmTela_Desenho
       MousePointer    =   1  'Arrow
       TabIndex        =   2
       TabStop         =   0   'False
-      Top             =   2160
+      Top             =   2640
       Width           =   300
    End
    Begin VB.HScrollBar HScroll1 
@@ -55,7 +80,7 @@ Begin VB.Form frmTela_Desenho
       MousePointer    =   1  'Arrow
       TabIndex        =   1
       TabStop         =   0   'False
-      Top             =   1800
+      Top             =   2280
       Width           =   2265
    End
    Begin MSComctlLib.Toolbar tbrObjetos 
@@ -194,7 +219,7 @@ Begin VB.Form frmTela_Desenho
    End
    Begin MSComctlLib.ImageList ImageList1 
       Left            =   375
-      Top             =   2160
+      Top             =   2640
       _ExtentX        =   1005
       _ExtentY        =   1005
       BackColor       =   -2147483643
@@ -282,6 +307,18 @@ Begin VB.Form frmTela_Desenho
          EndProperty
       EndProperty
    End
+   Begin VB.Label lblDica 
+      AutoSize        =   -1  'True
+      BackColor       =   &H80000018&
+      Caption         =   "lblDica"
+      ForeColor       =   &H80000017&
+      Height          =   195
+      Left            =   2040
+      TabIndex        =   7
+      Top             =   1320
+      Visible         =   0   'False
+      Width           =   480
+   End
    Begin VB.Menu mnuArq 
       Caption         =   "&Arquivo"
       Begin VB.Menu mnuArqSair 
@@ -301,14 +338,14 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
+Private multi_sel As Boolean
 
 Private Const TAM_BARRA = 20
 'Private Const
 'Private Const
 
-
 Private Sub Form_Initialize()
- 
+ Dim I As Integer
  Call Inicializar_Parametros
 
   With Me
@@ -318,22 +355,26 @@ Private Sub Form_Initialize()
   HScroll1.Min = -MAX_X: HScroll1.Max = MAX_X
   VScroll1.Min = MAX_Y: VScroll1.Max = -MAX_Y
  End With
- 
-
+ With tbrObjetos.Buttons
+ For I = 3 To .Count
+  .Item(I).Enabled = False
+ Next I
+ End With
 End Sub
 
-Private Sub Aponta_Objeto(ByVal X As Single, ByVal Y As Single)
- Const DIST_MIN = 0.4
+Private Sub Aponta_Objeto(ByVal X As Single, ByVal Y As Single, ByRef Loc)
+ Const DIST_MIN = 10 'pixels
  Dim N, N_Obj As Integer
  Dim Cor_Ponto_XY As Long
+ Dim X_real As Single, Y_real As Single
  
- 'Se NUNCA for pintado um objeto de BRANCO, pode-se incluir isso:
+ 'Se NUNCA for pintado um objeto de BRANCO, pode-se (?) incluir isso:
  'If Cor_Ponto_XY = Me.BackColor Then Exit Sub
  
- X = Cm_X(X): Y = Cm_Y(Y)
+ X_real = Cm_X(X): Y_real = Cm_Y(Y)
  
  'Ocorre erro se não houver objetos.
- 'Mas Obj() tem (ao menos) um ponto e um par de eixos
+ 'Mas Obj() tem (ao menos) um PONTO e um par de EIXOS
  N_Obj = UBound(Obj)
  
  For N = 1 To N_Obj
@@ -342,7 +383,11 @@ Private Sub Aponta_Objeto(ByVal X As Single, ByVal Y As Single)
     Select Case .Tipo
      Case PONTO, PONTO_SOBRE, PONTO_DE_INTERSECÇÃO, PONTO_MÉDIO
       'Me.MousePointer = vbSizeAll
-      If Abs(X - .P_int(1)) + Abs(Y - .P_int(2)) < DIST_MIN Then Objeto_Localizado = N: Exit Sub
+      'If Abs(X_real - .P_rep(1)) < DIST_MIN And _
+      '   Abs(Y_real - .P_rep(2)) < DIST_MIN Then Loc = N: Exit Sub
+         
+      If Abs(X - Pixel_X(.P_rep(1))) < DIST_MIN And _
+         Abs(Y - Pixel_Y(.P_rep(2))) < DIST_MIN Then Loc = N: Exit Sub
      Case SEGMENTO, VETOR
      
      Case SEMI_RETA
@@ -353,12 +398,12 @@ Private Sub Aponta_Objeto(ByVal X As Single, ByVal Y As Single)
    End If
   End With
  Next N
- Objeto_Localizado = NENHUM
+ Loc = NENHUM
 End Sub
 Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
 'se (botao = seta)
 '  se (aponta objeto)
-'   destaque objeto da lista. //colorido ou animado.
+'   destaque objeto da lista. //colorir ou animar.
 '   guarda: Ainda NÃO foi usada a seta provosória. (isso está no lugar certo?)
 '   se (shift pressionado)
 '    adiciona à seleção atual
@@ -376,7 +421,7 @@ Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y A
  
  Dim I As Long
  
- Select Case tbrObjetos.Tag
+ Select Case UCase(tbrObjetos.Tag)
   Case "PONTEIRO"
    'Atualiza seleção atual
    If Objeto_Localizado <> NENHUM Then
@@ -390,13 +435,15 @@ Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y A
       If (Obj(I).Mostrar = SELECIONADO) And (I <> Objeto_Localizado) Then Obj(I).Mostrar = PADRAO
      Next I
     End If
+   Else
+    multi_sel = True
    End If
-  'Isto deve estar no MouseMOVE ou aqui???
+     'Isto deve estar no MouseMOVE ou aqui???
   Case "SEGMENTO", "VETOR", "SEMI_RETA", "RETA", _
        "TRIÂNGULO", "POLÍGONO", "POLÍGONO_REGULAR", _
        "CIRCUNFERÊNCIA", "ARCO", "CÔNICA"
    'Estes são os objetos que exibem prévia de sua posição enquanto são criados
-   'Só representam problema no "Padrão Cabri" de construção: botao-->parametros
+   'Pode ser problema no "Padrão Cabri/cinderella": botao-->parametros
    'Solução simples no KSeg: Parâmetros-->Botao
   Case Else
   'Cancele todas as seleções
@@ -408,11 +455,12 @@ Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y A
 End Sub
 Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
 'se (não está clicado)
-'  se (aponta algum objeto)
+'  se (aponta ALGUM objeto)
 '   se (botao = seta)
 '    exibe lista de possíveis objetos para seleção
 '   senao
-'    exibe menu de ajuda para a construção (indicando o objeto necessário)
+'    se (existe ponto provisório) mova-o
+'    exibe ajuda (chkbox?) para a construção (qual o objeto necessário?)
 'senão, se (iniciada seleção múltipla)
 '  desenhe retângulo pontilhado
 'senão se (selecionado apenas um objeto)
@@ -420,66 +468,71 @@ Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y A
 '     se (é livre)
 '      mova objeto e calcule a nova posição de todos os que dependem dele
 '     senão
-'      Kaseg: move construção inteira (ou parte dela, definida de forma "obscura" ***)
+'      Kseg: Move os pontos DEPENDENTES do atual e os LIVRES dos quais depende
 '      Cabri: Não faz nada, nem avisa
 '      Opção: Mover toda a construção OU indicar movimento proibido
 '  senao
-'   seleciona seta provisóriamente (enquanto estiver clicado)
+'   seleciona seta enquanto estiver clicado
 'senão
 '    Transladar os pontos LIVRES que definem os objetos (indiretamente ou não)
 '
-'*** Parece mover todos os pontos DEPENDENTES dele,
-'juntamente com os LIVRES dos quais depende. Todos sofrem "translação".
 
-If Button = NENHUM Then
- Call Aponta_Objeto(X, Y)
- If Objeto_Localizado <> NENHUM Then
-  
+ If Button = NENHUM Then
+  Call Aponta_Objeto(X, Y, Objeto_Localizado)
+  If Objeto_Localizado <> NENHUM Then
+   
+  End If
  End If
-End If
+ With lblDica
+  If Objeto_Localizado = NENHUM Then
+   .Visible = False
+  Else
+   .Move X + 5, Y + 5
+   .Caption = "Objeto " & Format(Objeto_Localizado, "00")
+   If Not .Visible Then .Visible = True
+   'Me.MousePointer = vbCrosshair
+  End If
+ End With
+ Me.Caption = "Posição atual: [ " & Format(Cm_X(X), "0.0") & " ;  " & Format(Cm_Y(Y), "0.0") & "]"
 
- If Objeto_Localizado <> NENHUM Then Exit Sub
-  'Exibe Rótulo
- ' Me.MousePointer = vbCrosshair
- Me.Caption = Format(Cm_X(X), "0.0") & " " & Format(Cm_Y(Y), "0.0")
 
-If Screen.TwipsPerPixelX <> TwipsPerPixelX_INICIAL Then
- MsgBox "TwipsPerPixelX mudou de " & TwipsPerPixelX_INICIAL & "para " & Screen.TwipsPerPixelX
-End If
-If Screen.TwipsPerPixelY <> TwipsPerPixelY_INICIAL Then
- MsgBox "TwipsPerPixelY mudou de " & TwipsPerPixelY_INICIAL & "para " & Screen.TwipsPerPixelY
-End If
+   'Se for executado, saberemos quando muda o TwipsPerPixel da tela!
+   If Screen.TwipsPerPixelX <> TwipsPerPixelX_INICIAL Then
+    MsgBox "TwipsPerPixelX mudou de " & TwipsPerPixelX_INICIAL & "para " & Screen.TwipsPerPixelX
+   End If
+   If Screen.TwipsPerPixelY <> TwipsPerPixelY_INICIAL Then
+    MsgBox "TwipsPerPixelY mudou de " & TwipsPerPixelY_INICIAL & "para " & Screen.TwipsPerPixelY
+   End If
 End Sub
 Private Sub Form_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
-'Incluir rotinas para:
-'-adicionar objetos
-'-Selecionar objetos
-'-Finalizar uma seleção múltipla
-'
-
-  
 'Se (iniciada seleção múltipla)
-' Efetiva seleção (destaca todos os obj com ALGUM ponto dentro do retângulo de seleção)
+' Efetiva seleção (destaca todos os objetos
+' com ALGUM ponto dentro do retângulo de seleção)
 'Senão se (botao=seta provisoria)
 ' retorna ao botao anterior
-' guarda: Foi usada a seta provosória.
-' (apenas foram movidos alguns objetos. Nada a fazer)
-'senao
-' Cria pontos e objetos para as diversas ferramentas
+' guarda: Foi liberada a seta provosória.
+' (apenas foram movidos alguns objetos. Nada + para fazer)
+'senao //Cria pontos e objetos para as diversas ferramentas
 ' Se (Aponta_Objeto)
-'   Se (é possível por um ponto sobre o objeto apontado)
-'     Cria ponto sobre o objeto
-' Se um ponto clicado na tela ainda não existe em Obj(), criar um e guarda seu Id em P()
-' [tem algumas considerações????]
-' [exceções????]
+'  Se (botão=construção)
+'   Se (constução depende deste tipo de objeto)
+'    Use objeto atual na construção
+'   Senão se (construção precisa de + algum ponto)
+'    Se (objeto atual não é um ponto)
+'     se(é possível por ponto sobre este objeto)
+'      Cria (ponto_sobre_objeto)
+'     senão
+'      Cria (ponto comum)
+'   Senão
+'    ignora mouse_up (sai sem fazer nada e aguarda o próximo)
+'  senão se (construção precisa de + algum ponto)
+'   cria (Ponto_livre)
+'  senão
+'   aguarda o procimo mouse up
+ 
   
-  
-  Exit Sub
-  
-  
-  
-  'Ferramenta = 0 'Item de menu atualmente selecionado.
-  Select Case tbrObjetos.Tag
+If (Not multi_sel) Then
+  Select Case UCase(tbrObjetos.Tag)
     Case "PONTO"
     'Param=1
       ReDim Preserve Obj(1 To 1 + UBound(Obj))
@@ -487,13 +540,14 @@ Private Sub Form_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As 
         '.Tipo = PONTO
         '.Nome = ""
         '.N_Param = 0
-        ReDim .P_int(1 To 2)
-        .P_int(1) = P(1)
-        .P_int(2) = P(2)
+        ReDim .P_rep(1 To 2)
+        .P_rep(1) = Cm_X(X)
+        .P_rep(2) = Cm_Y(Y)
         .Espessura = 4#
         .Mostrar = PADRAO
         
-        '.Traço(0) = 1: .Traço(2) = 1'Irrelevante para pontos. Usar como X,O, . ou + ...
+        '.Traço(0) = 1: .Traço(2) = 1'Irrelevante para pontos.
+        ' Usar para indicar forma, como X,O, . ou + ...
       End With
     Case PONTO_SOBRE
      'Param=2
@@ -505,9 +559,10 @@ Private Sub Form_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As 
         .Tipo = tbrObjetos.Buttons(tbrObjetos.Tag) 'SEGMENTO ou VETOR
         .Nome = ""
         .N_Param = 2
-        ReDim .P_ext(1 To .N_Param)
-        .P_ext(1) = P(1): .P_ext(2) = P(2) '(x,y) do ponto  inicial
-        .P_ext(3) = P(3): .P_ext(4) = P(4) '(x,y) do ponto  final
+        ReDim .P_dep(1 To .N_Param)
+        'decidir como acessar parâmetros. Serão guardados id's em P()??
+        .P_dep(1) = P(1): .P_dep(2) = P(2) '(x,y) do ponto  inicial
+        .P_dep(3) = P(3): .P_dep(4) = P(4) '(x,y) do ponto  final
         
         .Traço(1) = 1: .Traço(2) = 1
         .Cor = 0
@@ -558,7 +613,10 @@ Private Sub Form_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As 
     'Param=2 ou 3
     Case Else
   End Select
+  End If
+  Me.Refresh
 End Sub
+
 Private Sub tbrObjetos_ButtonClick(ByVal Button As MSComctlLib.Button)
  'Se (existem objetos selecionados)
  '  Se (determinam a construção do botão atual)
@@ -574,98 +632,116 @@ Private Sub tbrObjetos_ButtonClick(ByVal Button As MSComctlLib.Button)
 
  'UBound(P) = Número de objetos selecionados atualmente
  'como verificar se está vazio??? Estará vazio em algum momento???
+On Error GoTo Erro_sem_objetos
  Select Case UBound(P)
  Case 1
  
+  'habilita formatação e + algo?
  Case 2
  
  Case 3
 
  Case Else
-
+  'Se não é possível construir um item,
+  'desmarque todos os objetos selecionados
+  'apenas inicie uma construção com a ferramenta atual
  End Select
-
+On Error GoTo 0
+Erro_sem_objetos:
 End Sub
 Private Sub Form_Paint()
- Dim N, N_Obj As Integer
+ Dim N As Integer, N_Obj As Integer
+ Dim D As Integer, Ini As Single, Fim As Single
  'Tornar publico esse valor, atualizando quando adicionar ou remover objetos
  N_Obj = UBound(Obj)
  
  For N = 1 To N_Obj
   With Obj(N)
-   Select Case .Tipo
-   Case PONTO
-    Me.DrawWidth = .Espessura
-    Me.PSet (Pixel_X(.P_int(1)), Pixel_Y(.P_int(2))) ', .Cor
+   If .Mostrar <> OCULTO Then
+    Select Case .Tipo
+    Case PONTO
+     Me.DrawWidth = .Espessura
+     Me.PSet (Pixel_X(.P_rep(1)), Pixel_Y(.P_rep(2))) ', .Cor
+     
+    Case PONTO_SOBRE
     
-   Case PONTO_SOBRE
-   
-   Case PONTO_DE_INTERSECÇÃO
-   
-   Case SEGMENTO
-   
-   Case VETOR
-   
-   Case RETA
-   
-   Case SEMI_RETA
-   
-   Case TRIÂNGULO
-   
-   Case POLÍGONO
-   
-   Case POLÍGONO_REGULAR
-   
-   Case EIXOS
-   
-   Case CIRCUNFERÊNCIA
-   
-   Case ARCO
-   
-   Case CÔNICA
-   
-   Case PERPENDICULAR
-   
-   Case PARALELA
-   
-   Case PONTO_MÉDIO
-   
-   Case BISSETRIZ_PONTOS
-   
-   Case BISSETRIZ_RETAS
-   
-   Case COMPASSO
-   
-   Case REFLEXÃO
-   
-   Case SIMETRIA
-   
-   Case TRANSLAÇÃO
-   
-   Case INVERSO_CIRCUNFERÊNCIA
-   
-   Case TEXTO
-   
-   Case ÂNGULO
-
-   Case Else
+    Case PONTO_DE_INTERSECÇÃO
     
-   End Select
+    Case SEGMENTO
+    
+    Case VETOR
+    
+    Case RETA
+    
+    Case SEMI_RETA
+    
+    Case TRIÂNGULO
+    
+    Case POLÍGONO
+    
+    Case POLÍGONO_REGULAR
+    
+    Case CIRCUNFERÊNCIA
+    
+    Case ARCO
+    
+    Case CÔNICA
+    
+    Case PERPENDICULAR
+    
+    Case PARALELA
+    
+    Case PONTO_MÉDIO
+    
+    Case BISSETRIZ_PONTOS
+    
+    Case BISSETRIZ_RETAS
+    
+    Case EIXOS
+     Me.DrawWidth = .Espessura
+     
+     Ini = Centro_X - (Visivel_X / 2)
+     Fim = Centro_X + (Visivel_X / 2)
+     Me.Line (Pixel_X(CSng(Ini)), Pixel_Y(0)) _
+            -(Pixel_X(CSng(Fim)), Pixel_Y(0)), .Cor
+     Me.DrawWidth = .Espessura * 3
+      For D = Ini To Fim
+       Me.PSet (Pixel_X(CSng(D)), Pixel_Y(0)), .Cor
+      Next D
+     Me.DrawWidth = .Espessura
+     Ini = Centro_Y - (Visivel_Y / 2)
+     Fim = Centro_Y + (Visivel_Y / 2)
+     Me.Line (Pixel_X(0), Pixel_Y(CSng(Ini))) _
+            -(Pixel_X(0), Pixel_Y(CSng(Fim))), .Cor
+     Me.DrawWidth = .Espessura * 3
+      For D = Ini To Fim
+       Me.PSet (Pixel_X(0), Pixel_Y(CSng(D))), .Cor
+      Next D
+     
+    Case COMPASSO
+    
+    Case REFLEXÃO
+    
+    Case SIMETRIA
+    
+    Case TRANSLAÇÃO
+    
+    Case INVERSO_CIRCUNFERÊNCIA
+    
+    Case TEXTO
+    
+    Case ÂNGULO
+ 
+    Case Else
+     
+    End Select
+   End If
   End With
  Next N
  
  
  'Me.PSet (Pixel_X(Visivel_X / 2), Pixel_Y(Visivel_Y / 2)), vbGreen
  
- 
- For N = 0 To 10
-  Me.PSet (Pixel_X(CSng(N)), Pixel_Y(0))
- Next N
- For N = 1 To 10
-  Me.PSet (Pixel_X(0), Pixel_Y(CSng(N))), vbRed
- Next N
-
-
 End Sub
 Private Sub Form_Resize()
  Dim Visivel_antes_X As Single, Visivel_antes_Y As Single
@@ -683,8 +759,6 @@ Private Sub Form_Resize()
   Centro_X = Centro_X + (Visivel_X - Visivel_antes_X) / 2
   Centro_Y = Centro_Y - (Visivel_Y - Visivel_antes_Y) / 2
   
-  .Cls
-  .Refresh
   
   On Error Resume Next
   'Como evitar que desapareça a área de desenho ao diminuir a largura e altura?
@@ -693,6 +767,10 @@ Private Sub Form_Resize()
   picCanto.Move .ScaleLeft + .ScaleWidth - TAM_BARRA, .ScaleTop + .ScaleHeight - TAM_BARRA
   On Error GoTo 0
   'Timer1.Enabled = True
+  
+  .Cls
+  .Refresh
+
  End With
 End Sub
 Private Function Pixel_X(X_real As Single) As Single

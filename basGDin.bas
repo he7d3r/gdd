@@ -36,7 +36,7 @@ Public Enum Aparência
 End Enum
 
 Private Type Objeto
- Id As Integer 'Identifica exclusivamente cada objeto. Igual ao indice da matriz?
+ Id As Integer 'Identifica exclusivamente o objeto (por tipo??). Como o indice de Obj?
  Tipo As Tipo_De_Objeto 'Que item será guardado
  N_Param As Byte 'Número de objetos dos quais este é dependente
  Cor As Long 'Cor utilizada para desenhar na tela
@@ -44,8 +44,8 @@ Private Type Objeto
  Traço(1 To 2) As Byte 'Tipo de pontilhado
  Mostrar As Aparência 'Indica como o objeto será exibido
  Nome As String 'Um rótulo para exibição em tela
- P_ext() As Integer 'Indices dos parametros (objetos)dos quais depende
- P_int() As Single 'Coordenadas e angulos livres
+ P_dep() As Integer 'Indices dos parametros (objetos)dos quais depende
+ P_rep() As Single 'Coordenadas e angulos livres
 End Type
 
 Public Const MAX_OBJETOS = 100
@@ -99,9 +99,9 @@ Public Sub Inicializar_Parametros()
  
  With Obj(1)
   '.Tipo = PONTO
-  ReDim .P_int(1 To 2)
-  .P_int(1) = 0#
-  .P_int(2) = 0#
+  ReDim .P_rep(1 To 2)
+  .P_rep(1) = 0#
+  .P_rep(2) = 0#
   .Espessura = 4#
   .Mostrar = PADRAO
   .Nome = "Origem"
@@ -110,16 +110,19 @@ Public Sub Inicializar_Parametros()
  
  With Obj(2)
   .Tipo = EIXOS
-  ReDim .P_int(1 To 4)
-  .P_int(1) = 0#: .P_int(2) = 1#
-  .P_int(3) = 1#: .P_int(4) = 0#
+  ReDim .P_rep(1 To 4)
+  .P_rep(1) = 0#: .P_rep(2) = 1#
+  .P_rep(3) = 1#: .P_rep(4) = 0#
+  ReDim .P_dep(1 To 1)
+  .P_dep(1) = 1
   .Espessura = 1
   .Mostrar = PADRAO
   .Nome = "Eixo padrão"
+  .Cor = RGB(200, 200, 200)
   .Traço(1) = 1: .Traço(2) = 1
   .N_Param = 1
-  ReDim .P_ext(1 To .N_Param)
-  .P_ext(1) = 1
+  ReDim .P_dep(1 To .N_Param)
+  .P_dep(1) = 1
  End With
  'frmTela_Desenho.Refresh
 End Sub
