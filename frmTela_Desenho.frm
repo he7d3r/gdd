@@ -4,40 +4,107 @@ Begin VB.Form frmTela_Desenho
    Caption         =   "GDin"
    ClientHeight    =   7185
    ClientLeft      =   165
-   ClientTop       =   555
-   ClientWidth     =   11400
+   ClientTop       =   375
+   ClientWidth     =   11415
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MousePointer    =   2  'Cross
    ScaleHeight     =   479
    ScaleMode       =   3  'Pixel
-   ScaleWidth      =   760
+   ScaleWidth      =   761
    StartUpPosition =   2  'CenterScreen
    WhatsThisHelp   =   -1  'True
-   Begin VB.Frame Frame1 
-      Caption         =   "Frame1"
-      Height          =   1335
-      Left            =   0
+   Begin VB.ListBox lstObjetos 
+      Appearance      =   0  'Flat
+      BackColor       =   &H80000018&
+      Height          =   255
+      ItemData        =   "frmTela_Desenho.frx":0000
+      Left            =   3720
+      List            =   "frmTela_Desenho.frx":0007
+      MousePointer    =   1  'Arrow
+      Style           =   1  'Checkbox
       TabIndex        =   4
-      Top             =   720
+      Top             =   2520
       Visible         =   0   'False
-      Width           =   1575
-      Begin VB.CheckBox Check2 
-         Caption         =   "Check2"
-         Height          =   375
-         Left            =   240
-         TabIndex        =   6
-         Top             =   720
-         Width           =   1215
-      End
-      Begin VB.CheckBox Check1 
-         Caption         =   "Check1"
-         Height          =   375
-         Left            =   240
-         TabIndex        =   5
-         Top             =   360
-         Width           =   1215
-      End
+      Width           =   1095
+   End
+   Begin MSComctlLib.ImageList imglstCursor 
+      Left            =   1080
+      Top             =   2640
+      _ExtentX        =   1005
+      _ExtentY        =   1005
+      BackColor       =   -2147483624
+      ImageWidth      =   32
+      ImageHeight     =   32
+      MaskColor       =   12632256
+      _Version        =   393216
+      BeginProperty Images {2C247F25-8591-11D1-B16A-00C0F0283628} 
+         NumListImages   =   16
+         BeginProperty ListImage1 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":0017
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage2 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":0331
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage3 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":064B
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage4 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":0965
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage5 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":0C7F
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage6 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":0F99
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage7 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":12B3
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage8 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":15CD
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage9 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":18E7
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage10 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":1C01
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage11 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":1F1B
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage12 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":207D
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage13 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":2397
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage14 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":24F9
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage15 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":2727
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage16 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":2889
+            Key             =   ""
+         EndProperty
+      EndProperty
    End
    Begin VB.PictureBox picCanto 
       Appearance      =   0  'Flat
@@ -89,13 +156,13 @@ Begin VB.Form frmTela_Desenho
       Left            =   0
       TabIndex        =   0
       Top             =   0
-      Width           =   11400
-      _ExtentX        =   20108
+      Width           =   11415
+      _ExtentX        =   20135
       _ExtentY        =   1191
       ButtonWidth     =   1058
       ButtonHeight    =   1032
       Appearance      =   1
-      ImageList       =   "ImageList1"
+      ImageList       =   "imglstFerramenta"
       _Version        =   393216
       BeginProperty Buttons {66833FE8-8583-11D1-B16A-00C0F0283628} 
          NumButtons      =   19
@@ -217,7 +284,7 @@ Begin VB.Form frmTela_Desenho
       EndProperty
       MousePointer    =   1
    End
-   Begin MSComctlLib.ImageList ImageList1 
+   Begin MSComctlLib.ImageList imglstFerramenta 
       Left            =   375
       Top             =   2640
       _ExtentX        =   1005
@@ -230,94 +297,95 @@ Begin VB.Form frmTela_Desenho
       BeginProperty Images {2C247F25-8591-11D1-B16A-00C0F0283628} 
          NumListImages   =   19
          BeginProperty ListImage1 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":0000
+            Picture         =   "frmTela_Desenho.frx":29EB
             Key             =   ""
          EndProperty
          BeginProperty ListImage2 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":0D36
+            Picture         =   "frmTela_Desenho.frx":3721
             Key             =   ""
          EndProperty
          BeginProperty ListImage3 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":1A6C
+            Picture         =   "frmTela_Desenho.frx":4457
             Key             =   ""
          EndProperty
          BeginProperty ListImage4 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":27A2
+            Picture         =   "frmTela_Desenho.frx":518D
             Key             =   ""
          EndProperty
          BeginProperty ListImage5 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":34D8
+            Picture         =   "frmTela_Desenho.frx":5EC3
             Key             =   ""
          EndProperty
          BeginProperty ListImage6 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":420E
+            Picture         =   "frmTela_Desenho.frx":6BF9
             Key             =   ""
          EndProperty
          BeginProperty ListImage7 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":4F44
+            Picture         =   "frmTela_Desenho.frx":792F
             Key             =   ""
          EndProperty
          BeginProperty ListImage8 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":5C7A
+            Picture         =   "frmTela_Desenho.frx":8665
             Key             =   ""
          EndProperty
          BeginProperty ListImage9 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":69B0
+            Picture         =   "frmTela_Desenho.frx":939B
             Key             =   ""
          EndProperty
          BeginProperty ListImage10 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":76E6
+            Picture         =   "frmTela_Desenho.frx":A0D1
             Key             =   ""
          EndProperty
          BeginProperty ListImage11 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":841C
+            Picture         =   "frmTela_Desenho.frx":AE07
             Key             =   ""
          EndProperty
          BeginProperty ListImage12 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":9152
+            Picture         =   "frmTela_Desenho.frx":BB3D
             Key             =   ""
          EndProperty
          BeginProperty ListImage13 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":9E88
+            Picture         =   "frmTela_Desenho.frx":C873
             Key             =   ""
          EndProperty
          BeginProperty ListImage14 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":ABBE
+            Picture         =   "frmTela_Desenho.frx":D5A9
             Key             =   ""
          EndProperty
          BeginProperty ListImage15 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":B8F4
+            Picture         =   "frmTela_Desenho.frx":E2DF
             Key             =   ""
          EndProperty
          BeginProperty ListImage16 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":C62A
+            Picture         =   "frmTela_Desenho.frx":F015
             Key             =   ""
          EndProperty
          BeginProperty ListImage17 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":D360
+            Picture         =   "frmTela_Desenho.frx":FD4B
             Key             =   ""
          EndProperty
          BeginProperty ListImage18 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":E096
+            Picture         =   "frmTela_Desenho.frx":10A81
             Key             =   ""
          EndProperty
          BeginProperty ListImage19 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":EDCC
+            Picture         =   "frmTela_Desenho.frx":117B7
             Key             =   ""
          EndProperty
       EndProperty
    End
-   Begin VB.Label lblDica 
+   Begin VB.Label lblAux 
+      Appearance      =   0  'Flat
       AutoSize        =   -1  'True
       BackColor       =   &H80000018&
-      Caption         =   "lblDica"
+      BorderStyle     =   1  'Fixed Single
       ForeColor       =   &H80000017&
-      Height          =   195
-      Left            =   2040
-      TabIndex        =   7
-      Top             =   1320
+      Height          =   225
+      Left            =   3720
+      TabIndex        =   5
+      Top             =   2280
       Visible         =   0   'False
-      Width           =   480
+      Width           =   75
    End
    Begin VB.Menu mnuArq 
       Caption         =   "&Arquivo"
@@ -345,7 +413,7 @@ Private Const TAM_BARRA = 20
 'Private Const
 
 Private Sub Form_Initialize()
- Dim I As Integer
+ Dim i As Integer
  Call Inicializar_Parametros
 
   With Me
@@ -356,13 +424,14 @@ Private Sub Form_Initialize()
   VScroll1.Min = MAX_Y: VScroll1.Max = -MAX_Y
  End With
  With tbrObjetos.Buttons
- For I = 3 To .Count
-  .Item(I).Enabled = False
- Next I
+ tbrObjetos.Tag = .Item(1).Key
+ For i = 3 To .Count
+  .Item(i).Enabled = False
+ Next i
  End With
 End Sub
 
-Private Sub Aponta_Objeto(ByVal X As Single, ByVal Y As Single, ByRef Loc)
+Private Sub Aponta_Objeto(ByVal X As Single, ByVal Y As Single, ByRef Loc() As Long)
  Const DIST_MIN = 10 'pixels
  Dim N, N_Obj As Integer
  Dim Cor_Ponto_XY As Long
@@ -387,7 +456,7 @@ Private Sub Aponta_Objeto(ByVal X As Single, ByVal Y As Single, ByRef Loc)
       '   Abs(Y_real - .P_rep(2)) < DIST_MIN Then Loc = N: Exit Sub
          
       If Abs(X - Pixel_X(.P_rep(1))) < DIST_MIN And _
-         Abs(Y - Pixel_Y(.P_rep(2))) < DIST_MIN Then Loc = N: Exit Sub
+         Abs(Y - Pixel_Y(.P_rep(2))) < DIST_MIN Then Loc(1) = N: Exit Sub
      Case SEGMENTO, VETOR
      
      Case SEMI_RETA
@@ -398,7 +467,7 @@ Private Sub Aponta_Objeto(ByVal X As Single, ByVal Y As Single, ByRef Loc)
    End If
   End With
  Next N
- Loc = NENHUM
+ Loc(1) = NENHUM
 End Sub
 Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
 'se (botao = seta)
@@ -419,24 +488,24 @@ Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y A
  '-Permitir seleção personalizada, com caixas de verificação para tipos de objetos...
  '-Seleção avançada é parte de um outro botão
  
- Dim I As Long
+ Dim i As Long
  
  Select Case UCase(tbrObjetos.Tag)
   Case "PONTEIRO"
    'Atualiza seleção atual
-   If Objeto_Localizado <> NENHUM Then
+   If Objeto_Localizado(1) <> NENHUM Then
     If Shift And vbShiftMask Then
-     Obj(Objeto_Localizado).Mostrar = (SELECIONADO + PADRAO) - Obj(Objeto_Localizado).Mostrar
+     Obj(Objeto_Localizado(1)).Mostrar = (SELECIONADO + PADRAO) - Obj(Objeto_Localizado(1)).Mostrar
     Else
-     Obj(Objeto_Localizado).Mostrar = SELECIONADO
+     Obj(Objeto_Localizado(1)).Mostrar = SELECIONADO
      'Dica: Tente trocar "UBound(Obj)" por uma variável pública
      'Cancele todas as demais seleções
-     For I = 1 To UBound(Obj)
-      If (Obj(I).Mostrar = SELECIONADO) And (I <> Objeto_Localizado) Then Obj(I).Mostrar = PADRAO
-     Next I
+     For i = 1 To UBound(Obj)
+      If (Obj(i).Mostrar = SELECIONADO) And (i <> Objeto_Localizado(1)) Then Obj(i).Mostrar = PADRAO
+     Next i
     End If
    Else
-    multi_sel = True
+    'multi_sel = True
    End If
      'Isto deve estar no MouseMOVE ou aqui???
   Case "SEGMENTO", "VETOR", "SEMI_RETA", "RETA", _
@@ -447,9 +516,9 @@ Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y A
    'Solução simples no KSeg: Parâmetros-->Botao
   Case Else
   'Cancele todas as seleções
-   For I = 1 To UBound(Obj)
-    If (Obj(I).Mostrar = SELECIONADO) Then Obj(I).Mostrar = PADRAO
-   Next I
+   For i = 1 To UBound(Obj)
+    If (Obj(i).Mostrar = SELECIONADO) Then Obj(i).Mostrar = PADRAO
+   Next i
  End Select
   
 End Sub
@@ -479,17 +548,28 @@ Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y A
 
  If Button = NENHUM Then
   Call Aponta_Objeto(X, Y, Objeto_Localizado)
-  If Objeto_Localizado <> NENHUM Then
+  If Objeto_Localizado(1) <> NENHUM Then
    
   End If
  End If
- With lblDica
-  If Objeto_Localizado = NENHUM Then
+ With lstObjetos
+  If Objeto_Localizado(1) = NENHUM Then
    .Visible = False
+   lblAux.Visible = False
   Else
-   .Move X + 5, Y + 5
-   .Caption = "Objeto " & Format(Objeto_Localizado, "00")
-   If Not .Visible Then .Visible = True
+   lblAux = "Objeto " & Format(Objeto_Localizado(1), "00") & " (" & Nome(Obj(Objeto_Localizado(1)).Tipo) & ")"
+   If UBound(Objeto_Localizado) = 1 Then
+    lblAux.Move X + 13, Y + 13
+    If Not lblAux.Visible Then lblAux.Visible = True
+   Else
+    lblAux.Visible = False
+    .Clear
+    'If lstObjetos.ListCount < 10 Then
+    .AddItem lblAux
+    .Move X + 13, Y + 13, lblAux.Width + 20, lblAux.Height * (.ListCount + 1)
+    If Not .Visible Then .Visible = True
+   End If
+   
    'Me.MousePointer = vbCrosshair
   End If
  End With
@@ -540,20 +620,21 @@ If (Not multi_sel) Then
         '.Tipo = PONTO
         '.Nome = ""
         '.N_Param = 0
-        ReDim .P_rep(1 To 2)
+        ReDim .P_rep(1 To 3)
         .P_rep(1) = Cm_X(X)
         .P_rep(2) = Cm_Y(Y)
+        .P_rep(3) = 1# 'para coordenadas homogêneas
         .Espessura = 4#
         .Mostrar = PADRAO
         
         '.Traço(0) = 1: .Traço(2) = 1'Irrelevante para pontos.
         ' Usar para indicar forma, como X,O, . ou + ...
       End With
-    Case PONTO_SOBRE
+    Case "PONTO_SOBRE"
      'Param=2
-    Case PONTO_DE_INTERSECÇÃO
+    Case "PONTO_DE_INTERSECÇÃO"
     'Param=2
-    Case SEGMENTO, VETOR
+    Case "SEGMENTO", "VETOR"
     'Param=2
       With Obj(UBound(Obj))
         .Tipo = tbrObjetos.Buttons(tbrObjetos.Tag) 'SEGMENTO ou VETOR
@@ -569,52 +650,60 @@ If (Not multi_sel) Then
         .Espessura = 4#
         .Mostrar = PADRAO
       End With
-    Case RETA
+    Case "RETA"
     'Param=2
-    Case SEMI_RETA
+    Case "SEMI_RETA"
     'Param=2
-    Case TRIÂNGULO
+    Case "TRIÂNGULO"
     'Param=3
-    Case POLÍGONO
+    Case "POLÍGONO"
     'Param=N
-    Case POLÍGONO_REGULAR
+    Case "POLÍGONO_REGULAR"
     'Param=3
-    Case EIXOS
+    Case "EIXOS"
     'Param=3
-    Case CIRCUNFERÊNCIA
+    Case "CIRCUNFERÊNCIA"
     'Param=2
-    Case ARCO
+    Case "ARCO"
     'Param=3
-    Case CÔNICA
+    Case "CÔNICA"
     'Param=5
-    Case PERPENDICULAR
+    Case "PERPENDICULAR"
     'Param=2
-    Case PARALELA
+    Case "PARALELA"
     'Param=2
-    Case PONTO_MÉDIO
+    Case "PONTO_MÉDIO"
     'Param=1 ou 2
-    Case BISSETRIZ_PONTOS
+    Case "BISSETRIZ_PONTOS"
     'Param=3
-    Case BISSETRIZ_RETAS
+    Case "BISSETRIZ_RETAS"
     'Param=2
-    Case COMPASSO
+    Case "COMPASSO"
     'Param=2 ou 3
-    Case REFLEXÃO
+    Case "REFLEXÃO"
     'Param=2
-    Case SIMETRIA
+    Case "SIMETRIA"
     'Param=2
-    Case TRANSLAÇÃO
+    Case "TRANSLAÇÃO"
     'Param=2
-    Case INVERSO_CIRCUNFERÊNCIA
+    Case "INVERSO_CIRCUNFERÊNCIA"
     'Param=2
-    Case TEXTO
+    Case "TEXTO"
     'Param=1 + texto
-    Case ÂNGULO
+    Case "ÂNGULO"
     'Param=2 ou 3
     Case Else
   End Select
   End If
   Me.Refresh
+End Sub
+
+Private Sub mnuAjudaSobre_Click()
+ MsgBox "Este software para geometria está em fase de construção." & vbCrLf & "Use por SUA conta e risco...", vbCritical + vbSystemModal, "Aviso do Helder"
+End Sub
+
+Private Sub mnuArqSair_Click()
+ Unload Me
 End Sub
 
 Private Sub tbrObjetos_ButtonClick(ByVal Button As MSComctlLib.Button)
@@ -661,8 +750,9 @@ Private Sub Form_Paint()
     Select Case .Tipo
     Case PONTO
      Me.DrawWidth = .Espessura
-     Me.PSet (Pixel_X(.P_rep(1)), Pixel_Y(.P_rep(2))) ', .Cor
-     
+     If .P_rep(3) <> 0 Then
+      Me.PSet (Pixel_X(.P_rep(1) / .P_rep(3)), Pixel_Y(.P_rep(2) / .P_rep(3))) ', .Cor
+     End If
     Case PONTO_SOBRE
     
     Case PONTO_DE_INTERSECÇÃO
@@ -836,6 +926,9 @@ End With
 End Sub
 
 Private Sub HScroll1_Change()
+'Tratar o bug que ocorre ao redimensionar o form:
+'a rotina resize muda para decimais o valor dos centros X e Y,
+'mas as scroll's tm value inteiro
  Centro_X = HScroll1.Value
  Me.Refresh
 End Sub

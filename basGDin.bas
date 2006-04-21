@@ -65,16 +65,46 @@ Public Zoom As Single
 Public inc_Mov As Single, inc_Trans As Single
 
 Public Obj() As Objeto
+Public Nome(PONTO To EIXOS) As String
 Public P() As Long
-Public Objeto_Localizado As Long
+Public Objeto_Localizado() As Long
 
 Public Sub Inicializar_Parametros()
 'Atribui o valor inicial dos principais parametros.
 'Futuramente, chamará a função que lê um arquivo de dados salvo.
 
+Nome(PONTO) = "Ponto"
+Nome(PONTO_SOBRE) = "Ponto"
+Nome(PONTO_DE_INTERSECÇÃO) = "Ponto"
+Nome(SEGMENTO) = "Segmento"
+Nome(VETOR) = "Vetor"
+Nome(SEMI_RETA) = "Semi-reta"
+Nome(RETA) = "Reta"
+Nome(TRIÂNGULO) = "Triângulo"
+Nome(POLÍGONO) = "Polígono"
+Nome(POLÍGONO_REGULAR) = "Polígono"
+Nome(CIRCUNFERÊNCIA) = "Circuferência"
+Nome(ARCO) = "Arco"
+Nome(CÔNICA) = "Cônica"
+Nome(PARALELA) = "Reta paralela"
+Nome(PERPENDICULAR) = "Reta perpendicular"
+Nome(MEDIATRIZ) = "Mediatriz"
+Nome(PONTO_MÉDIO) = "Ponto médio"
+Nome(BISSETRIZ_PONTOS) = "Bissetriz"
+Nome(BISSETRIZ_RETAS) = "Bissetriz"
+Nome(COMPASSO) = "Circunferência"
+Nome(REFLEXÃO) = ""
+Nome(SIMETRIA) = ""
+Nome(TRANSLAÇÃO) = ""
+Nome(INVERSO_CIRCUNFERÊNCIA) = ""
+Nome(TEXTO) = "Texto"
+Nome(ÂNGULO) = "Ângulo"
+Nome(EIXOS) = "Eixo"
+
  inc_Mov = 0.05
  inc_Trans = 1
- Objeto_Localizado = NENHUM
+ ReDim Objeto_Localizado(1 To 1)
+ Objeto_Localizado(1) = NENHUM
  
  Centro_X = 0#
  Centro_Y = 0#
@@ -99,9 +129,10 @@ Public Sub Inicializar_Parametros()
  
  With Obj(1)
   '.Tipo = PONTO
-  ReDim .P_rep(1 To 2)
+  ReDim .P_rep(1 To 3)
   .P_rep(1) = 0#
   .P_rep(2) = 0#
+  .P_rep(3) = 1#
   .Espessura = 4#
   .Mostrar = PADRAO
   .Nome = "Origem"
