@@ -103,8 +103,6 @@ Nome(EIXOS) = "Eixo"
 
  inc_Mov = 0.05
  inc_Trans = 1
- ReDim Objeto_Localizado(1 To 1)
- Objeto_Localizado(1) = NENHUM
  
  Centro_X = 0#
  Centro_Y = 0#

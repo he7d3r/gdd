@@ -1,32 +1,61 @@
 VERSION 5.00
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Begin VB.Form frmTela_Desenho 
+   BackColor       =   &H00FFFFFF&
    Caption         =   "GDin"
-   ClientHeight    =   7185
+   ClientHeight    =   7155
    ClientLeft      =   165
    ClientTop       =   375
-   ClientWidth     =   11415
+   ClientWidth     =   11400
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
+   MouseIcon       =   "frmTela_Desenho.frx":0000
    MousePointer    =   2  'Cross
-   ScaleHeight     =   479
+   ScaleHeight     =   477
    ScaleMode       =   3  'Pixel
-   ScaleWidth      =   761
+   ScaleWidth      =   760
    StartUpPosition =   2  'CenterScreen
    WhatsThisHelp   =   -1  'True
-   Begin VB.ListBox lstObjetos 
+   WindowState     =   2  'Maximized
+   Begin VB.ListBox lstAjuda 
       Appearance      =   0  'Flat
       BackColor       =   &H80000018&
-      Height          =   255
-      ItemData        =   "frmTela_Desenho.frx":0000
-      Left            =   3720
-      List            =   "frmTela_Desenho.frx":0007
-      MousePointer    =   1  'Arrow
+      Height          =   225
+      IntegralHeight  =   0   'False
+      ItemData        =   "frmTela_Desenho.frx":030A
+      Left            =   600
+      List            =   "frmTela_Desenho.frx":0311
+      MousePointer    =   5  'Size
       Style           =   1  'Checkbox
-      TabIndex        =   4
-      Top             =   2520
+      TabIndex        =   8
+      Top             =   1440
       Visible         =   0   'False
-      Width           =   1095
+      Width           =   1500
+   End
+   Begin VB.HScrollBar HScroll1 
+      Height          =   300
+      LargeChange     =   10
+      Left            =   360
+      Max             =   50
+      Min             =   -50
+      MousePointer    =   1  'Arrow
+      TabIndex        =   1
+      TabStop         =   0   'False
+      Top             =   2280
+      Width           =   2265
+   End
+   Begin MSComctlLib.StatusBar StatusBar1 
+      Align           =   2  'Align Bottom
+      Height          =   375
+      Left            =   0
+      TabIndex        =   7
+      Top             =   6780
+      Width           =   11400
+      _ExtentX        =   20108
+      _ExtentY        =   661
+      _Version        =   393216
+      BeginProperty Panels {8E3867A5-8586-11D1-B16A-00C0F0283628} 
+      EndProperty
    End
    Begin MSComctlLib.ImageList imglstCursor 
       Left            =   1080
@@ -41,67 +70,67 @@ Begin VB.Form frmTela_Desenho
       BeginProperty Images {2C247F25-8591-11D1-B16A-00C0F0283628} 
          NumListImages   =   16
          BeginProperty ListImage1 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":0017
+            Picture         =   "frmTela_Desenho.frx":031B
             Key             =   ""
          EndProperty
          BeginProperty ListImage2 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":0331
+            Picture         =   "frmTela_Desenho.frx":0635
             Key             =   ""
          EndProperty
          BeginProperty ListImage3 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":064B
+            Picture         =   "frmTela_Desenho.frx":094F
             Key             =   ""
          EndProperty
          BeginProperty ListImage4 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":0965
+            Picture         =   "frmTela_Desenho.frx":0C69
             Key             =   ""
          EndProperty
          BeginProperty ListImage5 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":0C7F
+            Picture         =   "frmTela_Desenho.frx":0F83
             Key             =   ""
          EndProperty
          BeginProperty ListImage6 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":0F99
+            Picture         =   "frmTela_Desenho.frx":129D
             Key             =   ""
          EndProperty
          BeginProperty ListImage7 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":12B3
+            Picture         =   "frmTela_Desenho.frx":15B7
             Key             =   ""
          EndProperty
          BeginProperty ListImage8 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":15CD
+            Picture         =   "frmTela_Desenho.frx":18D1
             Key             =   ""
          EndProperty
          BeginProperty ListImage9 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":18E7
+            Picture         =   "frmTela_Desenho.frx":1BEB
             Key             =   ""
          EndProperty
          BeginProperty ListImage10 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":1C01
+            Picture         =   "frmTela_Desenho.frx":1F05
             Key             =   ""
          EndProperty
          BeginProperty ListImage11 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":1F1B
+            Picture         =   "frmTela_Desenho.frx":221F
             Key             =   ""
          EndProperty
          BeginProperty ListImage12 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":207D
+            Picture         =   "frmTela_Desenho.frx":2381
             Key             =   ""
          EndProperty
          BeginProperty ListImage13 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":2397
+            Picture         =   "frmTela_Desenho.frx":269B
             Key             =   ""
          EndProperty
          BeginProperty ListImage14 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":24F9
+            Picture         =   "frmTela_Desenho.frx":27FD
             Key             =   ""
          EndProperty
          BeginProperty ListImage15 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":2727
+            Picture         =   "frmTela_Desenho.frx":2A2B
             Key             =   ""
          EndProperty
          BeginProperty ListImage16 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":2889
+            Picture         =   "frmTela_Desenho.frx":2B8D
             Key             =   ""
          EndProperty
       EndProperty
@@ -138,17 +167,95 @@ Begin VB.Form frmTela_Desenho
       Top             =   2640
       Width           =   300
    End
-   Begin VB.HScrollBar HScroll1 
-      Height          =   300
-      LargeChange     =   10
-      Left            =   360
-      Max             =   50
-      Min             =   -50
-      MousePointer    =   1  'Arrow
-      TabIndex        =   1
-      TabStop         =   0   'False
-      Top             =   2280
-      Width           =   2265
+   Begin MSComctlLib.ImageList imglstFerramenta 
+      Left            =   375
+      Top             =   2640
+      _ExtentX        =   1005
+      _ExtentY        =   1005
+      BackColor       =   -2147483643
+      ImageWidth      =   33
+      ImageHeight     =   33
+      MaskColor       =   16777215
+      _Version        =   393216
+      BeginProperty Images {2C247F25-8591-11D1-B16A-00C0F0283628} 
+         NumListImages   =   19
+         BeginProperty ListImage1 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":2CEF
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage2 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":3A25
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage3 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":475B
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage4 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":5491
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage5 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":61C7
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage6 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":6EFD
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage7 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":7C33
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage8 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":8969
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage9 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":969F
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage10 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":A3D5
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage11 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":B10B
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage12 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":BE41
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage13 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":CB77
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage14 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":D8AD
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage15 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":E5E3
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage16 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":F319
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage17 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":1004F
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage18 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":10D85
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage19 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmTela_Desenho.frx":11ABB
+            Key             =   ""
+         EndProperty
+      EndProperty
    End
    Begin MSComctlLib.Toolbar tbrObjetos 
       Align           =   1  'Align Top
@@ -156,8 +263,8 @@ Begin VB.Form frmTela_Desenho
       Left            =   0
       TabIndex        =   0
       Top             =   0
-      Width           =   11415
-      _ExtentX        =   20135
+      Width           =   11400
+      _ExtentX        =   20108
       _ExtentY        =   1191
       ButtonWidth     =   1058
       ButtonHeight    =   1032
@@ -284,108 +391,50 @@ Begin VB.Form frmTela_Desenho
       EndProperty
       MousePointer    =   1
    End
-   Begin MSComctlLib.ImageList imglstFerramenta 
-      Left            =   375
-      Top             =   2640
-      _ExtentX        =   1005
-      _ExtentY        =   1005
-      BackColor       =   -2147483643
-      ImageWidth      =   33
-      ImageHeight     =   33
-      MaskColor       =   16777215
-      _Version        =   393216
-      BeginProperty Images {2C247F25-8591-11D1-B16A-00C0F0283628} 
-         NumListImages   =   19
-         BeginProperty ListImage1 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":29EB
-            Key             =   ""
-         EndProperty
-         BeginProperty ListImage2 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":3721
-            Key             =   ""
-         EndProperty
-         BeginProperty ListImage3 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":4457
-            Key             =   ""
-         EndProperty
-         BeginProperty ListImage4 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":518D
-            Key             =   ""
-         EndProperty
-         BeginProperty ListImage5 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":5EC3
-            Key             =   ""
-         EndProperty
-         BeginProperty ListImage6 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":6BF9
-            Key             =   ""
-         EndProperty
-         BeginProperty ListImage7 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":792F
-            Key             =   ""
-         EndProperty
-         BeginProperty ListImage8 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":8665
-            Key             =   ""
-         EndProperty
-         BeginProperty ListImage9 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":939B
-            Key             =   ""
-         EndProperty
-         BeginProperty ListImage10 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":A0D1
-            Key             =   ""
-         EndProperty
-         BeginProperty ListImage11 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":AE07
-            Key             =   ""
-         EndProperty
-         BeginProperty ListImage12 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":BB3D
-            Key             =   ""
-         EndProperty
-         BeginProperty ListImage13 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":C873
-            Key             =   ""
-         EndProperty
-         BeginProperty ListImage14 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":D5A9
-            Key             =   ""
-         EndProperty
-         BeginProperty ListImage15 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":E2DF
-            Key             =   ""
-         EndProperty
-         BeginProperty ListImage16 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":F015
-            Key             =   ""
-         EndProperty
-         BeginProperty ListImage17 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":FD4B
-            Key             =   ""
-         EndProperty
-         BeginProperty ListImage18 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":10A81
-            Key             =   ""
-         EndProperty
-         BeginProperty ListImage19 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmTela_Desenho.frx":117B7
-            Key             =   ""
-         EndProperty
-      EndProperty
+   Begin VB.ListBox lstObjetos 
+      Appearance      =   0  'Flat
+      BackColor       =   &H80000018&
+      Height          =   225
+      IntegralHeight  =   0   'False
+      ItemData        =   "frmTela_Desenho.frx":127F1
+      Left            =   2760
+      List            =   "frmTela_Desenho.frx":127F8
+      MousePointer    =   1  'Arrow
+      Style           =   1  'Checkbox
+      TabIndex        =   4
+      Top             =   1440
+      Visible         =   0   'False
+      Width           =   1500
    End
    Begin VB.Label lblAux 
       Appearance      =   0  'Flat
       AutoSize        =   -1  'True
       BackColor       =   &H80000018&
       BorderStyle     =   1  'Fixed Single
+      Caption         =   "<<  AUX  >>"
       ForeColor       =   &H80000017&
       Height          =   225
-      Left            =   3720
+      Left            =   2760
       TabIndex        =   5
-      Top             =   2280
+      Top             =   1080
       Visible         =   0   'False
-      Width           =   75
+      Width           =   900
+   End
+   Begin VB.Label lblDica 
+      Appearance      =   0  'Flat
+      AutoSize        =   -1  'True
+      BackColor       =   &H80000005&
+      BorderStyle     =   1  'Fixed Single
+      Caption         =   " Dica... "
+      ForeColor       =   &H80000008&
+      Height          =   225
+      Left            =   600
+      MouseIcon       =   "frmTela_Desenho.frx":12802
+      MousePointer    =   14  'Arrow and Question
+      TabIndex        =   6
+      Top             =   1080
+      Visible         =   0   'False
+      Width           =   585
    End
    Begin VB.Menu mnuArq 
       Caption         =   "&Arquivo"
@@ -408,31 +457,50 @@ Attribute VB_Exposed = False
 Option Explicit
 Private multi_sel As Boolean
 
+Private Const DICA = " Dica... "
 Private Const TAM_BARRA = 20
+Private Const DIST_MIN = 8 'pixels
+Private Altura_linha As Single
+Private Xant, Yant As Single
 'Private Const
 'Private Const
 
 Private Sub Form_Initialize()
  Dim i As Integer
  Call Inicializar_Parametros
-
+ Me.Caption = "Geometria dinâmica"
+ MakeEight
   With Me
   .BackColor = vbWhite
-  HScroll1.Move .ScaleLeft, .ScaleTop + .ScaleHeight - TAM_BARRA, .ScaleWidth - TAM_BARRA, TAM_BARRA
+  HScroll1.Move .ScaleLeft, .ScaleTop + .ScaleHeight - TAM_BARRA - StatusBar1.Height, .ScaleWidth - TAM_BARRA, TAM_BARRA
   VScroll1.Move .ScaleLeft + .ScaleWidth - TAM_BARRA, .ScaleTop + tbrObjetos.Height, TAM_BARRA, .ScaleHeight - tbrObjetos.Height - TAM_BARRA
   HScroll1.Min = -MAX_X: HScroll1.Max = MAX_X
   VScroll1.Min = MAX_Y: VScroll1.Max = -MAX_Y
  End With
  With tbrObjetos.Buttons
- tbrObjetos.Tag = .Item(1).Key
- For i = 3 To .Count
-  .Item(i).Enabled = False
- Next i
+  tbrObjetos.Tag = .Item(1).Key
+  For i = 3 To .Count
+   .Item(i).Enabled = False
+  Next i
  End With
+ With lstObjetos
+  .Clear
+  .AddItem "Medindo linha..."
+  .Height = 0
+  Altura_linha = .Height
+  .Clear
+  Me.lblAux.Font.Size = .Font.Size
+  
+  lblDica.BackColor = vbRed
+  lblDica.ForeColor = vbBlack
+  lblDica.Caption = DICA
+  lblDica.Move 10, Me.ScaleTop + tbrObjetos.Height + 10
+ End With
+ 
 End Sub
 
 Private Sub Aponta_Objeto(ByVal X As Single, ByVal Y As Single, ByRef Loc() As Long)
- Const DIST_MIN = 10 'pixels
+ 
  Dim N, N_Obj As Integer
  Dim Cor_Ponto_XY As Long
  Dim X_real As Single, Y_real As Single
@@ -445,7 +513,14 @@ Private Sub Aponta_Objeto(ByVal X As Single, ByVal Y As Single, ByRef Loc() As L
  'Ocorre erro se não houver objetos.
  'Mas Obj() tem (ao menos) um PONTO e um par de EIXOS
  N_Obj = UBound(Obj)
+ ReDim Objeto_Localizado(1 To 1)
+ Objeto_Localizado(1) = NENHUM
  
+ 'Avalia cada objeto da lista Obj()
+ 'Se um item está visível e perto do mouse:
+ ' é guardado em Objeto_Localizado()
+ ' é alocado espaço para um novo item
+ '
  For N = 1 To N_Obj
   With Obj(N)
    If .Mostrar <> OCULTO Then
@@ -456,7 +531,12 @@ Private Sub Aponta_Objeto(ByVal X As Single, ByVal Y As Single, ByRef Loc() As L
       '   Abs(Y_real - .P_rep(2)) < DIST_MIN Then Loc = N: Exit Sub
          
       If Abs(X - Pixel_X(.P_rep(1))) < DIST_MIN And _
-         Abs(Y - Pixel_Y(.P_rep(2))) < DIST_MIN Then Loc(1) = N: Exit Sub
+         Abs(Y - Pixel_Y(.P_rep(2))) < DIST_MIN Then
+         Loc(UBound(Loc)) = N 'último objeto localizado tem id=N
+         ReDim Preserve Loc(1 To UBound(Loc) + 1) 'Aloque espaço para guardar mais um objeto
+         Objeto_Localizado(UBound(Loc)) = NENHUM 'Este objeto ainda não foi encontrado
+         'Exit Sub
+      End If
      Case SEGMENTO, VETOR
      
      Case SEMI_RETA
@@ -467,8 +547,9 @@ Private Sub Aponta_Objeto(ByVal X As Single, ByVal Y As Single, ByRef Loc() As L
    End If
   End With
  Next N
- Loc(1) = NENHUM
+ 'Loc(1) = NENHUM
 End Sub
+
 Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
 'se (botao = seta)
 '  se (aponta objeto)
@@ -545,35 +626,66 @@ Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y A
 'senão
 '    Transladar os pontos LIVRES que definem os objetos (indiretamente ou não)
 '
-
- If Button = NENHUM Then
-  Call Aponta_Objeto(X, Y, Objeto_Localizado)
-  If Objeto_Localizado(1) <> NENHUM Then
-   
-  End If
- End If
+ Dim i As Integer
+ Dim Bkp() As Long
+ Dim Mudou As Boolean
+ Dim Larg As Single
+ Dim Xpos, Ypos As Single
+ 
+ 'usar o comando abaixo na ajuda para uma construção:
+ 'lblAux.Move Xpos, Ypos - lblAux.Height - 2, .Width
+ 
+ Xpos = X + 1 + 2 * DIST_MIN: Ypos = Y + 1 + 2 * DIST_MIN
+ 
+ Bkp = Objeto_Localizado
  With lstObjetos
+  If Button = NENHUM Then
+   Call Aponta_Objeto(X, Y, Objeto_Localizado)
+   If Objeto_Localizado(1) <> NENHUM Then
+    For i = 1 To UBound(Objeto_Localizado) - 1
+     If Bkp(i) <> Objeto_Localizado(i) Then Mudou = True: Exit For
+    Next i
+    If Mudou Then
+     .Visible = False
+     .Clear
+     lblAux = ""
+     For i = 1 To UBound(Objeto_Localizado) - 1
+      .AddItem "Objeto " & Format(Objeto_Localizado(i), "00") & _
+             " (" & Nome(Obj(Objeto_Localizado(i)).Tipo) & ")"
+      If Len(lblAux) < Len(.List(i - 1)) Then
+       lblAux = .List(i - 1)
+       Larg = lblAux.Width
+      End If
+     Next i
+    End If
+   End If
+  End If
   If Objeto_Localizado(1) = NENHUM Then
    .Visible = False
    lblAux.Visible = False
+   Me.MousePointer = ccCross
   Else
-   lblAux = "Objeto " & Format(Objeto_Localizado(1), "00") & " (" & Nome(Obj(Objeto_Localizado(1)).Tipo) & ")"
-   If UBound(Objeto_Localizado) = 1 Then
-    lblAux.Move X + 13, Y + 13
-    If Not lblAux.Visible Then lblAux.Visible = True
-   Else
-    lblAux.Visible = False
-    .Clear
-    'If lstObjetos.ListCount < 10 Then
-    .AddItem lblAux
-    .Move X + 13, Y + 13, lblAux.Width + 20, lblAux.Height * (.ListCount + 1)
-    If Not .Visible Then .Visible = True
+   If Mudou Then
+    lblAux = " " & .List(0) & " "
+    Select Case UBound(Objeto_Localizado)
+    Case 2 'Um objeto localizado
+     lblAux.Move Xpos, Ypos
+     .Visible = False
+     Me.MousePointer = 99
+    Case Else 'Mais de um objeto localizado
+     lblAux = "Um destes objetos..."
+     lblAux.Move Xpos, Ypos
+     Me.MousePointer = ccArrowQuestion
+     .Move Xpos, Ypos, Larg + 18, Altura_linha * (.ListCount) + 2
+     'lblAux.Visible = False
+     '.Visible = True
+    End Select
+    lblAux.Visible = True
    End If
-   
-   'Me.MousePointer = vbCrosshair
   End If
  End With
- Me.Caption = "Posição atual: [ " & Format(Cm_X(X), "0.0") & " ;  " & Format(Cm_Y(Y), "0.0") & "]"
+ 'Trocar este item por um label que aparece ao ser clicado longe de objetos
+ StatusBar1.Panels(1).Text = "Posição atual: [ " & Format(Cm_X(X), "0.0") & " ;  " & Format(Cm_Y(Y), "0.0") & "]"
 
 
    'Se for executado, saberemos quando muda o TwipsPerPixel da tela!
@@ -613,6 +725,11 @@ Private Sub Form_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As 
   
 If (Not multi_sel) Then
   Select Case UCase(tbrObjetos.Tag)
+    Case "PONTEIRO"
+     If UBound(Objeto_Localizado) > 2 Then
+      lblAux.Visible = False
+      Me.lstObjetos.Visible = True
+     End If
     Case "PONTO"
     'Param=1
       ReDim Preserve Obj(1 To 1 + UBound(Obj))
@@ -698,6 +815,115 @@ If (Not multi_sel) Then
   Me.Refresh
 End Sub
 
+Private Sub MakeEight()
+   ' Delete the first Panel object, which is
+   ' created automatically.
+   'StatusBar1.Panels.Remove 1
+   Dim i As Integer
+
+   ' The fourth argument of the Add method
+   ' sets the Style property.
+   For i = 0 To 6
+      StatusBar1.Panels.Add , , , i
+   Next i
+   StatusBar1.Panels(1).AutoSize = sbrSpring
+   StatusBar1.Panels(1).MinWidth = 140
+End Sub
+
+Private Sub Form_DragDrop(Source As Control, X As Single, Y As Single)
+ With Source
+  Select Case .Name
+  Case "lstAjuda"
+   .Move X - 1 - Xant / TwipsPerPixelX_INICIAL, Y - 1 - Yant / TwipsPerPixelY_INICIAL
+   lblDica.Move .Left, .Top - lblDica.Height - 5
+  Case "lblDica"
+   If .BackColor = vbRed Then
+    .MousePointer = ccArrowQuestion
+   Else
+    .MousePointer = ccSize
+   End If
+   .Move X - Xant / TwipsPerPixelX_INICIAL, Y - Yant / TwipsPerPixelY_INICIAL
+   lstAjuda.Move .Left, .Top + .Height + 5
+  End Select
+ End With
+End Sub
+
+Private Sub lblDica_Click()
+ With lblDica
+  If .BackColor = vbRed Then
+   .BackColor = vbActiveTitleBar
+   .ForeColor = vbActiveTitleBarText
+   .Caption = "Itens necessários..."
+   .MousePointer = ccSize
+   lstAjuda.DragMode = 1
+   lstAjuda.Move lblDica.Left, lblDica.Top + lblDica.Height + 5
+   lstAjuda.Visible = True
+  Else
+   .BackColor = vbRed
+   .ForeColor = vbBlack
+   .Caption = DICA
+   .MousePointer = ccArrowQuestion
+   lstAjuda.DragMode = 0
+   lstAjuda.Visible = False
+  End If
+ End With
+End Sub
+
+Private Sub lblDica_DragDrop(Source As Control, X As Single, Y As Single)
+ With Source
+  Select Case .Name
+  Case "lblDica"
+   If .BackColor = vbRed Then
+    .MousePointer = ccArrowQuestion
+   Else
+    .MousePointer = ccSize
+   End If
+   If (X = Xant) And (Y = Yant) Then
+    lblDica_Click
+   Else
+     .Move .Left + (X - Xant) / TwipsPerPixelX_INICIAL, _
+            .Top + (Y - Yant) / TwipsPerPixelY_INICIAL
+     lstAjuda.Move .Left, .Top + .Height + 5
+   End If
+  Case "lstAjuda"
+   With lblDica
+    lstAjuda.Move (.Left - 1) + (X - Xant) / TwipsPerPixelX_INICIAL, _
+                   (.Top - 1) + (Y - Yant) / TwipsPerPixelY_INICIAL
+    .Move lstAjuda.Left, lstAjuda.Top - .Height - 5
+    End With
+  End Select
+ End With
+End Sub
+
+Private Sub lblDica_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+ lblDica.Drag vbBeginDrag
+ Xant = X: Yant = Y 'medido em twips. Exigirá conversão para pixels ao soltar.
+ lblDica.MousePointer = 15
+End Sub
+Private Sub lstAjuda_DragDrop(Source As Control, X As Single, Y As Single)
+ With Source
+  Select Case .Name
+  Case "lblDica"
+   If .BackColor = vbRed Then
+    .MousePointer = ccArrowQuestion
+   Else
+    .MousePointer = ccSize
+   End If
+   lblDica.Move (lstAjuda.Left + 1) + (X - Xant) / TwipsPerPixelX_INICIAL, _
+                 (lstAjuda.Top + 1) + (Y - Yant) / TwipsPerPixelY_INICIAL
+   lstAjuda.Move .Left, .Top + .Height + 5
+  Case "lstAjuda"
+    .Move .Left + (X - Xant) / TwipsPerPixelX_INICIAL, _
+           .Top + (Y - Yant) / TwipsPerPixelY_INICIAL
+    lblDica.Move .Left, .Top - lblDica.Height - 5
+  End Select
+ End With
+End Sub
+
+Private Sub lstAjuda_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+ Xant = X: Yant = Y 'medido em twips. Exigirá conversão para pixels ao soltar.
+End Sub
+
 Private Sub mnuAjudaSobre_Click()
  MsgBox "Este software para geometria está em fase de construção." & vbCrLf & "Use por SUA conta e risco...", vbCritical + vbSystemModal, "Aviso do Helder"
 End Sub
@@ -718,7 +944,18 @@ Private Sub tbrObjetos_ButtonClick(ByVal Button As MSComctlLib.Button)
  
  'Convenção: Tag guarda um nome igual aos da enumeração pública de tipos dos objetos
  tbrObjetos.Tag = Button.Key
-
+ 
+ If tbrObjetos.Tag = "PONTEIRO" Then
+  lblDica.Visible = False
+  lstAjuda.Visible = False
+ Else
+  lblDica = DICA
+  lblDica.Move 10, Me.ScaleTop + tbrObjetos.Height + 10
+  lblDica.Visible = True
+  lblDica.BackColor = vbRed
+  lblDica.ForeColor = vbBlack
+ End If
+ 
  'UBound(P) = Número de objetos selecionados atualmente
  'como verificar se está vazio??? Estará vazio em algum momento???
 On Error GoTo Erro_sem_objetos
@@ -741,6 +978,7 @@ End Sub
 Private Sub Form_Paint()
  Dim N As Integer, N_Obj As Integer
  Dim D As Integer, Ini As Single, Fim As Single
+ Dim Espec As Long
  'Tornar publico esse valor, atualizando quando adicionar ou remover objetos
  N_Obj = UBound(Obj)
  
@@ -751,7 +989,10 @@ Private Sub Form_Paint()
     Case PONTO
      Me.DrawWidth = .Espessura
      If .P_rep(3) <> 0 Then
-      Me.PSet (Pixel_X(.P_rep(1) / .P_rep(3)), Pixel_Y(.P_rep(2) / .P_rep(3))) ', .Cor
+      Espec = Me.DrawWidth: Me.DrawWidth = 2
+      If .Mostrar = SELECIONADO Then Me.Circle (Pixel_X(.P_rep(1) / .P_rep(3)), Pixel_Y(.P_rep(2) / .P_rep(3))), 3, vbRed
+      Me.DrawWidth = Espec
+      Me.PSet (Pixel_X(.P_rep(1) / .P_rep(3)), Pixel_Y(.P_rep(2) / .P_rep(3))), .Cor
      End If
     Case PONTO_SOBRE
     
@@ -852,15 +1093,15 @@ Private Sub Form_Resize()
   
   On Error Resume Next
   'Como evitar que desapareça a área de desenho ao diminuir a largura e altura?
-  HScroll1.Move .ScaleLeft, .ScaleTop + .ScaleHeight - TAM_BARRA, .ScaleWidth - TAM_BARRA, TAM_BARRA
-  VScroll1.Move .ScaleLeft + .ScaleWidth - TAM_BARRA, .ScaleTop + tbrObjetos.Height, TAM_BARRA, .ScaleHeight - tbrObjetos.Height - TAM_BARRA
-  picCanto.Move .ScaleLeft + .ScaleWidth - TAM_BARRA, .ScaleTop + .ScaleHeight - TAM_BARRA
+  HScroll1.Move .ScaleLeft, .ScaleTop + .ScaleHeight - TAM_BARRA - StatusBar1.Height, .ScaleWidth - TAM_BARRA, TAM_BARRA
+  VScroll1.Move .ScaleLeft + .ScaleWidth - TAM_BARRA, .ScaleTop + tbrObjetos.Height, TAM_BARRA, .ScaleHeight - tbrObjetos.Height - TAM_BARRA - StatusBar1.Height
+  picCanto.Move VScroll1.Left, HScroll1.Top
   On Error GoTo 0
-  'Timer1.Enabled = True
+  Timer1.Enabled = True
   
   .Cls
   .Refresh
-
+  lblDica.Move 10, Me.ScaleTop + tbrObjetos.Height + 10
  End With
 End Sub
 Private Function Pixel_X(X_real As Single) As Single
@@ -889,6 +1130,9 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
  Select Case KeyCode
   Case vbKeyEscape
    tbrObjetos.Buttons(1).Value = tbrPressed
+   tbrObjetos.Tag = tbrObjetos.Buttons(1).Key
+   Me.lblDica.Visible = False
+   Me.lstAjuda.Visible = False
   Case vbKeyDown
    If VScroll1.Value <> -MAX_Y Then VScroll1.Value = VScroll1.Value - VScroll1.SmallChange
   Case vbKeyUp
