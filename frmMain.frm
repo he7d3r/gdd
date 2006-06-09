@@ -1,47 +1,102 @@
 VERSION 5.00
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
+Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCT2.OCX"
 Begin VB.Form frmMain 
    Caption         =   "Main"
-   ClientHeight    =   5655
+   ClientHeight    =   9585
    ClientLeft      =   60
-   ClientTop       =   345
-   ClientWidth     =   6360
+   ClientTop       =   450
+   ClientWidth     =   11475
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
-   ScaleHeight     =   377
+   ScaleHeight     =   639
    ScaleMode       =   3  'Pixel
-   ScaleWidth      =   424
-   StartUpPosition =   3  'Windows Default
-   Begin MSComctlLib.ImageList ImageList1 
-      Left            =   1200
-      Top             =   1080
+   ScaleWidth      =   765
+   StartUpPosition =   2  'CenterScreen
+   Begin VB.Timer Timer1 
+      Enabled         =   0   'False
+      Interval        =   5
+      Left            =   1320
+      Top             =   2040
+   End
+   Begin MSComctlLib.StatusBar staInfo 
+      Align           =   2  'Align Bottom
+      Height          =   375
+      Left            =   0
+      TabIndex        =   4
+      Top             =   9210
+      Width           =   11475
+      _ExtentX        =   20241
+      _ExtentY        =   661
+      _Version        =   393216
+      BeginProperty Panels {8E3867A5-8586-11D1-B16A-00C0F0283628} 
+         NumPanels       =   1
+         BeginProperty Panel1 {8E3867AB-8586-11D1-B16A-00C0F0283628} 
+         EndProperty
+      EndProperty
+   End
+   Begin MSComCtl2.FlatScrollBar fsbVertical 
+      Height          =   2535
+      Left            =   0
+      TabIndex        =   2
+      Top             =   1320
+      Width           =   615
+      _ExtentX        =   1085
+      _ExtentY        =   4471
+      _Version        =   393216
+      MousePointer    =   1
+      Appearance      =   2
+      Orientation     =   1245184
+   End
+   Begin VB.PictureBox picCanto 
+      Appearance      =   0  'Flat
+      BackColor       =   &H80000005&
+      BorderStyle     =   0  'None
+      ForeColor       =   &H80000008&
+      Height          =   495
+      Left            =   720
+      ScaleHeight     =   495
+      ScaleWidth      =   495
+      TabIndex        =   1
+      Top             =   1440
+      Width           =   495
+   End
+   Begin MSComctlLib.ImageList ilsFerramentas 
+      Left            =   0
+      Top             =   720
       _ExtentX        =   1005
       _ExtentY        =   1005
       BackColor       =   -2147483643
       MaskColor       =   12632256
       _Version        =   393216
    End
-   Begin MSComctlLib.Toolbar Toolbar1 
+   Begin MSComctlLib.Toolbar tlbObjetos 
       Align           =   1  'Align Top
       Height          =   630
       Left            =   0
       TabIndex        =   0
       Top             =   0
-      Width           =   6360
-      _ExtentX        =   11218
+      Width           =   11475
+      _ExtentX        =   20241
       _ExtentY        =   1111
       ButtonWidth     =   1164
       ButtonHeight    =   953
       Appearance      =   1
       _Version        =   393216
-      BeginProperty Buttons {66833FE8-8583-11D1-B16A-00C0F0283628} 
-         NumButtons      =   1
-         BeginProperty Button1 {66833FEA-8583-11D1-B16A-00C0F0283628} 
-            Caption         =   "CLIQUE"
-            Key             =   "Click"
-            Object.ToolTipText     =   "Teste este botão..."
-         EndProperty
-      EndProperty
+   End
+   Begin MSComCtl2.FlatScrollBar fsbHorizontal 
+      Height          =   615
+      Left            =   600
+      TabIndex        =   3
+      Top             =   720
+      Width           =   3015
+      _ExtentX        =   5318
+      _ExtentY        =   1085
+      _Version        =   393216
+      MousePointer    =   1
+      Appearance      =   2
+      Arrows          =   65536
+      Orientation     =   1245185
    End
 End
 Attribute VB_Name = "frmMain"
@@ -50,214 +105,214 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
+Private Type Ferramenta
+ IdImg As Integer
+ Key As String
+ TipText As String
+End Type
+
+Private multi_sel As Boolean
+
+Private Const DICA = " Dica... "
+Private Const TAM_BARRA = 20
+Private Const DIST_MIN = 8 'pixels
+Private Altura_linha As Single
+Private Xant, Yant As Single
+
+Private Sub GeraBarraStatus()
+   ' Delete the first Panel object, which is
+   ' created automatically.
+   'StatusBar1.Panels.Remove 1
+   Dim I As Integer
+
+   ' The fourth argument of the Add method
+   ' sets the Style property.
+   For I = 0 To 6
+      staInfo.Panels.Add , , , I
+   Next I
+   staInfo.Panels(1).AutoSize = sbrSpring
+   staInfo.Panels(1).MinWidth = 140
+End Sub
+Private Sub Form_Initialize()
+  Me.Caption = "Geometria dinâmica"
+  GeraBarraStatus
+  With Me
+  '.BackColor = vbWhite
+  fsbHorizontal.Move .ScaleLeft, .ScaleTop + .ScaleHeight - TAM_BARRA - staInfo.Height, .ScaleWidth - TAM_BARRA, TAM_BARRA
+  fsbVertical.Move .ScaleLeft + .ScaleWidth - TAM_BARRA, .ScaleTop + tlbObjetos.Height, TAM_BARRA, .ScaleHeight - tlbObjetos.Height - TAM_BARRA - staInfo.Height
+  fsbHorizontal.Min = -MAX_X: fsbHorizontal.Max = MAX_X
+  fsbVertical.Min = MAX_Y:    fsbVertical.Max = -MAX_Y
+  picCanto.Move fsbVertical.Left, fsbHorizontal.Top, TAM_BARRA, TAM_BARRA
+ End With
+ With tlbObjetos.Buttons
+  tlbObjetos.Tag = .Item(1).Key
+ End With
+ 'With lstObjetos
+ ' .Clear
+ ' .AddItem "Medindo linha..."
+ ' .height = 0
+ ' Altura_linha = .height
+ ' .Clear
+ ' Me.lblAux.Font.Size = .Font.Size
+ '
+ ' lblDica.BackColor = vbRed
+ ' lblDica.ForeColor = vbBlack
+ ' lblDica.Caption = DICA
+ ' lblDica.Move 10, Me.ScaleTop + tbrObjetos.height + 10
+' End With
+End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
-If KeyCode = 27 Then
- Unload Me
- End
-End If
-End Sub
+ 
+ If KeyCode = 27 Then
+  Unload Me
+  End
+ End If
 
-'Dim xAngle As GLfloat
-'Dim yAngle As GLfloat
-'Dim zAngle As GLfloat
+End Sub
 
 Private Sub Form_Load()
-    Dim hGLRC As Long
-    Dim fAspect As GLfloat
-    Call basVisual.InitializeArrays
-    
-    'xAngle = 0
-    'yAngle = 0
-    'zAngle = 0
-
-    basVisual.SetupPixelFormat hDC
-    
-    hGLRC = wglCreateContext(hDC)
-    wglMakeCurrent hDC, hGLRC
-    
-    glEnable GL_DEPTH_TEST
-    glEnable GL_DITHER
-    glDepthFunc GL_LESS
-    glClearDepth 1
-    glClearColor 0, 0, 0, 0
-    glMatrixMode GL_PROJECTION
-    glLoadIdentity
-    If frmMain.ScaleHeight > 0 Then
-    fAspect = frmMain.ScaleWidth / frmMain.ScaleHeight
-    Else
-    fAspect = 0
-    End If
-    
-    'gluPerspective 60, fAspect, 1, 2000
-    gluOrtho2D -5, 5, -5, 5
-    glViewport 0, 0, frmMain.ScaleWidth, frmMain.ScaleHeight
-    
-
-    glMatrixMode GL_MODELVIEW
-    glLoadIdentity
-
-    glEnable GL_LIGHTING
-    glEnable GL_LIGHT0
-    'glShadeModel GL_SMOOTH
-    glFrontFace GL_CCW
-    
-    basVisual.lmodel_ambient(0) = 0.5
-    basVisual.lmodel_ambient(1) = 0.5
-    basVisual.lmodel_ambient(2) = 0.5
-    basVisual.lmodel_ambient(3) = 1#
-    
-    glLightModelfv GL_LIGHT_MODEL_Ambient, basVisual.lmodel_ambient(0)
-    
-    'glMaterialfv GL_FRONT, GL_SPECULAR, SpecRef(0)
-    'glMateriali GL_FRONT, GL_SHININESS, 50
-
-    MontaEixos
-    
-    Form_Paint
-
+ Call Inicializar_OpenGL(Me.hDC)
+ MontaEixos
+ 
+ Form_Paint
+ carrega_ferramentas
 End Sub
 
-Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, y As Single)
+Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
  Dim x1, y1 As GLdouble
  Const TAM = 5
  Dim cx, cy As GLdouble
 
  
-If Button <> 1 Then Exit Sub
-x1 = X / Me.ScaleWidth
-y1 = y / Me.ScaleHeight
+ If Button <> 1 Then Exit Sub
+ x1 = X / Me.ScaleWidth
+ y1 = Y / Me.ScaleHeight
  cx = 1 - 2 * x1
  cy = 2 * y1 - 1
  
  glMatrixMode GL_PROJECTION
   glLoadIdentity
   gluOrtho2D TAM * (cx - 1), TAM * (cx + 1), TAM * (cy - 1), TAM * (cy + 1)
- 
  glMatrixMode GL_MODELVIEW
+ 
  Form_Paint
- SwapBuffers hDC
+ 
 End Sub
 
 Private Sub Form_Paint()
-    Dim I As Integer
-    Dim a As Integer
-    Dim b As Integer
-    Dim c As Integer
-    Dim quadObj As GLUquadric
-    
-    glLoadIdentity
-
-    'gluLookAt 5, 4, 5, _
-    '0#, 0#, 0#, _
-    '0#, 0#, 1#
-    
-    glClear GL_COLOR_BUFFER_BIT Or GL_DEPTH_BUFFER_BIT
-    
-    glLightfv GL_LIGHT0, GL_POSITION, basVisual.LightPos(0)
-    
-    
-    glPushMatrix
-        quadObj = gluNewQuadric()
-        gluQuadricDrawStyle quadObj, GLU_FILL
-        gluQuadricNormals quadObj, GLU_SMOOTH
-        gluQuadricOrientation quadObj, GLU_OUTSIDE 'GLU_INSIDE
-        
-        basVisual.Diffuse(0) = 0.5
-        basVisual.Diffuse(1) = 0#
-        basVisual.Diffuse(2) = 0.5
-        basVisual.Diffuse(3) = 1
-    
-        glMaterialfv GL_FRONT, GL_AMBIENT_AND_DIFFUSE, basVisual.Diffuse(0)
-        'glScalef 2, 2, 2
-        gluSphere quadObj, 1, 16, 16
-    glPopMatrix
-    
-    'Grid
-    'glPushMatrix
-    'glTranslatef 0, -2, 0
-    MostraEixos
-    'glPopMatrix
-    SwapBuffers hDC
-        
+ 
+ Desenha_esfera
+ MostraEixos
+ 
+ SwapBuffers hDC
+ 
 End Sub
 Private Sub Form_Resize()
+ Dim Visivel_antes_X As Single, Visivel_antes_Y As Single
 
-    glViewport 0, 0, frmMain.ScaleWidth, frmMain.ScaleHeight
-    Form_Paint
+ Call Ajusta_ViewPort(0, 0, frmMain.ScaleWidth, frmMain.ScaleHeight)
+ 'glViewport 0, 0, frmMain.ScaleWidth, frmMain.ScaleHeight
+ Form_Paint
+ 
+ Visivel_antes_X = Visivel_X 'Guarda a medida da largura visível atualmente
+ Visivel_antes_Y = Visivel_Y 'Guarda a medida da altura visível atualmente
+ With Me
+  'Mede a largura e a altura da área de desenho em "pixels"
+  Visivel_X = .ScaleWidth - .fsbVertical.Width
+  Visivel_Y = .ScaleHeight - tlbObjetos.Height - fsbHorizontal.Height - staInfo.Height
+  'Converte a largura e a altura de PIXELS para CENTÍMETROS
+  Visivel_X = Visivel_X * TwipsPerPixelX_INICIAL / Twips_por_Cm
+  Visivel_Y = Visivel_Y * TwipsPerPixelY_INICIAL / Twips_por_Cm
+  'Atualiza as coordenadas que correspondem ao centro do form.
+  Centro_X = Centro_X + (Visivel_X - Visivel_antes_X) / 2
+  Centro_Y = Centro_Y - (Visivel_Y - Visivel_antes_Y) / 2
+  
+  
+  On Error Resume Next
+  'Como evitar que desapareça a área de desenho ao diminuir MUITO a largura e altura?
+  'Reposiciona barras e botões
+  fsbHorizontal.Move .ScaleLeft, .ScaleTop + .ScaleHeight - TAM_BARRA - staInfo.Height, .ScaleWidth - TAM_BARRA, TAM_BARRA
+  fsbVertical.Move .ScaleLeft + .ScaleWidth - TAM_BARRA, .ScaleTop + tlbObjetos.Height, TAM_BARRA, .ScaleHeight - tlbObjetos.Height - TAM_BARRA - staInfo.Height
+  picCanto.Move fsbVertical.Left, fsbHorizontal.Top
+  On Error GoTo 0
+  Timer1.Enabled = True
+  
+  '.Cls
+  '.Refresh
+  'lblDica.Move 10, Me.ScaleTop + tbrObjetos.height + 10
+ End With
+ 
 End Sub
 Private Sub Form_Unload(Cancel As Integer)
-    If basVisual.hGLRC <> 0 Then
-        wglMakeCurrent 0, 0
-        wglDeleteContext basVisual.hGLRC
-    End If
-    
-    'If hPalette <> 0 Then
-        'DeleteObject hPalette
-    'End If
 
-End Sub
-Sub MontaEixos()
-
-    glPushMatrix
-    m_Grid = glGenLists(1)
-    glNewList m_Grid, GL_COMPILE
-
-    glBegin GL_LINES
-      glColor3f 1#, 0#, 0#
-        glVertex3f 0#, 0#, 0#: glVertex3f 4#, 0#, 0#
-      glColor3f 0#, 1#, 0#
-        glVertex3f 0#, 0#, 0#: glVertex3f 0#, 4#, 0#
-      glColor3f 0#, 0#, 1#
-        glVertex3f 0#, 0#, 0#: glVertex3f 0#, 0#, 4#
-    glEnd
-        
-    glEndList
-    glPopMatrix
-
-End Sub
-Sub MostraEixos()
-
-    glPushAttrib GL_LIGHTING
-    glDisable GL_LIGHTING
-    
-    glPushMatrix
-        glColor3ub 0, 255, 0
-        glCallList m_Grid
-    glPopMatrix
-    glPopAttrib
-    glEnable GL_LIGHTING
-
+ Call Finalizar_OpenGL '(Me.hDC)'será necessário?
+ 
 End Sub
 
-Private Sub Toolbar1_ButtonClick(ByVal Button As MSComctlLib.Button)
+Sub carrega_ferramentas()
+ Const Arq_INI = "Tabela.ini"
  Dim imgX As ListImage
  Dim btnButton As Button
- Static n As Integer
  
- n = n + 1
- If Button.Key = "Click" And Toolbar1.Buttons.Count > 1 Then
-  Set btnButton = Toolbar1.Buttons(1)
-  Set Toolbar1.ImageList = Nothing
-  ImageList1.ListImages.Clear
+ Dim Qtd As Integer
+ Dim FileNumber As Variant, Q As Variant
+ Dim N As Integer
+ Dim F() As Ferramenta
+ 
+ FileNumber = FreeFile
+ On Error GoTo ERRO
+  Open App.Path & "\" & Arq_INI For Input As #FileNumber
+ On Error GoTo 0
   
-  Toolbar1.Buttons.Clear
-  Toolbar1.Buttons.Add 1, btnButton.Key, btnButton.Caption, btnButton.Style, btnButton.Image
-  n = 0
-  Exit Sub
+ N = 0
+ 'ReDim F(1 To N)
+ 
+ With ilsFerramentas
+   .ListImages.Clear
+   .MaskColor = vbWhite
+   Do
+    N = N + 1
+    ReDim Preserve F(1 To N)
+    Input #FileNumber, F(N).IdImg, F(N).Key, F(N).TipText
+    Set imgX = .ListImages. _
+    Add(N, F(N).Key, LoadPicture(App.Path & "\IMG\" & Format(N, "00") & ".bmp"))
+   Loop While Not EOF(FileNumber)
+   
+   Close #FileNumber
+   Qtd = .ListImages.Count '=N-1
+ End With
+ 
+ With tlbObjetos
+   .Buttons.Clear
+   .ImageList = ilsFerramentas
+   For N = 1 To Qtd
+    Set btnButton = .Buttons.Add(N, F(N).Key, "", tbrDefault, N)
+    btnButton.ToolTipText = F(N).TipText
+    btnButton.Style = tbrButtonGroup
+   'If N > 3 Then btnButton.Enabled = False
+   Next N
+   .Buttons(1).Value = tbrPressed
+ End With
+ 
+ Exit Sub
+ERRO:
+ If Err.Number = 53 Then
+  Err.Clear
+  'Recup_Arquivo
+  'Inicializa
+ Else
+  Err.Raise Err.Number
  End If
- 
- If Not Dir(App.Path & "\IMG\" & Format(n, "00") & ".bmp") <> "" Then n = n - 1: Exit Sub
- 
- Set imgX = ImageList1.ListImages. _
- Add(, , LoadPicture(App.Path & "\IMG\" & Format(n, "00") & ".bmp"))
- imgX.Key = "img" & n ' Use the new reference to assign Key.
- 
- ImageList1.MaskColor = vbWhite
- 'ImageList1.MaskColor = vbRed
- 'ImageList1.MaskColor = vbBlue
- 
- Toolbar1.ImageList = ImageList1
- Set btnButton = Toolbar1.Buttons.Add(, "b" & n, "Botão " & n, tbrDefault, n)
-btnButton.ToolTipText = "Botão nº " & n
+End Sub
+
+Private Sub Timer1_Timer()
+  'Esse timer só existe para contornar um defeito na rotina Resize...
+  'O programa nao conhece a altura real da barra no instante do redimensionamento, só depois
+  With Me
+   On Error Resume Next
+   fsbVertical.Move .ScaleLeft + .ScaleWidth - TAM_BARRA, .ScaleTop + tlbObjetos.Height, TAM_BARRA, .ScaleHeight - tlbObjetos.Height - TAM_BARRA - staInfo.Height
+   On Error GoTo 0
+   Timer1.Enabled = False
+  End With
 End Sub
