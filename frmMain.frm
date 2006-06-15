@@ -13,6 +13,21 @@ Begin VB.Form frmMain
    ScaleMode       =   3  'Pixel
    ScaleWidth      =   765
    StartUpPosition =   2  'CenterScreen
+   Begin VB.PictureBox picViewTela 
+      Appearance      =   0  'Flat
+      BackColor       =   &H80000005&
+      BorderStyle     =   0  'None
+      ForeColor       =   &H80000008&
+      Height          =   1935
+      Left            =   2400
+      ScaleHeight     =   129
+      ScaleMode       =   3  'Pixel
+      ScaleWidth      =   137
+      TabIndex        =   5
+      ToolTipText     =   "Incluir tips conforme posição (ou não!)"
+      Top             =   1920
+      Width           =   2055
+   End
    Begin VB.Timer Timer1 
       Enabled         =   0   'False
       Interval        =   5
@@ -21,13 +36,13 @@ Begin VB.Form frmMain
    End
    Begin MSComctlLib.StatusBar staInfo 
       Align           =   2  'Align Bottom
-      Height          =   375
+      Height          =   855
       Left            =   0
       TabIndex        =   4
-      Top             =   9210
+      Top             =   8730
       Width           =   11475
       _ExtentX        =   20241
-      _ExtentY        =   661
+      _ExtentY        =   1508
       _Version        =   393216
       BeginProperty Panels {8E3867A5-8586-11D1-B16A-00C0F0283628} 
          NumPanels       =   1
@@ -115,9 +130,12 @@ Private multi_sel As Boolean
 
 Private Const DICA = " Dica... "
 Private Const TAM_BARRA = 20
+Private Const TAM_TELA = 30 'Cms
+Private Const N_INC = 100
 Private Const DIST_MIN = 8 'pixels
 Private Altura_linha As Single
 Private Xant, Yant As Single
+
 
 Private Sub GeraBarraStatus()
    ' Delete the first Panel object, which is
@@ -127,21 +145,48 @@ Private Sub GeraBarraStatus()
 
    ' The fourth argument of the Add method
    ' sets the Style property.
+   staInfo.Height = TAM_BARRA
    For I = 0 To 6
       staInfo.Panels.Add , , , I
    Next I
    staInfo.Panels(1).AutoSize = sbrSpring
    staInfo.Panels(1).MinWidth = 140
 End Sub
-Private Sub Form_Initialize()
-  Me.Caption = "Geometria dinâmica"
-  GeraBarraStatus
-  With Me
+
+
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+ 
+ If KeyCode = 27 Then
+  Unload Me
+  End
+ End If
+
+End Sub
+
+Private Sub Form_Load()
+ Call Inicializar_OpenGL(Me.picViewTela.hDC)
+ Call Carrega_Ferramentas
+ Call GeraBarraStatus
+ 
+ Call MontaEixos
+ Call Inicializar_Objetos
+ 
+ Me.Caption = "Geometria dinâmica"
+ With Me
   '.BackColor = vbWhite
   fsbHorizontal.Move .ScaleLeft, .ScaleTop + .ScaleHeight - TAM_BARRA - staInfo.Height, .ScaleWidth - TAM_BARRA, TAM_BARRA
   fsbVertical.Move .ScaleLeft + .ScaleWidth - TAM_BARRA, .ScaleTop + tlbObjetos.Height, TAM_BARRA, .ScaleHeight - tlbObjetos.Height - TAM_BARRA - staInfo.Height
-  fsbHorizontal.Min = -MAX_X: fsbHorizontal.Max = MAX_X
-  fsbVertical.Min = MAX_Y:    fsbVertical.Max = -MAX_Y
+  
+  fsbVertical.Value = fsbVertical.Max \ 2
+  fsbHorizontal.Value = fsbHorizontal.Max \ 2
+  
+  fsbVertical.SmallChange = fsbVertical.Max \ N_INC
+  fsbHorizontal.SmallChange = fsbHorizontal.Max \ N_INC
+  
+  fsbVertical.LargeChange = fsbVertical.Max \ (N_INC \ 5)
+  fsbHorizontal.LargeChange = fsbHorizontal.Max \ (N_INC \ 5)
+  
   picCanto.Move fsbVertical.Left, fsbHorizontal.Top, TAM_BARRA, TAM_BARRA
  End With
  With tlbObjetos.Buttons
@@ -162,39 +207,18 @@ Private Sub Form_Initialize()
 ' End With
 End Sub
 
-Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
- 
- If KeyCode = 27 Then
-  Unload Me
-  End
- End If
-
-End Sub
-
-Private Sub Form_Load()
- Call Inicializar_OpenGL(Me.hDC)
- MontaEixos
- 
- Form_Paint
- carrega_ferramentas
-End Sub
-
 Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
  Dim x1, y1 As GLdouble
- Const TAM = 5
  Dim cx, cy As GLdouble
-
  
- If Button <> 1 Then Exit Sub
+ If Button <> -1 Then Exit Sub
+ 
  x1 = X / Me.ScaleWidth
  y1 = Y / Me.ScaleHeight
  cx = 1 - 2 * x1
  cy = 2 * y1 - 1
  
- glMatrixMode GL_PROJECTION
-  glLoadIdentity
-  gluOrtho2D TAM * (cx - 1), TAM * (cx + 1), TAM * (cy - 1), TAM * (cy + 1)
- glMatrixMode GL_MODELVIEW
+ Call Ajusta_ViewPort(0, 2 * TAM_BARRA, Visivel_X_pix, Visivel_Y_pix)
  
  Form_Paint
  
@@ -208,38 +232,47 @@ Private Sub Form_Paint()
  SwapBuffers hDC
  
 End Sub
+
 Private Sub Form_Resize()
  Dim Visivel_antes_X As Single, Visivel_antes_Y As Single
-
- Call Ajusta_ViewPort(0, 0, frmMain.ScaleWidth, frmMain.ScaleHeight)
- 'glViewport 0, 0, frmMain.ScaleWidth, frmMain.ScaleHeight
- Form_Paint
+ Dim AltBarra As Single
+ 
+ With Me.tlbObjetos
+ AltBarra = 6 + .ButtonHeight * ((.Buttons.Count - 1) \ Int(Me.ScaleWidth / .ButtonWidth) + 1)
+ End With
  
  Visivel_antes_X = Visivel_X 'Guarda a medida da largura visível atualmente
  Visivel_antes_Y = Visivel_Y 'Guarda a medida da altura visível atualmente
- With Me
+ With Me.picViewTela
+  .Move Me.ScaleLeft, _
+                    Me.ScaleTop + AltBarra, _
+                    Me.ScaleWidth - TAM_BARRA, _
+                    Me.ScaleHeight - AltBarra - 2 * TAM_BARRA
   'Mede a largura e a altura da área de desenho em "pixels"
-  Visivel_X = .ScaleWidth - .fsbVertical.Width
-  Visivel_Y = .ScaleHeight - tlbObjetos.Height - fsbHorizontal.Height - staInfo.Height
+  Visivel_X_pix = .Width
+  Visivel_Y_pix = .Height
   'Converte a largura e a altura de PIXELS para CENTÍMETROS
-  Visivel_X = Visivel_X * TwipsPerPixelX_INICIAL / Twips_por_Cm
-  Visivel_Y = Visivel_Y * TwipsPerPixelY_INICIAL / Twips_por_Cm
+  Visivel_X = Visivel_X_pix * Cm_por_Pixel_X
+  Visivel_Y = Visivel_Y_pix * Cm_por_Pixel_Y
   'Atualiza as coordenadas que correspondem ao centro do form.
   Centro_X = Centro_X + (Visivel_X - Visivel_antes_X) / 2
   Centro_Y = Centro_Y - (Visivel_Y - Visivel_antes_Y) / 2
   
-  
   On Error Resume Next
   'Como evitar que desapareça a área de desenho ao diminuir MUITO a largura e altura?
+  'Use API's do windows
+  '
   'Reposiciona barras e botões
-  fsbHorizontal.Move .ScaleLeft, .ScaleTop + .ScaleHeight - TAM_BARRA - staInfo.Height, .ScaleWidth - TAM_BARRA, TAM_BARRA
-  fsbVertical.Move .ScaleLeft + .ScaleWidth - TAM_BARRA, .ScaleTop + tlbObjetos.Height, TAM_BARRA, .ScaleHeight - tlbObjetos.Height - TAM_BARRA - staInfo.Height
+  fsbHorizontal.Move .Left, .Top + .Height, .Width, TAM_BARRA
+  fsbVertical.Move .Left + .Width, .Top, TAM_BARRA, .Height
   picCanto.Move fsbVertical.Left, fsbHorizontal.Top
   On Error GoTo 0
-  Timer1.Enabled = True
+  'Timer1.Enabled = True
   
-  '.Cls
-  '.Refresh
+ Call Ajusta_ViewPort(0, 0, 100, 100) '.Width, .Height)
+ 'glViewport 0, 0, frmMain.ScaleWidth, frmMain.ScaleHeight
+ Form_Paint
+ 
   'lblDica.Move 10, Me.ScaleTop + tbrObjetos.height + 10
  End With
  
@@ -250,7 +283,7 @@ Private Sub Form_Unload(Cancel As Integer)
  
 End Sub
 
-Sub carrega_ferramentas()
+Sub Carrega_Ferramentas()
  Const Arq_INI = "Tabela.ini"
  Dim imgX As ListImage
  Dim btnButton As Button
@@ -305,7 +338,6 @@ ERRO:
   Err.Raise Err.Number
  End If
 End Sub
-
 Private Sub Timer1_Timer()
   'Esse timer só existe para contornar um defeito na rotina Resize...
   'O programa nao conhece a altura real da barra no instante do redimensionamento, só depois
@@ -315,4 +347,31 @@ Private Sub Timer1_Timer()
    On Error GoTo 0
    Timer1.Enabled = False
   End With
+End Sub
+Private Sub fsbHorizontal_Change()
+'Tratar o bug que ocorre ao redimensionar o form:
+'a rotina resize muda para decimais o valor dos centros X e Y,
+'mas as scroll's tm value inteiro
+ Centro_X = TAM_TELA * (fsbHorizontal.Value / fsbHorizontal.Max - 0.5)
+ Call Ajusta_ViewPort(0, 2 * TAM_BARRA, Visivel_X_pix, Visivel_Y_pix)
+ Form_Paint
+End Sub
+Private Sub fsbHorizontal_Scroll()
+'Incluir mais valores entre os extremos de MAX_X e -MAX_X permitirá um scroll mais suave
+'Conferir compatibilidade com o Zoom
+ Centro_X = TAM_TELA * (fsbHorizontal.Value / fsbHorizontal.Max - 0.5)
+ Call Ajusta_ViewPort(0, 2 * TAM_BARRA, Visivel_X_pix, Visivel_Y_pix)
+ Form_Paint
+End Sub
+Private Sub fsbVertical_Change()
+ Centro_Y = -TAM_TELA * (fsbVertical.Value / fsbVertical.Max - 0.5)
+ Call Ajusta_ViewPort(0, 2 * TAM_BARRA, Visivel_X_pix, Visivel_Y_pix)
+ Form_Paint
+End Sub
+Private Sub fsbVertical_Scroll()
+'Incluir mais valores entre os extremos de MAX_Y e -MAX_Y permitirá um scroll mais suave
+'Conferir compatibilidade com o Zoom
+ Centro_Y = -TAM_TELA * (fsbVertical.Value / fsbVertical.Max - 0.5)
+ Call Ajusta_ViewPort(0, 2 * TAM_BARRA, Visivel_X_pix, Visivel_Y_pix)
+ Form_Paint
 End Sub

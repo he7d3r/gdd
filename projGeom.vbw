@@ -1,6 +1,6 @@
-frmMain = 131, 25, 473, 354, Z, 93, 62, 435, 391, C
-basVisual = 342, 0, 684, 659, 
+frmMain = 41, 10, 617, 603, Z, 93, 62, 435, 391, C
+basVisual = 342, 0, 684, 659, C
 frmTela_Desenho = 66, 87, 663, 543, C, 132, 174, 663, 630, C
 basObjGeometria = 132, 174, 729, 630, C
-basVbOpenGl = 0, 0, 342, 659, 
+basVbOpenGl = 0, 394, 747, 658, C
 basObjOpenGl = 66, 87, 597, 543, C

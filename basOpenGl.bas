@@ -1,52 +1,36 @@
 Attribute VB_Name = "basVbOpenGl"
 Option Explicit
-'Private Type PALETTEENTRY
-'    peRed As Byte
-'    peGreen As Byte
-'    peBlue As Byte
-'    peFlags As Byte
-'End Type
-'Private Type LOGPALETTE
-'    palVersion As Integer
-'    palNumEntries As Integer
-'    palPalEntry(0 To 255) As PALETTEENTRY
-'End Type
-Private Type PIXELFORMATDESCRIPTOR
-    nSize As Integer
-    nVersion As Integer
-    dwFlags As Long
-    iPixelType As Byte
-    cColorBits As Byte
-    cRedBits As Byte
-    cRedShift As Byte
-    cGreenBits As Byte
-    cGreenShift As Byte
-    cBlueBits As Byte
-    cBlueShift As Byte
-    cAlphaBits As Byte
-    cAlphaShift As Byte
-    cAccumBits As Byte
-    cAccumRedBits As Byte
-    cAccumGreenBits As Byte
-    cAccumBlueBits As Byte
-    cAccumAlpgaBits As Byte
-    cDepthBits As Byte
-    cStencilBits As Byte
-    cAuxBuffers As Byte
-    iLayerType As Byte
-    bReserved As Byte
-    dwLayerMask As Long
-    dwVisibleMask As Long
-    dwDamageMask As Long
-End Type
-
-Const PFD_TYPE_RGBA = 0
-Const PFD_TYPE_COLORINDEX = 1
-Const PFD_MAIN_PLANE = 0
-Const PFD_DOUBLEBUFFER = 1
-Const PFD_DRAW_TO_WINDOW = &H4
-Const PFD_SUPPORT_OPENGL = &H20
-Const PFD_NEED_PALETTE = &H80
+'*************************************************************************************
+'   Os tipos de dados "PALETTEENTRY", "LOGPALETTE" e "PIXELFORMATDESCRIPTOR"
+'são definidos na biblioteca "VBOpenGL", não precisamos redeclará-los.
+'As constantes relacionadas abaixo também pertencem a "VBOpenGL".
+'
+'- Classe GDI:
+' PFD_MAIN_PLANE
+' PFD_OVERLAY_PLANE
+' PFD_TYPE_COLORINDEX
+' PFD_TYPE_RGBA
+' PFD_UNDERLAY_PLANE
+'
+'- Classe WGL:
+' PFD_DEPTH_DONTCARE
+' PFD_DOUBLEBUFFER
+' PFD_DOUBLEBUFFER_DONTCARE
+' PFD_DRAW_TO_BITMAP
+' PFD_DRAW_TO_WINDOW
+' PFD_GENERIC_ACCELERATED
+' PFD_GENERIC_FORMAT
+' PFD_NEED_PALETTE
+' PFD_NEED_SYSTEM_PALETTE
+' PFD_STEREO
+' PFD_STEREO_DONTCARE
+' PFD_SUPPORT_DIRECTDRAW
+' PFD_SUPPORT_GDI
+' PFD_SUPPORT_OPENGL
+' PFD_SWAP_COPY
+' PFD_SWAP_EXCHANGE
+' PFD_SWAP_LAYER_BUFFERS
+'*************************************************************************************
 
 Private Declare Function ChoosePixelFormat Lib "gdi32" (ByVal hDC As Long, pfd As PIXELFORMATDESCRIPTOR) As Long
 'Private Declare Function CreatePalette Lib "gdi32" (pPal As LOGPALETTE) As Long
@@ -65,8 +49,8 @@ Private Declare Sub wglMakeCurrent Lib "OpenGL32" (ByVal l1 As Long, ByVal l2 As
 
 'Public hPalette As Long
 Public hGLRC As Long
-Sub FatalError(ByVal strMessage As String)
-    MsgBox "Fatal Error: " & strMessage, vbCritical + vbApplicationModal + vbOKOnly + vbDefaultButton1, "Fatal Error In " & App.Title
+Sub FatalError(ByVal msgErro As String)
+    MsgBox "ERRO FATAL: " & msgErro, vbCritical + vbApplicationModal + vbOKOnly + vbDefaultButton1, "Erro fatal com """ & App.Title & """"
     Unload frmMain
     Set frmMain = Nothing
     End
@@ -74,15 +58,22 @@ End Sub
 Sub SetupPixelFormat(ByVal hDC As Long)
     Dim pfd As PIXELFORMATDESCRIPTOR
     Dim PixelFormat As Integer
-    pfd.nSize = Len(pfd)
-    pfd.nVersion = 1
-    pfd.dwFlags = PFD_SUPPORT_OPENGL Or PFD_DRAW_TO_WINDOW Or PFD_DOUBLEBUFFER Or PFD_TYPE_RGBA
-    pfd.iPixelType = PFD_TYPE_RGBA
-    pfd.cColorBits = 24
-    pfd.cDepthBits = 24
-    pfd.iLayerType = PFD_MAIN_PLANE
+    
+    With pfd
+    .nSize = Len(pfd)
+    .nVersion = 1
+    .dwFlags = PFD_SUPPORT_OPENGL Or _
+               PFD_DRAW_TO_WINDOW Or _
+               PFD_DOUBLEBUFFER Or _
+               PFD_TYPE_RGBA
+    .iPixelType = PFD_TYPE_RGBA
+    .cColorBits = 24
+    .cDepthBits = 24
+    .iLayerType = PFD_MAIN_PLANE
+    End With
+    
     PixelFormat = ChoosePixelFormat(hDC, pfd)
-    If PixelFormat = 0 Then FatalError "Could not retrieve pixel format!"
+    If PixelFormat = 0 Then FatalError "Não foi possível obter o formato para os pixels!"
     SetPixelFormat hDC, PixelFormat, pfd
 End Sub
 Public Sub Finalizar_OpenGL() 'ByVal hDC As Long)

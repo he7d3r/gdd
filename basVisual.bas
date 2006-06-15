@@ -63,8 +63,9 @@ Public Sub Inicializar_OpenGL(ByVal hDC As Long)
  glEnable GL_DITHER
  glDepthFunc GL_LESS
  glClearDepth 1
- glClearColor 0.95, 0.95, 0.95, 0 'Fundo quase branco
- glClearColor 0, 0, 0, 0 'Fundo preto
+ 'glClearColor 0.95, 0.95, 0.95, 0 'Fundo quase branco
+ 'glClearColor 0, 0, 0, 0 'Fundo preto
+ glClearColor 0, 0, 1, 0
  
  'Ajusta matriz de projeção e viewport
  glMatrixMode GL_PROJECTION
@@ -76,9 +77,9 @@ Public Sub Inicializar_OpenGL(ByVal hDC As Long)
    End If
    
    'gluPerspective 60, fAspect, 1, 2000
-   gluOrtho2D -5, 5, -5, 5
+   'gluOrtho2D -5, 5, -5, 5
    
- Call Ajusta_ViewPort(0, 0, frmMain.ScaleWidth, frmMain.ScaleHeight)
+' Call Ajusta_ViewPort(0, 0, frmMain.ScaleWidth, frmMain.ScaleHeight)
  
  Call basVisual.Inicializar_Luz
 
@@ -87,7 +88,8 @@ Sub Ajusta_ViewPort(X_esq As GLint, Y_inf As GLint, Larg As GLsizei, Alt As GLsi
  glMatrixMode GL_PROJECTION
    glLoadIdentity
    glViewport X_esq, Y_inf, Larg, Alt
-   gluOrtho2D -5, 5, -5, 5
+   'gluOrtho2D -5, 5, -5, 5
+   gluOrtho2D Centro_X - Visivel_X / 2, Centro_X + Visivel_X / 2, Centro_Y - Visivel_Y / 2, Centro_Y + Visivel_Y / 2
  glMatrixMode GL_MODELVIEW
  
 End Sub

@@ -58,9 +58,12 @@ Public Const MAX_X = 10
 Public Const MAX_Y = 10
 Public Const NENHUM = 0
 
+
 Public TwipsPerPixelX_INICIAL As Single, TwipsPerPixelY_INICIAL As Single
+Public Cm_por_Pixel_X, Cm_por_Pixel_Y As Single
 Public Centro_X As Single, Centro_Y As Single
 Public Visivel_X As Single, Visivel_Y As Single 'Dimensoes que a tela parece ter
+Public Visivel_X_pix As GLsizei, Visivel_Y_pix As GLsizei
 Public Zoom As Single
 Public inc_Mov As Single, inc_Trans As Single
 
@@ -110,14 +113,16 @@ Nome(EIXOS) = "Eixo"
  TwipsPerPixelX_INICIAL = Screen.TwipsPerPixelX
  TwipsPerPixelY_INICIAL = Screen.TwipsPerPixelY
  'O form mede N twips, cada cm contém M twips, logo o form mede N/M cm's
+ Cm_por_Pixel_X = TwipsPerPixelX_INICIAL / Twips_por_Cm
+ Cm_por_Pixel_Y = TwipsPerPixelY_INICIAL / Twips_por_Cm
  
  'Mede a largura e a altura da área de desenho em "pixels"
- Visivel_X = frmTela_Desenho.ScaleWidth - frmTela_Desenho.VScroll1.Width
- Visivel_Y = frmTela_Desenho.ScaleHeight - _
-      (frmTela_Desenho.tbrObjetos.Height + frmTela_Desenho.HScroll1.Height)
+ Visivel_X = frmMain.ScaleWidth - frmMain.fsbVertical.Width
+ Visivel_Y = frmMain.ScaleHeight - _
+      (frmMain.tlbObjetos.Height + frmMain.fsbHorizontal.Height)
  'Converte a largura e a altura da área de desenho para "centímetros"
- Visivel_X = Visivel_X * TwipsPerPixelX_INICIAL / Twips_por_Cm
- Visivel_Y = Visivel_Y * TwipsPerPixelY_INICIAL / Twips_por_Cm
+ Visivel_X = Visivel_X * Cm_por_Pixel_X
+ Visivel_Y = Visivel_Y * Cm_por_Pixel_Y
  
  Zoom = 1#
  'Cria os objetos essenciais
