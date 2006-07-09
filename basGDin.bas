@@ -29,6 +29,7 @@ Public Enum Tipo_De_Objeto
  ÂNGULO
  EIXOS
 End Enum
+
 Public Enum Aparência
  OCULTO
  PADRAO

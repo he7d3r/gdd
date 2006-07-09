@@ -59,13 +59,14 @@ Public Sub Inicializar_OpenGL(ByVal hDC As Long)
  wglMakeCurrent hDC, hGLRC
  
  'Começa a configurar a biblioteca OpenGl
- glEnable GL_DEPTH_TEST
- glEnable GL_DITHER
- glDepthFunc GL_LESS
- glClearDepth 1
- 'glClearColor 0.95, 0.95, 0.95, 0 'Fundo quase branco
+ 'glEnable GL_DEPTH_TEST
+ 'glEnable GL_DITHER
+ 'glDepthFunc GL_LESS
+ 'glClearDepth 1
+ glEnable glcColorMaterial
+ glClearColor 0.96, 0.96, 1#, 0  'Fundo quase branco
  'glClearColor 0, 0, 0, 0 'Fundo preto
- glClearColor 0, 0, 1, 0
+ 'glClearColor 0.1, 0.1, 0.1, 0
  
  'Ajusta matriz de projeção e viewport
  glMatrixMode GL_PROJECTION

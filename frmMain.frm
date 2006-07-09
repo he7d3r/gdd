@@ -2,7 +2,7 @@ VERSION 5.00
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCT2.OCX"
 Begin VB.Form frmMain 
-   BackColor       =   &H0080FF80&
+   BackColor       =   &H00C0FFC0&
    Caption         =   "Main"
    ClientHeight    =   9585
    ClientLeft      =   60
@@ -140,7 +140,7 @@ Private multi_sel As Boolean
 
 Private Const DICA = " Dica... "
 Private Const TAM_BARRA = 20
-Private Const TAM_FOLHA_DESENHO = 100 'Cms
+Private Const TAM_FOLHA_DESENHO = 30 '100  'Cms
 Private Const N_INC = 100
 Private Const DIST_MIN = 8 'pixels
 Private Altura_linha As Single
@@ -156,12 +156,10 @@ Private Sub Form_Load()
  Call MontaEixos 'Gera as displaylists para os eixos
  Call Inicializar_Objetos 'Carrega matriz de objetos geométricos
  
- 'MsgBox "load, form visivel? Resp: " & Me.Visible
- 
     tlbObjetos.Tag = tlbObjetos.Buttons.Item(1).Key
     basObjGeometria.inc_Mov = 0.05
     basObjGeometria.inc_Trans = 1
-    basObjGeometria.Zoom = 1#
+    basObjGeometria.Zoom = 100#
     Redesenhar = True
     
     basObjGeometria.Centro_X = 0#
@@ -175,35 +173,26 @@ Private Sub Form_Load()
     
   With frmMain
    '.BackColor = vbWhite
-   .Caption = "Geometria dinâmica"
-'
+    .Caption = "Geometria dinâmica"
    'Mede a largura e a altura da área de desenho em "pixels"
-   basObjGeometria.Visivel_X = .ScaleWidth - (TAM_BARRA + vB + vC + vE)
-   basObjGeometria.Visivel_Y = .ScaleHeight - (2 * TAM_BARRA + tlbObjetos.Height + vA + vD + vF)
-'
-   '.picViewTela.Move .ScaleLeft + vB, .ScaleTop + (tlbObjetos.Height + vA), _
-           'basObjGeometria.Visivel_X, basObjGeometria.Visivel_Y
-'
-   'fsbHorizontal.Move picViewTela.Left, vD + picViewTela.Top + basObjGeometria.Visivel_Y, picViewTela.Width, TAM_BARRA
-   'fsbVertical.Move vC + picViewTela.Left + basObjGeometria.Visivel_X, picViewTela.Top, TAM_BARRA, picViewTela.Height
-'
-   picCanto.Move fsbVertical.Left, fsbHorizontal.Top, TAM_BARRA, TAM_BARRA
-'
+    basObjGeometria.Visivel_X = .ScaleWidth - (TAM_BARRA + vB + vC + vE)
+    basObjGeometria.Visivel_Y = .ScaleHeight - (2 * TAM_BARRA + tlbObjetos.Height + vA + vD + vF)
+    picCanto.Move fsbVertical.Left, fsbHorizontal.Top, TAM_BARRA, TAM_BARRA
    'Converte a largura e a altura da área de desenho para "centímetros"
-   basObjGeometria.Visivel_X = basObjGeometria.Visivel_X * Cm_por_Pixel_X
-   basObjGeometria.Visivel_Y = basObjGeometria.Visivel_Y * Cm_por_Pixel_Y
+    basObjGeometria.Visivel_X = basObjGeometria.Visivel_X * Cm_por_Pixel_X
+    basObjGeometria.Visivel_Y = basObjGeometria.Visivel_Y * Cm_por_Pixel_Y
  End With
  Redesenhar = False
- With fsbVertical
-  .SmallChange = .Max \ N_INC
-  .LargeChange = .Max \ (N_INC \ 5)
-  .Value = .Max \ 2
- End With
- With fsbHorizontal
-  .SmallChange = .Max \ N_INC
-  .LargeChange = .Max \ (N_INC \ 5)
-  .Value = .Max \ 2
- End With
+  With fsbVertical
+   .SmallChange = .Max \ N_INC
+   .LargeChange = .Max \ (N_INC \ 5)
+   .Value = .Max \ 2
+  End With
+  With fsbHorizontal
+   .SmallChange = .Max \ N_INC
+   .LargeChange = .Max \ (N_INC \ 5)
+   .Value = .Max \ 2
+  End With
  Redesenhar = True
  'With lstObjetos
  ' .Clear
@@ -220,12 +209,12 @@ Private Sub Form_Load()
 ' End With
 End Sub
 
+
 Private Sub Form_Resize()
  Dim Visivel_antes_X As Single, Visivel_antes_Y As Single
  Dim AltBarra As Single
  'Estudar a possibilidade de usar Top/Left em lugar de Centro_Y/Centro_X
  
- 'MsgBox "Resize, form visivel? Resp: " & Me.Visible
  'Calcula o número de botões que cabem em cada linha,
  'Determina o número de linhas necessárias para exibí-los,
  'Multiplica pela altura de cada botão e soma espessura das bordas
@@ -233,94 +222,185 @@ Private Sub Form_Resize()
   AltBarra = 6 + .ButtonHeight * ((.Buttons.Count - 1) \ Int(Me.ScaleWidth / .ButtonWidth) + 1)
  End With
  
- Visivel_antes_X = basObjGeometria.Visivel_X 'Guarda a medida da largura visível atualmente
- Visivel_antes_Y = basObjGeometria.Visivel_Y 'Guarda a medida da altura visível atualmente
- 
+ 'Guarda a largura e a altura visíveis atualmente
+ Visivel_antes_X = basObjGeometria.Visivel_X
+ Visivel_antes_Y = basObjGeometria.Visivel_Y
  With Me
   'Mede a largura e a altura da área de desenho em "pixels"
    Visivel_X_pix = .ScaleWidth - (TAM_BARRA + vB + vC + vE)
    Visivel_Y_pix = .ScaleHeight - (2 * TAM_BARRA + AltBarra + vA + vD + vF)
-
-  .picViewTela.Move .ScaleLeft + vB, .ScaleTop + (AltBarra + vA), Visivel_X_pix, Visivel_Y_pix
-           'With Me.picViewTela
-
-  fsbHorizontal.Move picViewTela.Left, vD + picViewTela.Top + Visivel_Y_pix, picViewTela.Width, TAM_BARRA
-  fsbVertical.Move vC + picViewTela.Left + Visivel_X_pix, picViewTela.Top, TAM_BARRA, picViewTela.Height
-  
-  picCanto.Move fsbVertical.Left, fsbHorizontal.Top, TAM_BARRA, TAM_BARRA
-  
+  'Posiciona a área de desenho na tela
+   .picViewTela.Move .ScaleLeft + vB, .ScaleTop + (AltBarra + vA), Visivel_X_pix, Visivel_Y_pix
+  'POsiciona barras de rolagem
+   fsbHorizontal.Move picViewTela.Left, vD + picViewTela.Top + Visivel_Y_pix, picViewTela.Width, TAM_BARRA
+   fsbVertical.Move vC + picViewTela.Left + Visivel_X_pix, picViewTela.Top, TAM_BARRA, picViewTela.Height
+  'Posiciona canto
+   picCanto.Move fsbVertical.Left, fsbHorizontal.Top, TAM_BARRA, TAM_BARRA
   'Converte a largura e a altura da área de desenho para "centímetros"
    basObjGeometria.Visivel_X = Visivel_X_pix * Cm_por_Pixel_X
    basObjGeometria.Visivel_Y = Visivel_Y_pix * Cm_por_Pixel_Y
-   
-   '.Move Me.ScaleLeft + vB, _
-        'Me.ScaleTop + (AltBarra + vA), _
-        'Me.ScaleWidth - (TAM_BARRA + vB + vC + vE), _
-        'Me.ScaleHeight - (2 * TAM_BARRA + AltBarra + vA + vD + vF)
-        
-  'Mede a largura e a altura da área de desenho em "pixels"
-  'Visivel_X_pix = .Width
-  'Visivel_Y_pix = .Height
-  'Converte a largura e a altura de PIXELS para CENTÍMETROS
-  'Visivel_X = Visivel_X_pix * Cm_por_Pixel_X
-  'Visivel_Y = Visivel_Y_pix * Cm_por_Pixel_Y
   'Atualiza as coordenadas que correspondem ao centro do form.
-  Centro_X = Centro_X + (Visivel_X - Visivel_antes_X) / 2
-  Centro_Y = Centro_Y - (Visivel_Y - Visivel_antes_Y) / 2
-  
-  If 2 * Centro_X > TAM_FOLHA_DESENHO Then Centro_X = TAM_FOLHA_DESENHO / 2
-  If 2 * Centro_X < -TAM_FOLHA_DESENHO Then Centro_X = -TAM_FOLHA_DESENHO / 2
-  If 2 * Centro_Y > TAM_FOLHA_DESENHO Then Centro_X = TAM_FOLHA_DESENHO / 2
-  If 2 * Centro_Y < -TAM_FOLHA_DESENHO Then Centro_Y = -TAM_FOLHA_DESENHO / 2
-  
-  'Centro_X = TAM_FOLHA_DESENHO * (fsbHorizontal.Value / fsbHorizontal.Max - 0.5)
-  Redesenhar = False
-  fsbHorizontal.Value = CInt((Centro_X / TAM_FOLHA_DESENHO + 0.5) * fsbHorizontal.Max)
-  fsbVertical.Value = CInt((Centro_Y / TAM_FOLHA_DESENHO + 0.5) * fsbVertical.Max)
-  Redesenhar = True
-  'LEMBRETE:
-  'A mudança da posição do ponto (0, 0) deve
-  'alterar os values de fsbHorizontal e fsbVertical.
-  'INCLUA as instruções necessárias para isso.
-  'Mas essa alteração gera um evento change e traz problemas!!!
-  
-  'On Error Resume Next
-   'Como evitar que desapareça a área de desenho ao diminuir MUITO a largura e altura?
-   'Use API's do windows
-   '
-   'Reposiciona barras e botões
-   'fsbHorizontal.Move .Left, vD + .Top + .Height, .Width, TAM_BARRA
-   'fsbVertical.Move vC + .Left + .Width, .Top, TAM_BARRA, .Height
-   'picCanto.Move fsbVertical.Left, fsbHorizontal.Top
-  'On Error GoTo 0
+   Centro_X = Centro_X + (Visivel_X - Visivel_antes_X) / 2
+   Centro_Y = Centro_Y - (Visivel_Y - Visivel_antes_Y) / 2
+  'Isto poderia fazer parte de um evento Change_Centro para a futura classe Folha
+   If 2 * Centro_X > TAM_FOLHA_DESENHO Then Centro_X = TAM_FOLHA_DESENHO / 2
+   If 2 * Centro_X < -TAM_FOLHA_DESENHO Then Centro_X = -TAM_FOLHA_DESENHO / 2
+   If 2 * Centro_Y > TAM_FOLHA_DESENHO Then Centro_X = TAM_FOLHA_DESENHO / 2
+   If 2 * Centro_Y < -TAM_FOLHA_DESENHO Then Centro_Y = -TAM_FOLHA_DESENHO / 2
+  'Funcção inversa de: Centro_X = TAM_FOLHA_DESENHO * (fsbHorizontal.Value / fsbHorizontal.Max - 0.5)
+   Redesenhar = False
+    fsbHorizontal.Value = CInt((Centro_X / TAM_FOLHA_DESENHO + 0.5) * fsbHorizontal.Max)
+    fsbVertical.Value = CInt((Centro_Y / TAM_FOLHA_DESENHO + 0.5) * fsbVertical.Max)
+   Redesenhar = True
+  'Como evitar que desapareça a área de desenho ao diminuir MUITO a largura e altura?
+  'Use API's do windows
   'Timer1.Enabled = True
-   
-  Call Ajusta_ViewPort(0, 0, Visivel_X_pix, Visivel_Y_pix)
-  'Call Ajusta_ViewPort(0, 0, 100, 100) '.Width, .Height)
-  'glViewport 0, 0, frmMain.ScaleWidth, frmMain.ScaleHeight
-   'lblDica.Move 10, Me.ScaleTop + tbrObjetos.height + 10
+  'lblDica.Move 10, Me.ScaleTop + tbrObjetos.height + 10
  End With
- 
- picViewTela_Paint
+ Call Ajusta_ViewPort(0, 0, Visivel_X_pix, Visivel_Y_pix)
+ Call picViewTela_Paint
  
 End Sub
+
 Private Sub picViewTela_Paint()
- Desenha_esfera
- MostraEixos
+ Dim N As Integer, N_Obj As Integer
+ Dim D As GLfloat, Ini As GLfloat, Fim As GLfloat
+ Dim Espec As GLfloat
+ 'Tornar publico esse valor, atualizando quando adicionar ou remover objetos
  
- 'Me.Caption = Me.picViewTela.Visible
+ glClear clrColorBufferBit 'Or clrDepthBufferBit
+ N_Obj = UBound(Obj)
+ 
+ For N = 1 To N_Obj
+  With Obj(N)
+   If .Mostrar <> OCULTO Then
+    Select Case .Tipo
+    Case PONTO
+     glPointSize (.Espessura)
+     If .P_rep(3) <> 0 Then 'Ponto finito
+      glGetFloatv glgPointSize, Espec
+      glPointSize 2
+      'If .Mostrar = SELECIONADO Then Me.Circle (Pixel_X(.P_rep(1) / .P_rep(3)), Pixel_Y(.P_rep(2) / .P_rep(3))), 3, vbRed
+      glPointSize Espec
+      glColor3f 1#, 0#, 0#
+      glBegin bmPoints
+       glVertex2f .P_rep(1) / .P_rep(3), .P_rep(2) / .P_rep(3)
+      glEnd
+     End If
+     'glLineStipple pontilhado
+     'glgPointSize
+     ' glGetFloatv(glgPointSize, params As GLfloat)
+    Case PONTO_SOBRE
+    
+    Case PONTO_DE_INTERSECÇÃO
+    
+    Case SEGMENTO
+    
+    Case VETOR
+    
+    Case RETA
+    
+    Case SEMI_RETA
+    
+    Case TRIÂNGULO
+    
+    Case POLÍGONO
+    
+    Case POLÍGONO_REGULAR
+    
+    Case CIRCUNFERÊNCIA
+    
+    Case ARCO
+    
+    Case CÔNICA
+    
+    Case PERPENDICULAR
+    
+    Case PARALELA
+    
+    Case PONTO_MÉDIO
+    
+    Case BISSETRIZ_PONTOS
+    
+    Case BISSETRIZ_RETAS
+    
+    Case EIXOS
+     glLineWidth .Espessura
+     Ini = Centro_X - (Visivel_X / 2)
+     Fim = Centro_X + (Visivel_X / 2)
+     glColor3f 0, 0, 0 '0.5, 0.5, 0.5
+     'glLineStipple 1, 127
+     'glEnable glcLineStipple
+     glBegin bmLines
+      glVertex2f Ini, 0
+      glVertex2f Fim, 0
+     glEnd
+     'glDisable glcLineStipple
+     glColor3f 0.2, 0.2, 0.2
+     glPointSize .Espessura * 3
+     glBegin bmPoints
+      For D = CInt(Ini) To CInt(Fim)
+        glVertex2f D, 0
+      Next D
+     glEnd
+     
+     glLineWidth (.Espessura)
+     Ini = Centro_Y - (Visivel_Y / 2)
+     Fim = Centro_Y + (Visivel_Y / 2)
+     glColor3f 0.5, 0.5, 0.5
+     glBegin bmLines
+      glVertex2f 0, Ini
+      glVertex2f 0, Fim
+     glEnd
+     
+     glColor3f 0.2, 0.2, 0.2
+     glPointSize (.Espessura * 3)
+     glBegin bmPoints
+      For D = CInt(Ini) To CInt(Fim)
+        glVertex2f 0, D
+      Next D
+     glEnd
+    Case COMPASSO
+    
+    Case REFLEXÃO
+    
+    Case SIMETRIA
+    
+    Case TRANSLAÇÃO
+    
+    Case INVERSO_CIRCUNFERÊNCIA
+    
+    Case TEXTO
+    
+    Case ÂNGULO
+ 
+    Case Else
+     
+    End Select
+   End If
+  End With
+ Next N
+ 
+ 
+ 'Me.PSet (Pixel_X(Visivel_X / 2), Pixel_Y(Visivel_Y / 2)), vbGreen
+ 
+
+
+
+ 'Desenha_esfera
+ 'MostraEixos
  SwapBuffers hDC1
 End Sub
 Private Sub GeraBarraStatus()
-   Dim i As Integer
+   Dim I As Integer
    
    With staInfo
     .Height = TAM_BARRA
     '.Width = Me.Width 'Ajustado automaticamente ao definir Align=2
     .Align = vbAlignBottom
-    For i = 0 To 6
-       .Panels.Add , , , i
-    Next i
+    For I = 0 To 6
+       .Panels.Add , , , I
+    Next I
     .Panels(1).AutoSize = sbrSpring
     .Panels(1).MinWidth = 140
    End With
@@ -335,19 +415,19 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
 
 End Sub
 Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
- Dim x1, y1 As GLdouble
- Dim cx, cy As GLdouble
+' Dim x1, y1 As GLdouble
+' Dim cx, cy As GLdouble
+'
+' If Button <> -1 Then Exit Sub
+'
+' x1 = X / Me.ScaleWidth
+' y1 = Y / Me.ScaleHeight
+' cx = 1 - 2 * x1
+' cy = 2 * y1 - 1
+'
+ 'Call Ajusta_ViewPort(0, 0, Visivel_X_pix, Visivel_Y_pix)
  
- If Button <> -1 Then Exit Sub
- 
- x1 = X / Me.ScaleWidth
- y1 = Y / Me.ScaleHeight
- cx = 1 - 2 * x1
- cy = 2 * y1 - 1
- 
- Call Ajusta_ViewPort(0, 0, Visivel_X_pix, Visivel_Y_pix)
- 
- picViewTela_Paint
+ 'picViewTela_Paint
  
 End Sub
 
@@ -439,27 +519,38 @@ Private Sub fsbHorizontal_Change()
  If Redesenhar Then
   Centro_X = TAM_FOLHA_DESENHO * (fsbHorizontal.Value / fsbHorizontal.Max - 0.5)
   Call Ajusta_ViewPort(0, 0, Visivel_X_pix, Visivel_Y_pix)
-  picViewTela_Paint
+  Call picViewTela_Paint
  End If
 End Sub
 Private Sub fsbHorizontal_Scroll()
-'Incluir mais valores entre os extremos de MAX_X e -MAX_X permitirá um scroll mais suave
 'Conferir compatibilidade com o Zoom
  Centro_X = TAM_FOLHA_DESENHO * (fsbHorizontal.Value / fsbHorizontal.Max - 0.5)
  Call Ajusta_ViewPort(0, 0, Visivel_X_pix, Visivel_Y_pix)
- picViewTela_Paint
+ Call picViewTela_Paint
 End Sub
 Private Sub fsbVertical_Change()
  If Redesenhar Then
   Centro_Y = -TAM_FOLHA_DESENHO * (fsbVertical.Value / fsbVertical.Max - 0.5)
   Call Ajusta_ViewPort(0, 0, Visivel_X_pix, Visivel_Y_pix)
-  picViewTela_Paint
+  Call picViewTela_Paint
  End If
 End Sub
 Private Sub fsbVertical_Scroll()
-'Incluir mais valores entre os extremos de MAX_Y e -MAX_Y permitirá um scroll mais suave
 'Conferir compatibilidade com o Zoom
  Centro_Y = -TAM_FOLHA_DESENHO * (fsbVertical.Value / fsbVertical.Max - 0.5)
  Call Ajusta_ViewPort(0, 0, Visivel_X_pix, Visivel_Y_pix)
- picViewTela_Paint
+ Call picViewTela_Paint
+End Sub
+Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
+Exit Sub
+ Select Case MsgBox("Deseja salvar as alterações?", vbQuestion + vbYesNoCancel, "Finalizando o aplicativo...")
+ Case vbCancel
+  Cancel = True
+ Case vbNo
+  Cancel = False
+ Case vbYes
+  Cancel = True
+  'SalvarArquivo
+  'Unload Me 'fechar definitivamente
+ End Select
 End Sub
