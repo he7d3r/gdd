@@ -471,7 +471,7 @@ Private Xant, Yant As Single
 'Private Const
 
 Private Sub Form_Initialize()
- Dim I As Integer
+ Dim i As Integer
  Call Inicializar_Objetos
  Me.Caption = "Geometria dinâmica"
  MakeEight
@@ -574,7 +574,7 @@ Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y A
  '-Permitir seleção personalizada, com caixas de verificação para tipos de objetos...
  '-Seleção avançada é parte de um outro botão
  
- Dim I As Long
+ Dim i As Long
  
  'cuidado com o Me.Refresh no fim deste procedimento...
  
@@ -588,9 +588,9 @@ Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y A
      Obj(Objeto_Localizado(1)).Mostrar = SELECIONADO
      'Dica: Tente trocar "UBound(Obj)" por uma variável pública
      'Cancele todas as demais seleções
-     For I = 1 To UBound(Obj)
-      If (Obj(I).Mostrar = SELECIONADO) And (I <> Objeto_Localizado(1)) Then Obj(I).Mostrar = PADRAO
-     Next I
+     For i = 1 To UBound(Obj)
+      If (Obj(i).Mostrar = SELECIONADO) And (i <> Objeto_Localizado(1)) Then Obj(i).Mostrar = PADRAO
+     Next i
     End If
    Else
     'multi_sel = True
@@ -604,9 +604,9 @@ Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y A
    'Solução simples no KSeg: Parâmetros-->Botao
   Case Else
   'Cancele todas as seleções
-   For I = 1 To UBound(Obj)
-    If (Obj(I).Mostrar = SELECIONADO) Then Obj(I).Mostrar = PADRAO
-   Next I
+   For i = 1 To UBound(Obj)
+    If (Obj(i).Mostrar = SELECIONADO) Then Obj(i).Mostrar = PADRAO
+   Next i
  End Select
  Me.Refresh
 End Sub
@@ -633,7 +633,7 @@ Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y A
 'senão
 '    Transladar os pontos LIVRES que definem os objetos (indiretamente ou não)
 '
- Dim I As Integer
+ Dim i As Integer
  Dim Bkp() As Long
  Dim Mudou As Boolean
  Dim Larg As Single
@@ -649,21 +649,21 @@ Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y A
   If Button = NENHUM Then
    Call Aponta_Objeto(X, Y, Objeto_Localizado)
    If Objeto_Localizado(1) <> NENHUM Then
-    For I = 1 To UBound(Objeto_Localizado) - 1
-     If Bkp(I) <> Objeto_Localizado(I) Then Mudou = True: Exit For
-    Next I
+    For i = 1 To UBound(Objeto_Localizado) - 1
+     If Bkp(i) <> Objeto_Localizado(i) Then Mudou = True: Exit For
+    Next i
     If Mudou Then
      .Visible = False
      .Clear
      lblAux = ""
-     For I = 1 To UBound(Objeto_Localizado) - 1
-      .AddItem "Objeto " & Format(Objeto_Localizado(I), "00") & _
-             " (" & Nome(Obj(Objeto_Localizado(I)).Tipo) & ")"
-      If Len(lblAux) < Len(.List(I - 1)) Then
-       lblAux = .List(I - 1)
+     For i = 1 To UBound(Objeto_Localizado) - 1
+      .AddItem "Objeto " & Format(Objeto_Localizado(i), "00") & _
+             " (" & Nome(Obj(Objeto_Localizado(i)).Tipo) & ")"
+      If Len(lblAux) < Len(.List(i - 1)) Then
+       lblAux = .List(i - 1)
        Larg = lblAux.Width
       End If
-     Next I
+     Next i
     End If
    End If
   End If
@@ -826,13 +826,13 @@ Private Sub MakeEight()
    ' Delete the first Panel object, which is
    ' created automatically.
    'StatusBar1.Panels.Remove 1
-   Dim I As Integer
+   Dim i As Integer
 
    ' The fourth argument of the Add method
    ' sets the Style property.
-   For I = 0 To 6
-      StatusBar1.Panels.Add , , , I
-   Next I
+   For i = 0 To 6
+      StatusBar1.Panels.Add , , , i
+   Next i
    StatusBar1.Panels(1).AutoSize = sbrSpring
    StatusBar1.Panels(1).MinWidth = 140
 End Sub
@@ -938,24 +938,24 @@ Private Sub mnuArqSair_Click()
 End Sub
 
 Private Sub mnuOpExibirDesc_Click()
- Dim I As Integer
+ Dim i As Integer
  Static s(1 To 30) As String
  
  If tbrObjetos.Buttons.Count > 30 Then Exit Sub
  If mnuOpExibirDesc.Checked Then
   mnuOpExibirDesc.Checked = False
   With tbrObjetos.Buttons
-   For I = 3 To .Count
-    s(I) = .Item(I).ToolTipText
-    .Item(I).ToolTipText = ""
-   Next I
+   For i = 3 To .Count
+    s(i) = .Item(i).ToolTipText
+    .Item(i).ToolTipText = ""
+   Next i
   End With
  Else
   mnuOpExibirDesc.Checked = True
   With tbrObjetos.Buttons
-   For I = 3 To .Count
-    .Item(I).ToolTipText = s(I)
-   Next I
+   For i = 3 To .Count
+    .Item(i).ToolTipText = s(i)
+   Next i
   End With
  End If
 End Sub

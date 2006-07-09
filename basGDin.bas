@@ -104,27 +104,6 @@ Nome(TEXTO) = "Texto"
 Nome(ÂNGULO) = "Ângulo"
 Nome(EIXOS) = "Eixo"
 
- inc_Mov = 0.05
- inc_Trans = 1
- 
- Centro_X = 0#
- Centro_Y = 0#
- 
- TwipsPerPixelX_INICIAL = Screen.TwipsPerPixelX
- TwipsPerPixelY_INICIAL = Screen.TwipsPerPixelY
- 'O form mede N twips, cada cm contém M twips, logo o form mede N/M cm's
- Cm_por_Pixel_X = TwipsPerPixelX_INICIAL / Twips_por_Cm
- Cm_por_Pixel_Y = TwipsPerPixelY_INICIAL / Twips_por_Cm
- 
- 'Mede a largura e a altura da área de desenho em "pixels"
- Visivel_X = frmMain.ScaleWidth - frmMain.fsbVertical.Width
- Visivel_Y = frmMain.ScaleHeight - _
-      (frmMain.tlbObjetos.Height + frmMain.fsbHorizontal.Height)
- 'Converte a largura e a altura da área de desenho para "centímetros"
- Visivel_X = Visivel_X * Cm_por_Pixel_X
- Visivel_Y = Visivel_Y * Cm_por_Pixel_Y
- 
- Zoom = 1#
  'Cria os objetos essenciais
  ReDim Obj(1 To 2)
   

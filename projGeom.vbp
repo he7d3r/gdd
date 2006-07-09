@@ -12,6 +12,7 @@ Form=frmTela_Desenho.frm
 Module=basObjGeometria; basGDin.bas
 Module=basVbOpenGl; basOpenGl.bas
 Module=basObjOpenGl; basObjetosOpenGl.bas
+Class=Folha; Folha.cls
 IconForm="frmMain"
 Startup="frmMain"
 HelpFile=""

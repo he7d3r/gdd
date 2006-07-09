@@ -5,7 +5,7 @@ Option Explicit
 'são definidos na biblioteca "VBOpenGL", não precisamos redeclará-los.
 'As constantes relacionadas abaixo também pertencem a "VBOpenGL".
 '
-'- Classe GDI:
+'- Classe GDI (Graphics Device Interface):
 ' PFD_MAIN_PLANE
 ' PFD_OVERLAY_PLANE
 ' PFD_TYPE_COLORINDEX
@@ -49,6 +49,7 @@ Private Declare Sub wglMakeCurrent Lib "OpenGL32" (ByVal l1 As Long, ByVal l2 As
 
 'Public hPalette As Long
 Public hGLRC As Long
+Global hDC1 As Long, hDC2 As Long 'HDC's das ViewPorts
 Sub FatalError(ByVal msgErro As String)
     MsgBox "ERRO FATAL: " & msgErro, vbCritical + vbApplicationModal + vbOKOnly + vbDefaultButton1, "Erro fatal com """ & App.Title & """"
     Unload frmMain
@@ -73,12 +74,12 @@ Sub SetupPixelFormat(ByVal hDC As Long)
     End With
     
     PixelFormat = ChoosePixelFormat(hDC, pfd)
-    If PixelFormat = 0 Then FatalError "Não foi possível obter o formato para os pixels!"
+    If PixelFormat = 0 Then FatalError "Não foi possível obter um formato adequado para os pixels!"
     SetPixelFormat hDC, PixelFormat, pfd
 End Sub
 Public Sub Finalizar_OpenGL() 'ByVal hDC As Long)
  If basVbOpenGl.hGLRC <> 0 Then
-  wglMakeCurrent 0, 0
+  wglMakeCurrent 0, 0 'NULL, NULL
   wglDeleteContext basVbOpenGl.hGLRC
  End If
  'If hPalette <> 0 Then
