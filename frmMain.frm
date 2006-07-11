@@ -209,11 +209,12 @@ Private Sub Form_Load()
 ' End With
 End Sub
 
-
 Private Sub Form_Resize()
  Dim Visivel_antes_X As Single, Visivel_antes_Y As Single
  Dim AltBarra As Single
  'Estudar a possibilidade de usar Top/Left em lugar de Centro_Y/Centro_X
+ 
+ If Me.ScaleWidth <= 0 Then Exit Sub
  
  'Calcula o número de botões que cabem em cada linha,
  'Determina o número de linhas necessárias para exibí-los,
@@ -221,7 +222,6 @@ Private Sub Form_Resize()
  With Me.tlbObjetos
   AltBarra = 6 + .ButtonHeight * ((.Buttons.Count - 1) \ Int(Me.ScaleWidth / .ButtonWidth) + 1)
  End With
- 
  'Guarda a largura e a altura visíveis atualmente
  Visivel_antes_X = basObjGeometria.Visivel_X
  Visivel_antes_Y = basObjGeometria.Visivel_Y
@@ -257,9 +257,40 @@ Private Sub Form_Resize()
   'Timer1.Enabled = True
   'lblDica.Move 10, Me.ScaleTop + tbrObjetos.height + 10
  End With
+ 
  Call Ajusta_ViewPort(0, 0, Visivel_X_pix, Visivel_Y_pix)
  Call picViewTela_Paint
  
+End Sub
+
+Private Sub picViewTela_Click()
+If Not frmMatriz.Visible Then frmMatriz.Show    'vbModal
+End Sub
+
+Private Sub picViewTela_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+ Const FORMATO = "0.0"
+ Dim X0 As Single, Y0 As Single
+ Dim X1 As Single, Y1 As Single
+ Dim X2 As Single, Y2 As Single
+ Dim s As String
+ 
+ s = "VB: [" & X & "; " & Y & "],  ViewPort: "
+ 
+ X0 = X
+ Y0 = Viewport(3) - Y - 1
+ s = s & "[" & X0 & "; " & Y0 & "],  Normalizado: "
+ 
+ X1 = 2 * X0 / Viewport(2) - 1
+ Y1 = 2 * Y0 / Viewport(3) - 1
+ s = s & "[" & Format(X1, FORMATO) & "; " & Format(Y1, FORMATO) & "],  Cm's: "
+ 
+ X2 = (X1 - ProjectionMatrix(12)) / ProjectionMatrix(0)
+ Y2 = (Y1 - ProjectionMatrix(13)) / ProjectionMatrix(5)
+ s = s & "[" & Format(X2, FORMATO) & "; " & Format(Y2, FORMATO) & "]"
+
+Me.Caption = s
+
+
 End Sub
 
 Private Sub picViewTela_Paint()
@@ -287,9 +318,6 @@ Private Sub picViewTela_Paint()
        glVertex2f .P_rep(1) / .P_rep(3), .P_rep(2) / .P_rep(3)
       glEnd
      End If
-     'glLineStipple pontilhado
-     'glgPointSize
-     ' glGetFloatv(glgPointSize, params As GLfloat)
     Case PONTO_SOBRE
     
     Case PONTO_DE_INTERSECÇÃO
@@ -380,27 +408,22 @@ Private Sub picViewTela_Paint()
    End If
   End With
  Next N
- 
- 
+  
  'Me.PSet (Pixel_X(Visivel_X / 2), Pixel_Y(Visivel_Y / 2)), vbGreen
- 
-
-
-
- 'Desenha_esfera
+  'Desenha_esfera
  'MostraEixos
  SwapBuffers hDC1
 End Sub
 Private Sub GeraBarraStatus()
-   Dim I As Integer
+   Dim i As Integer
    
    With staInfo
     .Height = TAM_BARRA
     '.Width = Me.Width 'Ajustado automaticamente ao definir Align=2
     .Align = vbAlignBottom
-    For I = 0 To 6
-       .Panels.Add , , , I
-    Next I
+    For i = 0 To 6
+       .Panels.Add , , , i
+    Next i
     .Panels(1).AutoSize = sbrSpring
     .Panels(1).MinWidth = 140
    End With
@@ -435,7 +458,7 @@ End Sub
 Private Sub Form_Unload(Cancel As Integer)
 
  Call Finalizar_OpenGL '(hDC1)'será necessário?
- 
+ Unload frmMatriz
 End Sub
 
 Sub Carrega_Ferramentas()
@@ -444,9 +467,9 @@ Sub Carrega_Ferramentas()
  Dim btnButton As Button
  
  Dim Qtd As Integer
- Dim FileNumber As Variant, Q As Variant
+ Dim FileNumber As Integer ' Variant
  Dim N As Integer
- Dim F() As Ferramenta
+ Dim F() As Ferramenta ' IdImg, Key e TipText
  
  FileNumber = FreeFile
  On Error GoTo ERRO
@@ -519,6 +542,7 @@ Private Sub fsbHorizontal_Change()
  If Redesenhar Then
   Centro_X = TAM_FOLHA_DESENHO * (fsbHorizontal.Value / fsbHorizontal.Max - 0.5)
   Call Ajusta_ViewPort(0, 0, Visivel_X_pix, Visivel_Y_pix)
+  
   Call picViewTela_Paint
  End If
 End Sub
@@ -526,12 +550,14 @@ Private Sub fsbHorizontal_Scroll()
 'Conferir compatibilidade com o Zoom
  Centro_X = TAM_FOLHA_DESENHO * (fsbHorizontal.Value / fsbHorizontal.Max - 0.5)
  Call Ajusta_ViewPort(0, 0, Visivel_X_pix, Visivel_Y_pix)
+ 
  Call picViewTela_Paint
 End Sub
 Private Sub fsbVertical_Change()
  If Redesenhar Then
   Centro_Y = -TAM_FOLHA_DESENHO * (fsbVertical.Value / fsbVertical.Max - 0.5)
   Call Ajusta_ViewPort(0, 0, Visivel_X_pix, Visivel_Y_pix)
+  
   Call picViewTela_Paint
  End If
 End Sub
@@ -539,6 +565,7 @@ Private Sub fsbVertical_Scroll()
 'Conferir compatibilidade com o Zoom
  Centro_Y = -TAM_FOLHA_DESENHO * (fsbVertical.Value / fsbVertical.Max - 0.5)
  Call Ajusta_ViewPort(0, 0, Visivel_X_pix, Visivel_Y_pix)
+ 
  Call picViewTela_Paint
 End Sub
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)

@@ -1,5 +1,8 @@
 Attribute VB_Name = "basVisual"
 Option Explicit
+  Public ModelViewMatrix(0 To 15) As GLfloat
+  Public ProjectionMatrix(0 To 15) As GLfloat
+  Public Viewport(0 To 3) As GLint
 
 Public LightPos(3) As GLfloat
 Public SpecRef(3) As GLfloat
@@ -92,7 +95,7 @@ Sub Ajusta_ViewPort(X_esq As GLint, Y_inf As GLint, Larg As GLsizei, Alt As GLsi
    'gluOrtho2D -5, 5, -5, 5
    gluOrtho2D Centro_X - Visivel_X / 2, Centro_X + Visivel_X / 2, Centro_Y - Visivel_Y / 2, Centro_Y + Visivel_Y / 2
  glMatrixMode GL_MODELVIEW
- 
+ frmMatriz.AtualizaMatrizes
 End Sub
 Public Sub normalize(out() As GLfloat)
 Dim D As GLfloat
