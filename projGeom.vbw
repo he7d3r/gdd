@@ -1,8 +1,0 @@
-frmMain = 41, 10, 617, 603, C, 93, 62, 579, 391, C
-basVisual = 342, 0, 684, 659, C
-frmTela_Desenho = 66, 87, 663, 543, C, 132, 174, 663, 630, C
-basObjGeometria = 132, 174, 729, 630, C
-basVbOpenGl = 0, 394, 747, 658, C
-basObjOpenGl = 66, 87, 597, 543, C
-Folha = 110, 145, 654, 601, CI
-frmMatriz = 44, 58, 548, 514, C, 22, 29, 635, 485, C
