@@ -4,10 +4,11 @@ Reference=*\G{03644881-8010-11D1-95AA-000000000000}#1.1#0#..\..\..\..\..\..\WIND
 Form=Main.frm
 Module=basVisualização; basVisualização.bas
 Module=basVbOpenGl; basVbOpenGl.bas
-Form=MatrizGL.frm
+IconForm="frmMain"
 Startup="frmMain"
 HelpFile=""
-ExeName32="vbpExemplo_01.exe"
+Title="vbpExemplo_03"
+ExeName32="vbpExemplo_03.exe"
 Command32=""
 Name="ExemploVbOpenGl"
 HelpContextID="0"
@@ -32,6 +33,7 @@ Unattended=0
 Retained=0
 ThreadPerObject=0
 MaxNumberOfThreads=1
+DebugStartupOption=0
 
 [MS Transaction Server]
 AutoRefresh=1

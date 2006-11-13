@@ -1,159 +1,48 @@
 VERSION 5.00
 Begin VB.Form frmMain 
+   BorderStyle     =   1  'Fixed Single
    Caption         =   "Exemplo - Integrando Vb e OpenGl"
-   ClientHeight    =   3360
-   ClientLeft      =   600
-   ClientTop       =   1185
-   ClientWidth     =   10320
+   ClientHeight    =   3150
+   ClientLeft      =   585
+   ClientTop       =   1170
+   ClientWidth     =   6195
    LinkTopic       =   "Form1"
-   ScaleHeight     =   224
+   MaxButton       =   0   'False
+   MinButton       =   0   'False
+   ScaleHeight     =   210
    ScaleMode       =   3  'Pixel
-   ScaleWidth      =   688
-   Begin VB.TextBox txtLineStipple 
-      Alignment       =   2  'Center
-      Height          =   375
-      Left            =   1800
-      TabIndex        =   9
-      Text            =   "3"
-      Top             =   2760
-      Width           =   495
-   End
-   Begin VB.TextBox txtLineWidth 
-      Alignment       =   2  'Center
-      Height          =   375
-      Left            =   1800
-      TabIndex        =   7
-      Text            =   "1"
-      Top             =   2280
-      Width           =   495
-   End
-   Begin VB.TextBox txtPointSize 
-      Alignment       =   2  'Center
-      Height          =   375
-      Left            =   1800
-      TabIndex        =   5
-      Text            =   "3"
-      Top             =   1800
-      Width           =   495
-   End
-   Begin VB.Frame Frame1 
-      Appearance      =   0  'Flat
-      Caption         =   "Opções"
-      ForeColor       =   &H80000008&
-      Height          =   2415
-      Left            =   7200
-      TabIndex        =   1
-      Top             =   360
-      Width           =   2895
-      Begin VB.CheckBox chkQuad 
-         Appearance      =   0  'Flat
-         Caption         =   "Exibir quadrado"
-         ForeColor       =   &H80000008&
-         Height          =   495
-         Left            =   240
-         TabIndex        =   4
-         Top             =   480
-         Width           =   1455
-      End
-      Begin VB.CheckBox chkMarcas 
-         Appearance      =   0  'Flat
-         Caption         =   "Exibir marcas sobre os eixos"
-         ForeColor       =   &H80000008&
-         Height          =   495
-         Left            =   240
-         TabIndex        =   3
-         Top             =   1680
-         Value           =   1  'Checked
-         Width           =   2535
-      End
-      Begin VB.CheckBox chkEixos 
-         Appearance      =   0  'Flat
-         Caption         =   "Exibir eixos X e Y"
-         ForeColor       =   &H80000008&
-         Height          =   495
-         Left            =   240
-         TabIndex        =   2
-         Top             =   1080
-         Value           =   1  'Checked
-         Width           =   2175
-      End
-   End
+   ScaleWidth      =   413
+   StartUpPosition =   2  'CenterScreen
    Begin VB.PictureBox picViewTela 
       Appearance      =   0  'Flat
       BackColor       =   &H00404040&
-      BorderStyle     =   0  'None
       ForeColor       =   &H80000008&
       Height          =   3000
-      Left            =   2520
-      ScaleHeight     =   200
+      Left            =   75
+      ScaleHeight     =   198
       ScaleMode       =   3  'Pixel
-      ScaleWidth      =   300
+      ScaleWidth      =   298
       TabIndex        =   0
-      Top             =   120
+      Top             =   75
       Width           =   4500
    End
-   Begin VB.Label Label3 
+   Begin VB.Label lblTexto 
       AutoSize        =   -1  'True
-      Caption         =   "Estilo de pontilhado:"
+      Caption         =   "Id do Objeto:"
       Height          =   195
-      Left            =   360
-      TabIndex        =   10
-      Top             =   2760
-      Width           =   1425
+      Left            =   4725
+      TabIndex        =   2
+      Top             =   585
+      Width           =   915
    End
-   Begin VB.Label Label2 
+   Begin VB.Label lblHits 
       AutoSize        =   -1  'True
-      Caption         =   "Espessura das linhas:"
+      Caption         =   "Hits:"
       Height          =   195
-      Left            =   255
-      TabIndex        =   8
-      Top             =   2280
-      Width           =   1530
-   End
-   Begin VB.Label Label1 
-      AutoSize        =   -1  'True
-      Caption         =   "Tamanho dos pontos:"
-      Height          =   195
-      Left            =   240
-      TabIndex        =   6
-      Top             =   1800
-      Width           =   1545
-   End
-   Begin VB.Image imgRight 
-      Appearance      =   0  'Flat
-      BorderStyle     =   1  'Fixed Single
-      Height          =   510
-      Left            =   1530
-      Picture         =   "Main.frx":0000
-      Top             =   660
-      Width           =   510
-   End
-   Begin VB.Image ImgLeft 
-      Appearance      =   0  'Flat
-      BorderStyle     =   1  'Fixed Single
-      Height          =   510
-      Left            =   510
-      Picture         =   "Main.frx":0442
-      Top             =   660
-      Width           =   510
-   End
-   Begin VB.Image ImgDown 
-      Appearance      =   0  'Flat
-      BorderStyle     =   1  'Fixed Single
-      Height          =   510
-      Left            =   1020
-      Picture         =   "Main.frx":0884
-      Top             =   1170
-      Width           =   510
-   End
-   Begin VB.Image imgUp 
-      Appearance      =   0  'Flat
-      BorderStyle     =   1  'Fixed Single
-      Height          =   510
-      Left            =   1020
-      Picture         =   "Main.frx":0CC6
-      Top             =   150
-      Width           =   510
+      Left            =   4725
+      TabIndex        =   1
+      Top             =   135
+      Width           =   315
    End
 End
 Attribute VB_Name = "frmMain"
@@ -162,143 +51,134 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
-
-Private Sub chkEixos_Click()
-picViewTela_Paint
-End Sub
-
-Private Sub chkMarcas_Click()
-picViewTela_Paint
-End Sub
-
-Private Sub chkQuad_Click()
-picViewTela_Paint
-End Sub
+Private Nome As GLuint
 
 Private Sub Form_Load()
-
  hDC1 = Me.picViewTela.hDC 'Identificador da ViewPort1 (embora não use + de uma viewport)
- 
- Larg = frmMain.picViewTela.ScaleWidth
- Alt = frmMain.picViewTela.ScaleHeight
- Centro_X = 0
- Centro_Y = 0
- Visivel_X = 10: Visivel_Y = Visivel_X * Alt / Larg
  Call Inicializar_OpenGL(hDC1) 'Ajusta formato dos pixels, iluminação, matrizes de projeção...
-
+ Nome = -1
 End Sub
-Private Sub picViewTela_DblClick()
-If Not frmMatriz.Visible Then frmMatriz.Show    'vbModal
+Private Sub Des_Quad()
+ glBegin bmQuads
+  glVertex3f 0, 0, 0
+  glVertex3f 1, 0, 0
+  glVertex3f 1, 1, 0
+  glVertex3f 0, 1, 0
+ glEnd
+End Sub
+Private Sub Des_Eixos()
+ glBegin bmLines
+   glColor3f 1#, 0#, 0#
+   glVertex3f 0#, 0#, 0#
+   glVertex3f 5#, 0#, 0#
+   
+   glColor3f 0#, 1#, 0#
+   glVertex3f 0#, 0#, 0#
+   glVertex3f 0#, 5#, 0#
+   
+   glColor3f 0#, 0#, 1#
+   glVertex3f 0#, 0#, 0#
+   glVertex3f 0#, 0#, 5#
+ glEnd
+End Sub
+Private Sub Desenha_Todos(Mode As GLenum)
+ Dim X, Y As Long
+ Dim Cor(1 To 3, 0 To 1) As GLfloat 'TRÊS coordenadas para cada uma das DUAS cores
+  
+ Cor(1, 0) = 1#: Cor(2, 0) = 0.5: Cor(3, 0) = 0#
+ Cor(1, 1) = 0.5: Cor(2, 1) = 0.2: Cor(3, 1) = 0.5
+ 
+ glMatrixMode GL_MODELVIEW
+ glLoadIdentity
+ gluLookAt 4, 3.5, 3, 0, 0, 0, 0, 0, 1
+ 
+ If Mode = GL_SELECT Then glLoadName 0
+ glPushAttrib (amAllAttribBits)
+  If Nome = 0 Then glLineWidth (3)
+  Des_Eixos
+ glPopAttrib
+ 
+ glPushMatrix
+ For X = 1 To 3 'para cada X
+  glPushMatrix
+  If Mode = GL_SELECT Then glLoadName X
+  For Y = 1 To 3 'para cada Y
+   If Mode = GL_SELECT Then glPushName Y
+   glColor3fv Cor(1, (X + Y) Mod 2)
+   glPushAttrib (amAllAttribBits)
+    If Nome = X + 3 * (Y - 1) Then glColor3f 1, 1, 0.3
+    Des_Quad
+   glPopAttrib
+   glTranslatef 0, 1, 0
+   If Mode = GL_SELECT Then glPopName
+  Next Y
+  glPopMatrix
+  glTranslatef 1, 0, 0
+ Next X
+ glPopMatrix
+End Sub
+
+Private Sub picViewTela_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+ Const BUFSIZE = 512
+ Dim h As Long, Id As Long
+ Dim Qtd_Nomes As GLuint, MinZ As Double
+ Dim SelectBuf(0 To BUFSIZE - 1) As GLuint
+ Dim Hits As GLint
+ 'Dim ViewPort(0 To 3) As GLint 'Declaração foi feita globalmente
+ 
+ If Button <> 1 Then Exit Sub
+ glGetIntegerv GL_VIEWPORT, ViewPort(0)
+ glSelectBuffer BUFSIZE, SelectBuf(0)
+ glRenderMode GL_SELECT
+ glInitNames
+ glPushName 0
+ 
+ glMatrixMode GL_PROJECTION
+ glPushMatrix
+ glLoadIdentity
+ gluPickMatrix X, ViewPort(3) - Y, 5#, 5#, ViewPort(0)
+ gluPerspective 70, fAspect, 1#, 50#
+ 
+ Desenha_Todos GL_SELECT
+ 
+ glMatrixMode GL_PROJECTION
+ glPopMatrix
+ glFlush
+ Hits = glRenderMode(GL_RENDER)
+ Me.lblHits = "Hits: " & Hits
+ 
+ 'processHits Hits, SelectBuf(0)'Procedimento descrito abaixo...
+ Id = 0
+ MinZ = 2121212121 'inicializa minZ para um valor grande
+ Nome = -1 'Nada selecionado até agora
+ 'Para compreender o laço "FOR NEXT", lembre-se do formato de cada REGISTRO (HIT)...
+  ' Reg1: |    SelectBuf(0)      | SelectBuf(1)  | SelectBuf(2) |  SelectBuf( 3... 3+Qtd_Nomes)   |
+  '       | Qtd de Nomes em Reg1 |   Z mínimo    |   Z máximo   | Nomes deste Registro (de 0 a n) |
+  '  ...próximo registro é similar!
+  ' Reg2: |SelectBuf(0 + 3+Qtd_Nomes)| e assim vai...
+  
+ For h = 1 To Hits
+  Qtd_Nomes = SelectBuf(Id) 'o nome é composto de 'tantas' coordenadas
+  If (SelectBuf(Id + 1) < MinZ) And (Qtd_Nomes > 0) Then
+   MinZ = SelectBuf(Id + 1)
+   Nome = SelectBuf(Id + 3)
+   If Qtd_Nomes = 2 Then Nome = Nome + 3 * (-1 + SelectBuf(Id + 4))
+  End If
+  Id = Id + 3 + Qtd_Nomes
+ Next h
+ Me.lblTexto = "Id do objeto: " & Nome
+ If Nome > 0 Then Me.lblTexto = Me.lblTexto & vbCrLf & "[ " & (Nome - 1) Mod 3 + 1 & ", " & (Nome \ 3) + 1 & "]"
+ picViewTela_Paint 'glutPostRedisplay 'GLUT CAUSA ERRO NO VB
+ 
 End Sub
 
 Private Sub picViewTela_Paint()
-Dim D As GLfloat, Ini As GLfloat, Fim As GLfloat
  glClear clrColorBufferBit Or clrDepthBufferBit
  
- If chkQuad Then
-  glLineWidth 2 * CInt(Val(txtLineWidth))
-  glLineStipple 1, CInt(Val(txtLineStipple))
-  glEnable glcLineStipple
-  glColor3f 0#, 1#, 0#
-  glBegin bmLineLoop
-   glVertex2f 2, 0
-   glVertex2f 0, 2
-   glVertex2f -2, 0
-   glVertex2f 0, -2
-  glEnd
-  glDisable glcLineStipple
- End If
- 
- glLineWidth CInt(Val(txtLineWidth))
- glPointSize CInt(Val(txtPointSize))
-
- Ini = Centro_X - (Visivel_X / 2)
- Fim = Ini + Visivel_X
- If chkEixos Then
-  glColor3f 0.5, 0.5, 0.5
-  glBegin bmLines
-   glVertex2f Ini, 0
-   glVertex2f Fim, 0
-  glEnd
- End If
- If chkMarcas Then
-  glColor3f 0.2, 0.2, 0.2
-  glBegin bmPoints
-   For D = CInt(Ini) To CInt(Fim)
-     glVertex2f D, 0
-   Next D
-  glEnd
- End If
- 
- Ini = Centro_Y - (Visivel_Y / 2)
- Fim = Ini + Visivel_Y
- If chkEixos Then
-  glColor3f 0.5, 0.5, 0.5
-  glBegin bmLines
-   glVertex2f 0, Ini
-   glVertex2f 0, Fim
-  glEnd
- End If
- If chkMarcas Then
-  glColor3f 0.2, 0.2, 0.2
-  glBegin bmPoints
-   For D = CInt(Ini) To CInt(Fim)
-     glVertex2f 0, D
-   Next D
-  glEnd
- End If
+ Desenha_Todos GL_RENDER 'GL_SELECT
  
  SwapBuffers hDC1
 End Sub
 Private Sub Form_Unload(Cancel As Integer)
-Unload frmMatriz
 Call Finalizar_OpenGL
-End Sub
-
-Private Sub ImgDown_Click()
-Centro_Y = Centro_Y + 0.15 * Visivel_Y
-Call basVisualização.Ajusta_ViewPort(0, 0, Larg, Alt)
-Call picViewTela_Paint
-End Sub
-
-Private Sub ImgLeft_Click()
-Centro_X = Centro_X + 0.15 * Visivel_X
-Call basVisualização.Ajusta_ViewPort(0, 0, Larg, Alt)
-Call picViewTela_Paint
-End Sub
-
-Private Sub imgRight_Click()
-Centro_X = Centro_X - 0.15 * Visivel_X
-Call basVisualização.Ajusta_ViewPort(0, 0, Larg, Alt)
-Call picViewTela_Paint
-End Sub
-
-Private Sub imgUp_Click()
-Centro_Y = Centro_Y - 0.15 * Visivel_Y
-Call basVisualização.Ajusta_ViewPort(0, 0, Larg, Alt)
-Call picViewTela_Paint
-End Sub
-
-Private Sub txtLineStipple_LostFocus()
-Call picViewTela_Paint
-End Sub
-
-Private Sub txtLineStipple_Validate(Cancel As Boolean)
-If Val(txtLineStipple) > 500 Then txtLineStipple = "3": MsgBox "O valor deve ser menor que 500": Cancel = True
-End Sub
-
-Private Sub txtLineWidth_LostFocus()
-Call picViewTela_Paint
-End Sub
-
-Private Sub txtLineWidth_Validate(Cancel As Boolean)
-If Val(txtLineWidth) > 30 Then txtLineWidth = "2": MsgBox "O valor deve ser menor que 30": Cancel = True
-End Sub
-
-Private Sub txtPointSize_LostFocus()
-Call picViewTela_Paint
-End Sub
-
-Private Sub txtPointSize_Validate(Cancel As Boolean)
-If Val(txtPointSize) > 30 Then txtPointSize = "5": MsgBox "O valor deve ser menor que 30": Cancel = True
 End Sub
