@@ -57,8 +57,8 @@ Public Sub Inicializar_OpenGL(ByVal hDC As Long)
  'glEnable GL_DEPTH_TEST
  'glClearDepth 1
  glEnable glcColorMaterial
- glClearColor 0.9, 0.9, 1#, 0
- glEnable glcLineStipple
+ glClearColor 0.8, 0.8, 1#, 0
+ 
  'Ajusta matriz de projeção e viewport
  glMatrixMode GL_PROJECTION
    glLoadIdentity
@@ -84,5 +84,5 @@ Sub Ajusta_ViewPort(X_esq As GLint, Y_inf As GLint, Larg As GLsizei, Alt As GLsi
   gluOrtho2D Centro_X - Visivel_X / 2, Centro_X + Visivel_X / 2, _
              Centro_Y - Visivel_Y / 2, Centro_Y + Visivel_Y / 2
   glMatrixMode GL_MODELVIEW
-  
+  If MostrarMatrizes Then Call frmMatriz.AtualizaMatrizes
 End Sub

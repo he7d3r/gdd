@@ -1,301 +1,159 @@
 VERSION 5.00
 Begin VB.Form frmMain 
-   BorderStyle     =   1  'Fixed Single
    Caption         =   "Exemplo - Integrando Vb e OpenGl"
-   ClientHeight    =   3045
-   ClientLeft      =   585
-   ClientTop       =   1170
-   ClientWidth     =   8940
+   ClientHeight    =   3360
+   ClientLeft      =   600
+   ClientTop       =   1185
+   ClientWidth     =   10320
    LinkTopic       =   "Form1"
-   MaxButton       =   0   'False
-   MinButton       =   0   'False
-   ScaleHeight     =   203
+   ScaleHeight     =   224
    ScaleMode       =   3  'Pixel
-   ScaleWidth      =   596
-   StartUpPosition =   2  'CenterScreen
-   Begin VB.CommandButton cmdLimpar 
-      Cancel          =   -1  'True
-      Caption         =   "Limpar"
-      Height          =   495
-      Left            =   6960
-      TabIndex        =   3
-      Top             =   1920
-      Width           =   1575
+   ScaleWidth      =   688
+   Begin VB.TextBox txtLineStipple 
+      Alignment       =   2  'Center
+      Height          =   375
+      Left            =   1800
+      TabIndex        =   9
+      Text            =   "3"
+      Top             =   2760
+      Width           =   495
    End
    Begin VB.TextBox txtLineWidth 
       Alignment       =   2  'Center
-      Height          =   285
-      Left            =   1155
-      TabIndex        =   1
-      Text            =   "2"
-      Top             =   195
-      Width           =   735
-   End
-   Begin VB.TextBox txtFactor 
-      Alignment       =   2  'Center
-      Height          =   285
-      Left            =   1155
-      TabIndex        =   2
+      Height          =   375
+      Left            =   1800
+      TabIndex        =   7
       Text            =   "1"
-      Top             =   915
-      Width           =   735
+      Top             =   2280
+      Width           =   495
+   End
+   Begin VB.TextBox txtPointSize 
+      Alignment       =   2  'Center
+      Height          =   375
+      Left            =   1800
+      TabIndex        =   5
+      Text            =   "3"
+      Top             =   1800
+      Width           =   495
+   End
+   Begin VB.Frame Frame1 
+      Appearance      =   0  'Flat
+      Caption         =   "Opções"
+      ForeColor       =   &H80000008&
+      Height          =   2415
+      Left            =   7200
+      TabIndex        =   1
+      Top             =   360
+      Width           =   2895
+      Begin VB.CheckBox chkQuad 
+         Appearance      =   0  'Flat
+         Caption         =   "Exibir quadrado"
+         ForeColor       =   &H80000008&
+         Height          =   495
+         Left            =   240
+         TabIndex        =   4
+         Top             =   480
+         Width           =   1455
+      End
+      Begin VB.CheckBox chkMarcas 
+         Appearance      =   0  'Flat
+         Caption         =   "Exibir marcas sobre os eixos"
+         ForeColor       =   &H80000008&
+         Height          =   495
+         Left            =   240
+         TabIndex        =   3
+         Top             =   1680
+         Value           =   1  'Checked
+         Width           =   2535
+      End
+      Begin VB.CheckBox chkEixos 
+         Appearance      =   0  'Flat
+         Caption         =   "Exibir eixos X e Y"
+         ForeColor       =   &H80000008&
+         Height          =   495
+         Left            =   240
+         TabIndex        =   2
+         Top             =   1080
+         Value           =   1  'Checked
+         Width           =   2175
+      End
    End
    Begin VB.PictureBox picViewTela 
       Appearance      =   0  'Flat
       BackColor       =   &H00404040&
       BorderStyle     =   0  'None
       ForeColor       =   &H80000008&
-      Height          =   1560
-      Left            =   3480
-      ScaleHeight     =   104
+      Height          =   3000
+      Left            =   2520
+      ScaleHeight     =   200
       ScaleMode       =   3  'Pixel
-      ScaleWidth      =   340
+      ScaleWidth      =   300
       TabIndex        =   0
-      Top             =   240
-      Width           =   5100
+      Top             =   120
+      Width           =   4500
    End
-   Begin VB.Label lblConta 
-      Height          =   330
-      Left            =   225
-      TabIndex        =   11
-      Top             =   2520
-      Width           =   8115
-   End
-   Begin VB.Label Label8 
+   Begin VB.Label Label3 
       AutoSize        =   -1  'True
-      Caption         =   ";"
+      Caption         =   "Estilo de pontilhado:"
       Height          =   195
-      Left            =   1935
+      Left            =   360
       TabIndex        =   10
-      Top             =   1035
-      Width           =   45
-   End
-   Begin VB.Label lblPattern 
-      Alignment       =   2  'Center
-      BackColor       =   &H8000000E&
-      BorderStyle     =   1  'Fixed Single
-      Caption         =   "0"
-      Enabled         =   0   'False
-      Height          =   285
-      Left            =   2070
-      TabIndex        =   9
-      Top             =   915
-      Width           =   690
-   End
-   Begin VB.Label Label6 
-      AutoSize        =   -1  'True
-      Caption         =   ")"
-      Height          =   195
-      Left            =   2835
-      TabIndex        =   8
-      Top             =   960
-      Width           =   45
-   End
-   Begin VB.Label Label5 
-      AutoSize        =   -1  'True
-      Caption         =   ")"
-      Height          =   195
-      Left            =   1935
-      TabIndex        =   7
-      Top             =   240
-      Width           =   45
-   End
-   Begin VB.Image imgNaoSim 
-      Appearance      =   0  'Flat
-      BorderStyle     =   1  'Fixed Single
-      Height          =   255
-      Index           =   1
-      Left            =   3120
-      Picture         =   "Main.frx":0000
-      Stretch         =   -1  'True
-      Top             =   1560
-      Visible         =   0   'False
-      Width           =   255
-   End
-   Begin VB.Image imgNaoSim 
-      Appearance      =   0  'Flat
-      BorderStyle     =   1  'Fixed Single
-      Height          =   255
-      Index           =   0
-      Left            =   2760
-      Picture         =   "Main.frx":0442
-      Stretch         =   -1  'True
-      Top             =   1560
-      Visible         =   0   'False
-      Width           =   255
-   End
-   Begin VB.Image imgStipple 
-      Appearance      =   0  'Flat
-      Enabled         =   0   'False
-      Height          =   255
-      Index           =   15
-      Left            =   6360
-      Picture         =   "Main.frx":0884
-      Stretch         =   -1  'True
-      Top             =   2040
-      Width           =   255
-   End
-   Begin VB.Image imgStipple 
-      Appearance      =   0  'Flat
-      Height          =   255
-      Index           =   14
-      Left            =   6000
-      Stretch         =   -1  'True
-      Top             =   2040
-      Width           =   255
-   End
-   Begin VB.Image imgStipple 
-      Appearance      =   0  'Flat
-      Height          =   255
-      Index           =   13
-      Left            =   5640
-      Stretch         =   -1  'True
-      Top             =   2040
-      Width           =   255
-   End
-   Begin VB.Image imgStipple 
-      Appearance      =   0  'Flat
-      Height          =   255
-      Index           =   12
-      Left            =   5280
-      Stretch         =   -1  'True
-      Top             =   2040
-      Width           =   255
-   End
-   Begin VB.Image imgStipple 
-      Appearance      =   0  'Flat
-      Height          =   255
-      Index           =   11
-      Left            =   4680
-      Stretch         =   -1  'True
-      Top             =   2040
-      Width           =   255
-   End
-   Begin VB.Image imgStipple 
-      Appearance      =   0  'Flat
-      Height          =   255
-      Index           =   10
-      Left            =   4320
-      Stretch         =   -1  'True
-      Top             =   2040
-      Width           =   255
-   End
-   Begin VB.Image imgStipple 
-      Appearance      =   0  'Flat
-      Height          =   255
-      Index           =   9
-      Left            =   3960
-      Stretch         =   -1  'True
-      Top             =   2040
-      Width           =   255
-   End
-   Begin VB.Image imgStipple 
-      Appearance      =   0  'Flat
-      Height          =   255
-      Index           =   8
-      Left            =   3600
-      Stretch         =   -1  'True
-      Top             =   2040
-      Width           =   255
-   End
-   Begin VB.Image imgStipple 
-      Appearance      =   0  'Flat
-      Height          =   255
-      Index           =   7
-      Left            =   3000
-      Stretch         =   -1  'True
-      Top             =   2040
-      Width           =   255
-   End
-   Begin VB.Image imgStipple 
-      Appearance      =   0  'Flat
-      Height          =   255
-      Index           =   6
-      Left            =   2640
-      Stretch         =   -1  'True
-      Top             =   2040
-      Width           =   255
-   End
-   Begin VB.Image imgStipple 
-      Appearance      =   0  'Flat
-      Height          =   255
-      Index           =   5
-      Left            =   2280
-      Stretch         =   -1  'True
-      Top             =   2040
-      Width           =   255
-   End
-   Begin VB.Image imgStipple 
-      Appearance      =   0  'Flat
-      Height          =   255
-      Index           =   4
-      Left            =   1920
-      Stretch         =   -1  'True
-      Top             =   2040
-      Width           =   255
-   End
-   Begin VB.Image imgStipple 
-      Appearance      =   0  'Flat
-      Height          =   255
-      Index           =   3
-      Left            =   1320
-      Stretch         =   -1  'True
-      Top             =   2040
-      Width           =   255
-   End
-   Begin VB.Image imgStipple 
-      Appearance      =   0  'Flat
-      Height          =   255
-      Index           =   2
-      Left            =   960
-      Stretch         =   -1  'True
-      Top             =   2040
-      Width           =   255
-   End
-   Begin VB.Image imgStipple 
-      Appearance      =   0  'Flat
-      Height          =   255
-      Index           =   1
-      Left            =   600
-      Stretch         =   -1  'True
-      Top             =   2040
-      Width           =   255
-   End
-   Begin VB.Image imgStipple 
-      Appearance      =   0  'Flat
-      Height          =   255
-      Index           =   0
-      Left            =   240
-      Stretch         =   -1  'True
-      Top             =   2040
-      Width           =   255
-   End
-   Begin VB.Label Label4 
-      AutoSize        =   -1  'True
-      Caption         =   "Pattern (Estilo de pontilhado):"
-      Height          =   195
-      Left            =   240
-      TabIndex        =   6
-      Top             =   1560
-      Width           =   2070
+      Top             =   2760
+      Width           =   1425
    End
    Begin VB.Label Label2 
       AutoSize        =   -1  'True
-      Caption         =   "glLineWidth ("
+      Caption         =   "Espessura das linhas:"
       Height          =   195
-      Left            =   180
-      TabIndex        =   5
-      Top             =   240
-      Width           =   930
+      Left            =   255
+      TabIndex        =   8
+      Top             =   2280
+      Width           =   1530
    End
    Begin VB.Label Label1 
       AutoSize        =   -1  'True
-      Caption         =   "glLineStipple("
+      Caption         =   "Tamanho dos pontos:"
       Height          =   195
-      Left            =   165
-      TabIndex        =   4
-      Top             =   960
-      Width           =   945
+      Left            =   240
+      TabIndex        =   6
+      Top             =   1800
+      Width           =   1545
+   End
+   Begin VB.Image imgRight 
+      Appearance      =   0  'Flat
+      BorderStyle     =   1  'Fixed Single
+      Height          =   510
+      Left            =   1530
+      Picture         =   "Main.frx":0000
+      Top             =   660
+      Width           =   510
+   End
+   Begin VB.Image ImgLeft 
+      Appearance      =   0  'Flat
+      BorderStyle     =   1  'Fixed Single
+      Height          =   510
+      Left            =   510
+      Picture         =   "Main.frx":0442
+      Top             =   660
+      Width           =   510
+   End
+   Begin VB.Image ImgDown 
+      Appearance      =   0  'Flat
+      BorderStyle     =   1  'Fixed Single
+      Height          =   510
+      Left            =   1020
+      Picture         =   "Main.frx":0884
+      Top             =   1170
+      Width           =   510
+   End
+   Begin VB.Image imgUp 
+      Appearance      =   0  'Flat
+      BorderStyle     =   1  'Fixed Single
+      Height          =   510
+      Left            =   1020
+      Picture         =   "Main.frx":0CC6
+      Top             =   150
+      Width           =   510
    End
 End
 Attribute VB_Name = "frmMain"
@@ -304,28 +162,21 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
-Private Stipple(0 To 14) As Boolean
-Private Pattern As GLushort
-Const SOMA_UM = "Soma = 1 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 = 1"
 
-Private Sub cmdLimpar_Click()
-Dim i As Long
- Stipple(0) = True
- imgStipple(0).Picture = imgNaoSim(1)
- For i = 1 To 14
-  Stipple(i) = False
-  imgStipple(i).Picture = imgNaoSim(0)
- Next i
- txtLineWidth = 2
- txtFactor = 1
- Pattern = 1
- lblPattern = Pattern
- lblConta = SOMA_UM
- picViewTela_Paint
+Private Sub chkEixos_Click()
+picViewTela_Paint
+End Sub
+
+Private Sub chkMarcas_Click()
+picViewTela_Paint
+End Sub
+
+Private Sub chkQuad_Click()
+picViewTela_Paint
 End Sub
 
 Private Sub Form_Load()
- 'Dim i As Integer
+
  hDC1 = Me.picViewTela.hDC 'Identificador da ViewPort1 (embora não use + de uma viewport)
  
  Larg = frmMain.picViewTela.ScaleWidth
@@ -334,53 +185,120 @@ Private Sub Form_Load()
  Centro_Y = 0
  Visivel_X = 10: Visivel_Y = Visivel_X * Alt / Larg
  Call Inicializar_OpenGL(hDC1) 'Ajusta formato dos pixels, iluminação, matrizes de projeção...
- 
- cmdLimpar_Click
+
 End Sub
-
-Private Sub imgStipple_Click(Index As Integer)
-Dim i As Long
-Stipple(Index) = Not Stipple(Index)
-imgStipple(Index).Picture = imgNaoSim(IIf(Stipple(Index), 1, 0))
-
-Pattern = 0: lblConta = "Soma = "
-For i = 0 To 14
- lblConta = lblConta & CStr(IIf(Stipple(i), 1, 0) * 2 ^ i) & " + "
- Pattern = Pattern Or (IIf(Stipple(i), 1, 0) * 2 ^ i)
-Next i
-lblConta = Left(lblConta, Len(lblConta) - 3) & " = " & Pattern
-lblPattern = Pattern
-picViewTela_Paint
+Private Sub picViewTela_DblClick()
+If Not frmMatriz.Visible Then frmMatriz.Show    'vbModal
 End Sub
 
 Private Sub picViewTela_Paint()
 Dim D As GLfloat, Ini As GLfloat, Fim As GLfloat
-
  glClear clrColorBufferBit Or clrDepthBufferBit
  
+ If chkQuad Then
+  glLineWidth 2 * CInt(Val(txtLineWidth))
+  glLineStipple 1, CInt(Val(txtLineStipple))
+  glEnable glcLineStipple
+  glColor3f 0#, 1#, 0#
+  glBegin bmLineLoop
+   glVertex2f 2, 0
+   glVertex2f 0, 2
+   glVertex2f -2, 0
+   glVertex2f 0, -2
+  glEnd
+  glDisable glcLineStipple
+ End If
+ 
  glLineWidth CInt(Val(txtLineWidth))
- glEnable glcLineStipple
- glLineStipple CInt(Val(txtFactor)), CInt(Val(lblPattern))
- Ini = Centro_X - (Visivel_X / 3)
- Fim = Ini + 2 * Visivel_X / 3
- glColor3f 0#, 0#, 0#
- glBegin bmLines
+ glPointSize CInt(Val(txtPointSize))
+
+ Ini = Centro_X - (Visivel_X / 2)
+ Fim = Ini + Visivel_X
+ If chkEixos Then
+  glColor3f 0.5, 0.5, 0.5
+  glBegin bmLines
    glVertex2f Ini, 0
    glVertex2f Fim, 0
- glEnd
- 'glDisable glcLineStipple
+  glEnd
+ End If
+ If chkMarcas Then
+  glColor3f 0.2, 0.2, 0.2
+  glBegin bmPoints
+   For D = CInt(Ini) To CInt(Fim)
+     glVertex2f D, 0
+   Next D
+  glEnd
+ End If
+ 
+ Ini = Centro_Y - (Visivel_Y / 2)
+ Fim = Ini + Visivel_Y
+ If chkEixos Then
+  glColor3f 0.5, 0.5, 0.5
+  glBegin bmLines
+   glVertex2f 0, Ini
+   glVertex2f 0, Fim
+  glEnd
+ End If
+ If chkMarcas Then
+  glColor3f 0.2, 0.2, 0.2
+  glBegin bmPoints
+   For D = CInt(Ini) To CInt(Fim)
+     glVertex2f 0, D
+   Next D
+  glEnd
+ End If
+ 
  SwapBuffers hDC1
 End Sub
 Private Sub Form_Unload(Cancel As Integer)
+Unload frmMatriz
 Call Finalizar_OpenGL
 End Sub
-Private Sub txtFactor_LostFocus()
+
+Private Sub ImgDown_Click()
+Centro_Y = Centro_Y + 0.15 * Visivel_Y
+Call basVisualização.Ajusta_ViewPort(0, 0, Larg, Alt)
 Call picViewTela_Paint
 End Sub
+
+Private Sub ImgLeft_Click()
+Centro_X = Centro_X + 0.15 * Visivel_X
+Call basVisualização.Ajusta_ViewPort(0, 0, Larg, Alt)
+Call picViewTela_Paint
+End Sub
+
+Private Sub imgRight_Click()
+Centro_X = Centro_X - 0.15 * Visivel_X
+Call basVisualização.Ajusta_ViewPort(0, 0, Larg, Alt)
+Call picViewTela_Paint
+End Sub
+
+Private Sub imgUp_Click()
+Centro_Y = Centro_Y - 0.15 * Visivel_Y
+Call basVisualização.Ajusta_ViewPort(0, 0, Larg, Alt)
+Call picViewTela_Paint
+End Sub
+
+Private Sub txtLineStipple_LostFocus()
+Call picViewTela_Paint
+End Sub
+
+Private Sub txtLineStipple_Validate(Cancel As Boolean)
+If Val(txtLineStipple) > 500 Then txtLineStipple = "3": MsgBox "O valor deve ser menor que 500": Cancel = True
+End Sub
+
 Private Sub txtLineWidth_LostFocus()
 Call picViewTela_Paint
 End Sub
+
 Private Sub txtLineWidth_Validate(Cancel As Boolean)
 If Val(txtLineWidth) > 30 Then txtLineWidth = "2": MsgBox "O valor deve ser menor que 30": Cancel = True
 End Sub
 
+Private Sub txtPointSize_LostFocus()
+Call picViewTela_Paint
+End Sub
+
+Private Sub txtPointSize_Validate(Cancel As Boolean)
+If Val(txtPointSize) > 30 Then txtPointSize = "5": MsgBox "O valor deve ser menor que 30": Cancel = True
+End Sub
