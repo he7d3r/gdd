@@ -22,8 +22,13 @@ Private Declare Function wglCreateContext Lib "OpenGL32" (ByVal hDC As Long) As 
 Private Declare Sub wglDeleteContext Lib "OpenGL32" (ByVal hContext As Long)
 Private Declare Sub wglMakeCurrent Lib "OpenGL32" (ByVal l1 As Long, ByVal l2 As Long)
 
-Public hGLRC As Long '
-Public hDC1 As Long, hDC2 As Long 'HDC's das ViewPorts
+'Rendering context handles
+Public hDCPerspectiva As Long, hGLRCPerspectiva As Long
+Public hDCFrontal As Long, hGLRCFrontal As Long
+Public hDCLateral As Long, hGLRCLateral As Long
+Public hDCSuperior As Long, hGLRCSuperior As Long
+Public hDCEpura As Long, hGLRCEpura As Long
+Global QObj As Long                   'GLU Quadric Object
 Sub FatalError(ByVal msgErro As String)
     MsgBox "ERRO FATAL: " & msgErro, _
      vbCritical + vbApplicationModal + vbOKOnly + vbDefaultButton1, _
@@ -32,7 +37,7 @@ Sub FatalError(ByVal msgErro As String)
     Set frmMain = Nothing
     End
 End Sub
-Sub SetupPixelFormat(ByVal hDC As Long)
+Public Function SetupPixelFormat(ByVal hDC As Long) As Long
     Dim pfd As PIXELFORMATDESCRIPTOR
     'PIXEL FORMAT: Sempre há 24 tipos básicos disponíveis.
     'Surgem outros se existir uma placa 3d no computador...
@@ -56,12 +61,27 @@ Sub SetupPixelFormat(ByVal hDC As Long)
     'Verifica se está disponível o formato 'pfd'...
     PixelFormat = ChoosePixelFormat(hDC, pfd)
     If PixelFormat = 0 Then FatalError DESC_ERRO
-    'Define o formato dos pixels conforme descrito em 'pfd'...
-    SetPixelFormat hDC, PixelFormat, pfd
-End Sub
+    SetupPixelFormat = PixelFormat
+End Function
 Public Sub Finalizar_OpenGL() 'ByVal hDC As Long)
- If basVbOpenGl.hGLRC <> 0 Then
+ If basVbOpenGl.hGLRCPerspectiva <> 0 Then
   wglMakeCurrent 0, 0 'NULL, NULL
-  wglDeleteContext basVbOpenGl.hGLRC
+  wglDeleteContext basVbOpenGl.hGLRCPerspectiva
+ End If
+ If basVbOpenGl.hGLRCFrontal <> 0 Then
+  wglMakeCurrent 0, 0 'NULL, NULL
+  wglDeleteContext basVbOpenGl.hGLRCFrontal
+ End If
+ If basVbOpenGl.hGLRCLateral <> 0 Then
+  wglMakeCurrent 0, 0 'NULL, NULL
+  wglDeleteContext basVbOpenGl.hGLRCLateral
+ End If
+ If basVbOpenGl.hGLRCSuperior <> 0 Then
+  wglMakeCurrent 0, 0 'NULL, NULL
+  wglDeleteContext basVbOpenGl.hGLRCSuperior
+ End If
+ If basVbOpenGl.hGLRCEpura <> 0 Then
+  wglMakeCurrent 0, 0 'NULL, NULL
+  wglDeleteContext basVbOpenGl.hGLRCEpura
  End If
 End Sub
