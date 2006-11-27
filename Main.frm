@@ -133,6 +133,7 @@ Attribute VB_Exposed = False
 Option Explicit
 Private X_Ini As Integer, Y_Ini As Integer
 Private Phi_Ini As GLfloat, Theta_Ini As GLfloat
+Private Px As GLdouble, Py As GLdouble, Pz As GLdouble
 
 Private Sub Form_KeyPress(KeyAscii As Integer)
  If Chr(KeyAscii) = "+" Then Ro = Ro - 1
@@ -159,7 +160,7 @@ Private Sub Form_Load()
  hDCLateral = Me.picLateral.hDC
  hDCSuperior = Me.picSuperior.hDC
  hDCEpura = Me.picEpura.hDC
- 
+ Px = 0: Py = 0: Pz = 0
  Call Inicializar_OpenGL 'Ajusta formato dos pixels, iluminação, matrizes de projeção...
 End Sub
 Private Sub Des_Eixos()
@@ -176,6 +177,21 @@ Private Sub Des_Eixos()
    glVertex3f 0#, 0#, 0#
    glVertex3f 0#, 0#, 3#
  glEnd
+End Sub
+Private Sub Des_Ponto()
+  glColor3d 0.5, 0.5, 0.5
+  glPointSize (3#)
+  glBegin bmPoints
+   glVertex3f Px, Py, Pz
+  glEnd
+  glBegin bmLines
+   glVertex3f 0#, Py, Pz
+   glVertex3f Px, Py, Pz
+   glVertex3f Px, Py, 0#
+   glVertex3f Px, Py, Pz
+   glVertex3f Px, 0#, Pz
+   glVertex3f Px, Py, Pz
+  glEnd
 End Sub
 Private Sub Des_Figura()
  glPushMatrix
@@ -199,43 +215,13 @@ End Sub
 Private Sub Desenha_Todos()
  Des_Figura
  Des_Eixos
+ Des_Ponto
 End Sub
 Private Sub Form_Unload(Cancel As Integer)
 Call Finalizar_OpenGL
 End Sub
 
-Private Sub picEpura_Paint()
 
- wglMakeCurrent hDCEpura, hGLRCEpura
- glClear clrColorBufferBit Or clrDepthBufferBit
- glMatrixMode GL_MODELVIEW
-  glLoadIdentity
-  glMultMatrixf Troca_X_Y(0)
-  glRotatef 90, 0#, 0#, 1#
-  glRotatef 90, 1#, 0#, 0#
- Des_Figura
- glMatrixMode GL_MODELVIEW
-  glLoadIdentity
-  glMultMatrixf Troca_X_Y(0)
-  glRotatef 90, 0#, 0#, 1#
- Des_Figura
- Des_LT
- SwapBuffers hDCEpura
-End Sub
-Private Sub picFrontal_Paint()
-
- wglMakeCurrent hDCFrontal, hGLRCFrontal
- glClear clrColorBufferBit Or clrDepthBufferBit
- Desenha_Todos
- SwapBuffers hDCFrontal
-End Sub
-Private Sub picLateral_Paint()
-
- wglMakeCurrent hDCLateral, hGLRCLateral
- glClear clrColorBufferBit Or clrDepthBufferBit
- Desenha_Todos
- SwapBuffers hDCLateral
-End Sub
 Private Sub picPerspectiva_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
  X_Ini = X: Y_Ini = Y
  Phi_Ini = Phi:  Theta_Ini = Theta
@@ -243,14 +229,45 @@ End Sub
 
 Private Sub picPerspectiva_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
  Const VELOCIDADE = 0.5
- Dim Dx As Integer, Dy As Integer
+ Dim dx As Integer, dy As Integer
+ 
+ Dim pos As GLdouble
+ Dim ViewPort(0 To 3) As GLint
+ Dim mvmatrix(0 To 15) As GLdouble, projmatrix(0 To 15) As GLdouble
+ Dim realy As GLint
+ Dim x1 As GLdouble, y1 As GLdouble, z1 As GLdouble
+ Dim x0 As GLdouble, y0 As GLdouble, z0 As GLdouble
+ Dim vx As GLdouble, vy As GLdouble, vz As GLdouble
+ 
  Select Case Button
  Case 1
-  Dx = VELOCIDADE * (X - X_Ini)
-  Dy = VELOCIDADE * (Y - Y_Ini)
+  wglMakeCurrent hDCPerspectiva, hGLRCPerspectiva
+  glGetIntegerv GL_VIEWPORT, ViewPort(0)
+  glGetDoublev GL_MODELVIEW_MATRIX, mvmatrix(0)
+  glGetDoublev GL_PROJECTION_MATRIX, projmatrix(0)
+  realy = ViewPort(3) - Y - 1
+  gluUnProject X, realy, 0#, mvmatrix(0), projmatrix(0), ViewPort(0), x0, y0, z0
+  gluUnProject X, realy, 1#, mvmatrix(0), projmatrix(0), ViewPort(0), x1, y1, z1
+  vx = x1 - x0
+  vy = y1 - y0
+  vz = z1 - z0
+  pos = -z0 / vz
+  If (0 <= pos And pos <= 1) Then
+   Px = x0 + pos * vx
+   Py = y0 + pos * vy
+   Pz = z0 + pos * vz
+  End If
+  picPerspectiva_Paint
+  picEpura_Paint
+  picSuperior_Paint
+  picFrontal_Paint
+  picLateral_Paint
+ Case 2 'botao direito
+  dx = VELOCIDADE * (X - X_Ini)
+  dy = VELOCIDADE * (Y - Y_Ini)
 
-  Phi = Phi_Ini - Dy
-  Theta = Theta_Ini - Dx
+  Phi = Phi_Ini - dy
+  Theta = Theta_Ini - dx
   Phi = IIf(Phi <= 0, 0.0001, Phi): Phi = IIf(Phi > 180, 180, Phi)
   Theta = IIf(Theta <= -180, Theta + 360, Theta): Theta = IIf(Theta > 180, Theta - 360, Theta)
   
@@ -283,4 +300,37 @@ Private Sub picSuperior_Paint()
  glClear clrColorBufferBit Or clrDepthBufferBit
  Desenha_Todos
  SwapBuffers hDCSuperior
+End Sub
+Private Sub picEpura_Paint()
+
+ wglMakeCurrent hDCEpura, hGLRCEpura
+ glClear clrColorBufferBit Or clrDepthBufferBit
+ glMatrixMode GL_MODELVIEW
+  glLoadIdentity
+  glMultMatrixf Troca_X_Y(0)
+  glRotatef 90, 0#, 0#, 1#
+  glRotatef 90, 1#, 0#, 0#
+ Des_Figura
+ glMatrixMode GL_MODELVIEW
+  glLoadIdentity
+  glMultMatrixf Troca_X_Y(0)
+  glRotatef 90, 0#, 0#, 1#
+ Des_Figura
+ Des_Ponto
+ Des_LT
+ SwapBuffers hDCEpura
+End Sub
+Private Sub picFrontal_Paint()
+
+ wglMakeCurrent hDCFrontal, hGLRCFrontal
+ glClear clrColorBufferBit Or clrDepthBufferBit
+ Desenha_Todos
+ SwapBuffers hDCFrontal
+End Sub
+Private Sub picLateral_Paint()
+
+ wglMakeCurrent hDCLateral, hGLRCLateral
+ glClear clrColorBufferBit Or clrDepthBufferBit
+ Desenha_Todos
+ SwapBuffers hDCLateral
 End Sub
