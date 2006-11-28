@@ -131,12 +131,13 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
-Const MAGNETISMO = True
+Private Magnetismo
 Private X_Ini As Integer, Y_Ini As Integer
 Private Phi_Ini As GLfloat, Theta_Ini As GLfloat
 Private Px As GLdouble, Py As GLdouble, Pz As GLdouble
 
 Private Sub Form_KeyPress(KeyAscii As Integer)
+ If Chr(KeyAscii) = "m" Or Chr(KeyAscii) = "M" Then Magnetismo = Not Magnetismo
  If Chr(KeyAscii) = "+" Then Ro = Ro - 1
  If Chr(KeyAscii) = "-" Then Ro = Ro + 1
  If Ro < 3 Then Ro = 3
@@ -162,6 +163,7 @@ Private Sub Form_Load()
  hDCSuperior = Me.picSuperior.hDC
  hDCEpura = Me.picEpura.hDC
  Px = 0: Py = 0: Pz = 0
+ Magnetismo = True
  Call Inicializar_OpenGL 'Ajusta formato dos pixels, iluminação, matrizes de projeção...
 End Sub
 Private Sub Des_Plano()
@@ -170,6 +172,7 @@ Private Sub Des_Plano()
  Dim PosX As GLdouble, PosY As GLdouble
  
  glColor3f 0.5, 0.5, 0.5
+ 'glLineWidth (1#)
  glBegin bmLines
   For K = -RAIO To RAIO
     PosX = Fix(Px + K): PosY = Fix(Py + K)
@@ -185,6 +188,7 @@ Private Sub Des_Plano()
  glEnd
 End Sub
 Private Sub Des_Eixos()
+ 'glLineWidth (2#)
  glBegin bmLines
    glColor3f 1#, 0#, 0#
    glVertex3f 0#, 0#, 0#
@@ -200,23 +204,30 @@ Private Sub Des_Eixos()
  glEnd
 End Sub
 Private Sub Des_Ponto()
-  glColor3d 0.5, 0.5, 0.5
+  glColor3d 0.1, 0.1, 0.1
   glPointSize (3#)
   glBegin bmPoints
-   If MAGNETISMO Then
+   If Magnetismo Then
     glVertex3d Round(Px), Round(Py), Round(Pz)
    Else
     glVertex3d Px, Py, Pz
    End If
   glEnd
-  'glBegin bmLines
+  glColor3d 0.7, 0.7, 0.7
+  glBegin bmLines
   ' glVertex3d 0#, Py, Pz
   ' glVertex3d Px, Py, Pz
-  ' glVertex3d Px, Py, 0#
-  ' glVertex3d Px, Py, Pz
+  If Magnetismo Then
+   glVertex3d Round(Px), Round(Py), 0#
+   glVertex3d Round(Px), Round(Py), Round(Pz)
+  Else
+   glVertex3d Px, Py, 0#
+   glVertex3d Px, Py, Pz
+  End If
   ' glVertex3d Px, 0#, Pz
   ' glVertex3d Px, Py, Pz
-  'glEnd
+  
+  glEnd
 End Sub
 Private Sub Des_Figura()
  glPushMatrix
@@ -254,6 +265,7 @@ End Sub
 Private Sub picPerspectiva_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
  Const VELOCIDADE = 0.5
  Dim dx As Integer, dy As Integer
+ Dim winX As GLdouble, winY As GLdouble, winZ As GLdouble
  
  Dim Pos As GLdouble
  Dim ViewPort(0 To 3) As GLint
@@ -262,6 +274,8 @@ Private Sub picPerspectiva_MouseMove(Button As Integer, Shift As Integer, X As S
  Dim x1 As GLdouble, y1 As GLdouble, z1 As GLdouble
  Dim x0 As GLdouble, y0 As GLdouble, z0 As GLdouble
  Dim vx As GLdouble, vy As GLdouble, vz As GLdouble
+ Dim px1 As GLdouble, py1 As GLdouble, pz1 As GLdouble
+ Dim px2 As GLdouble, py2 As GLdouble, pz2 As GLdouble
  
  Select Case Button
  Case 1
@@ -275,12 +289,44 @@ Private Sub picPerspectiva_MouseMove(Button As Integer, Shift As Integer, X As S
   vx = x1 - x0
   vy = y1 - y0
   vz = z1 - z0
-  Pos = -z0 / vz
-  If (0 <= Pos And Pos <= 1) Then
-   Px = x0 + Pos * vx
-   Py = y0 + Pos * vy
-   Pz = z0 + Pos * vz
-  End If
+  Select Case Shift
+  Case 0
+   If vz = 0 Then vz = z0: MsgBox "vz=0"
+   Pos = (Pz - z0) / vz
+   If (Pos < 0 Or 1 < Pos) Then Exit Sub
+    Px = x0 + Pos * vx
+    Py = y0 + Pos * vy
+    Pz = z0 + Pos * vz
+   
+  Case vbShiftMask
+  
+  Case vbAltMask
+  
+  Case vbAltMask + vbShiftMask
+  
+  Case vbCtrlMask
+    If vx = 0 Then vx = x0: MsgBox "vx=0"
+    Pos = (Px - x0) / vx
+    If (Pos < 0 Or 1 < Pos) Then Exit Sub
+    px1 = Px: py1 = y0 + Pos * vy: pz1 = z0 + Pos * vz
+    
+    If X < 5 Then X = 5
+    gluUnProject X - 5, realy, 0#, mvmatrix(0), projmatrix(0), ViewPort(0), x0, y0, z0
+    gluUnProject X - 5, realy, 1#, mvmatrix(0), projmatrix(0), ViewPort(0), x1, y1, z1
+    If vx = 0 Then vx = x0: MsgBox "vx=0"
+    Pos = (Px - x0) / vx
+    If (Pos < 0 Or 1 < Pos) Then Exit Sub
+    px2 = Px:  py2 = y0 + Pos * vy:  pz2 = z0 + Pos * vz
+    'px = px
+    'Py = Py
+    If py2 <> py1 Then Pz = pz1 + (Py - py1) * (pz2 - pz1) / (py2 - py1)
+  Case vbCtrlMask + vbShiftMask
+  
+  Case vbCtrlMask + vbAltMask
+  
+  Case vbCtrlMask + vbAltMask + vbShiftMask
+  
+  End Select
   picPerspectiva_Paint
   picEpura_Paint
   picSuperior_Paint
@@ -335,14 +381,19 @@ Private Sub picEpura_Paint()
   glMultMatrixf Troca_X_Y(0)
   glRotatef 90, 0#, 0#, 1#
   glRotatef 90, 1#, 0#, 0#
+ 
  Des_Figura
+ Des_Ponto
+ 
  glMatrixMode GL_MODELVIEW
   glLoadIdentity
   glMultMatrixf Troca_X_Y(0)
   glRotatef 90, 0#, 0#, 1#
+ 
  Des_Figura
  Des_Ponto
  Des_LT
+ 
  SwapBuffers hDCEpura
 End Sub
 Private Sub picFrontal_Paint()

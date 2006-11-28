@@ -36,7 +36,7 @@ Dim Result As Long
  'inicialize AQUI algumas matrizes de iluminação, e outras...
  QObj = gluNewQuadric()
  
- Phi = 60: Theta = 45: Ro = 7
+ Phi = 60: Theta = 45: Ro = 10
  Cam_X = Ro * Sin(Phi * DEG) * Cos(Theta * DEG)
  Cam_Y = Ro * Sin(Phi * DEG) * Sin(Theta * DEG)
  Cam_Z = Ro * Cos(Phi * DEG)
