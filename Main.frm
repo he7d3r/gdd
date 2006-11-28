@@ -131,6 +131,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
+Const MAGNETISMO = True
 Private X_Ini As Integer, Y_Ini As Integer
 Private Phi_Ini As GLfloat, Theta_Ini As GLfloat
 Private Px As GLdouble, Py As GLdouble, Pz As GLdouble
@@ -163,6 +164,26 @@ Private Sub Form_Load()
  Px = 0: Py = 0: Pz = 0
  Call Inicializar_OpenGL 'Ajusta formato dos pixels, iluminação, matrizes de projeção...
 End Sub
+Private Sub Des_Plano()
+ Const RAIO = 3
+ Dim K As GLdouble
+ Dim PosX As GLdouble, PosY As GLdouble
+ 
+ glColor3f 0.5, 0.5, 0.5
+ glBegin bmLines
+  For K = -RAIO To RAIO
+    PosX = Fix(Px + K): PosY = Fix(Py + K)
+    If Abs(PosX - Px) < RAIO Then
+    glVertex3d PosX, Py + (RAIO - Abs(PosX - Px)), 0#
+    glVertex3d PosX, Py - (RAIO - Abs(PosX - Px)), 0#
+    End If
+    If Abs(PosY - Py) < RAIO Then
+    glVertex3d Px + (RAIO - Abs(PosY - Py)), PosY, 0#
+    glVertex3d Px - (RAIO - Abs(PosY - Py)), PosY, 0#
+    End If
+  Next K
+ glEnd
+End Sub
 Private Sub Des_Eixos()
  glBegin bmLines
    glColor3f 1#, 0#, 0#
@@ -182,16 +203,20 @@ Private Sub Des_Ponto()
   glColor3d 0.5, 0.5, 0.5
   glPointSize (3#)
   glBegin bmPoints
-   glVertex3f Px, Py, Pz
+   If MAGNETISMO Then
+    glVertex3d Round(Px), Round(Py), Round(Pz)
+   Else
+    glVertex3d Px, Py, Pz
+   End If
   glEnd
-  glBegin bmLines
-   glVertex3f 0#, Py, Pz
-   glVertex3f Px, Py, Pz
-   glVertex3f Px, Py, 0#
-   glVertex3f Px, Py, Pz
-   glVertex3f Px, 0#, Pz
-   glVertex3f Px, Py, Pz
-  glEnd
+  'glBegin bmLines
+  ' glVertex3d 0#, Py, Pz
+  ' glVertex3d Px, Py, Pz
+  ' glVertex3d Px, Py, 0#
+  ' glVertex3d Px, Py, Pz
+  ' glVertex3d Px, 0#, Pz
+  ' glVertex3d Px, Py, Pz
+  'glEnd
 End Sub
 Private Sub Des_Figura()
  glPushMatrix
@@ -221,7 +246,6 @@ Private Sub Form_Unload(Cancel As Integer)
 Call Finalizar_OpenGL
 End Sub
 
-
 Private Sub picPerspectiva_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
  X_Ini = X: Y_Ini = Y
  Phi_Ini = Phi:  Theta_Ini = Theta
@@ -231,7 +255,7 @@ Private Sub picPerspectiva_MouseMove(Button As Integer, Shift As Integer, X As S
  Const VELOCIDADE = 0.5
  Dim dx As Integer, dy As Integer
  
- Dim pos As GLdouble
+ Dim Pos As GLdouble
  Dim ViewPort(0 To 3) As GLint
  Dim mvmatrix(0 To 15) As GLdouble, projmatrix(0 To 15) As GLdouble
  Dim realy As GLint
@@ -251,11 +275,11 @@ Private Sub picPerspectiva_MouseMove(Button As Integer, Shift As Integer, X As S
   vx = x1 - x0
   vy = y1 - y0
   vz = z1 - z0
-  pos = -z0 / vz
-  If (0 <= pos And pos <= 1) Then
-   Px = x0 + pos * vx
-   Py = y0 + pos * vy
-   Pz = z0 + pos * vz
+  Pos = -z0 / vz
+  If (0 <= Pos And Pos <= 1) Then
+   Px = x0 + Pos * vx
+   Py = y0 + Pos * vy
+   Pz = z0 + Pos * vz
   End If
   picPerspectiva_Paint
   picEpura_Paint
@@ -291,6 +315,7 @@ Private Sub picPerspectiva_Paint()
  glClear clrColorBufferBit Or clrDepthBufferBit
 
  Desenha_Todos
+ Des_Plano
  
  SwapBuffers hDCPerspectiva
 End Sub
