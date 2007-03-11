@@ -13,24 +13,24 @@ Public Larg As GLsizei, Alt As GLsizei
 Public fAspect As GLfloat
 
 Public Sub Inicializar_OpenGL()
-Dim Pfd As PIXELFORMATDESCRIPTOR
+Dim pfd As PIXELFORMATDESCRIPTOR
 Dim Result As Long
  'Ajusta um contexto OpenGl para operar com o objeto com o hDC passado
  Result = basVbOpenGl.SetupPixelFormat(hDCPerspectiva)
  'Define o formato dos pixels conforme descrito em 'pfd'
- SetPixelFormat hDCPerspectiva, Result, Pfd
+ SetPixelFormat hDCPerspectiva, Result, pfd
  hGLRCPerspectiva = wglCreateContext(hDCPerspectiva)
  
- SetPixelFormat hDCFrontal, Result, Pfd
+ SetPixelFormat hDCFrontal, Result, pfd
  hGLRCFrontal = wglCreateContext(hDCFrontal)
  
- SetPixelFormat hDCLateral, Result, Pfd
+ SetPixelFormat hDCLateral, Result, pfd
  hGLRCLateral = wglCreateContext(hDCLateral)
  
- SetPixelFormat hDCSuperior, Result, Pfd
+ SetPixelFormat hDCSuperior, Result, pfd
  hGLRCSuperior = wglCreateContext(hDCSuperior)
  
- SetPixelFormat hDCEpura, Result, Pfd
+ SetPixelFormat hDCEpura, Result, pfd
  hGLRCEpura = wglCreateContext(hDCEpura)
  
  'inicialize AQUI algumas matrizes de iluminação, e outras...
@@ -77,11 +77,13 @@ Dim Result As Long
   
   glMatrixMode GL_MODELVIEW
   glLoadIdentity
+  'Define a matriz Troca_X_Y para inverter o sistema de coordenadas
   glPushMatrix
    glRotatef -90, 0#, 0#, 1#
    glScalef -1, 1, 1
    glGetFloatv GL_MODELVIEW_MATRIX, Troca_X_Y(0)
   glPopMatrix
+  
   gluLookAt Cam_X, Cam_Y, Cam_Z, 0, 0, 0, 0, 0, 1
   glMultMatrixf Troca_X_Y(0)
   
@@ -158,4 +160,5 @@ Dim Result As Long
   glLoadIdentity
   glMultMatrixf Troca_X_Y(0)
   
+  basGeometria.Gera
 End Sub

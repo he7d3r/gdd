@@ -1,30 +1,69 @@
 VERSION 5.00
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Begin VB.Form frmMain 
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Exemplo - Integrando Vb e OpenGl"
-   ClientHeight    =   7200
+   ClientHeight    =   6915
    ClientLeft      =   585
    ClientTop       =   1170
-   ClientWidth     =   10290
+   ClientWidth     =   10980
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   480
+   ScaleHeight     =   461
    ScaleMode       =   3  'Pixel
-   ScaleWidth      =   686
+   ScaleWidth      =   732
    StartUpPosition =   2  'CenterScreen
+   Begin MSComctlLib.ImageList ilsFerramentas 
+      Left            =   180
+      Top             =   6120
+      _ExtentX        =   1005
+      _ExtentY        =   1005
+      BackColor       =   -2147483643
+      ImageWidth      =   33
+      ImageHeight     =   33
+      MaskColor       =   12632256
+      _Version        =   393216
+      BeginProperty Images {2C247F25-8591-11D1-B16A-00C0F0283628} 
+         NumListImages   =   2
+         BeginProperty ListImage1 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "Main.frx":0000
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage2 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "Main.frx":0D36
+            Key             =   ""
+         EndProperty
+      EndProperty
+   End
+   Begin MSComctlLib.Toolbar tbrFerramentas 
+      Align           =   3  'Align Left
+      Height          =   6915
+      Left            =   0
+      TabIndex        =   10
+      Top             =   0
+      Width           =   630
+      _ExtentX        =   1111
+      _ExtentY        =   12197
+      ButtonWidth     =   609
+      ButtonHeight    =   953
+      Appearance      =   1
+      _Version        =   393216
+      MousePointer    =   99
+      MouseIcon       =   "Main.frx":1A6C
+   End
    Begin VB.PictureBox picEpura 
       Appearance      =   0  'Flat
       BackColor       =   &H00C0FFFF&
       ForeColor       =   &H80000008&
       Height          =   3000
-      Left            =   240
+      Left            =   915
       ScaleHeight     =   198
       ScaleMode       =   3  'Pixel
       ScaleWidth      =   198
       TabIndex        =   9
-      Top             =   3840
+      Top             =   3705
       Width           =   3000
    End
    Begin VB.PictureBox picLateral 
@@ -32,12 +71,12 @@ Begin VB.Form frmMain
       BackColor       =   &H00C0FFC0&
       ForeColor       =   &H80000008&
       Height          =   3000
-      Left            =   3720
+      Left            =   4395
       ScaleHeight     =   198
       ScaleMode       =   3  'Pixel
       ScaleWidth      =   198
       TabIndex        =   7
-      Top             =   3840
+      Top             =   3705
       Width           =   3000
    End
    Begin VB.PictureBox picSuperior 
@@ -45,12 +84,12 @@ Begin VB.Form frmMain
       BackColor       =   &H00C0FFC0&
       ForeColor       =   &H80000008&
       Height          =   3000
-      Left            =   7080
+      Left            =   7755
       ScaleHeight     =   198
       ScaleMode       =   3  'Pixel
       ScaleWidth      =   198
       TabIndex        =   6
-      Top             =   3840
+      Top             =   3705
       Width           =   3000
    End
    Begin VB.PictureBox picFrontal 
@@ -58,12 +97,12 @@ Begin VB.Form frmMain
       BackColor       =   &H00C0FFC0&
       ForeColor       =   &H80000008&
       Height          =   3000
-      Left            =   7080
+      Left            =   7755
       ScaleHeight     =   198
       ScaleMode       =   3  'Pixel
       ScaleWidth      =   198
       TabIndex        =   1
-      Top             =   480
+      Top             =   345
       Width           =   3000
    End
    Begin VB.PictureBox picPerspectiva 
@@ -71,58 +110,58 @@ Begin VB.Form frmMain
       BackColor       =   &H00404040&
       ForeColor       =   &H80000008&
       Height          =   3000
-      Left            =   240
+      Left            =   915
       ScaleHeight     =   198
       ScaleMode       =   3  'Pixel
       ScaleWidth      =   431
       TabIndex        =   0
       ToolTipText     =   "Botão esquerdo: Posicionar o ponto; Botão direito: Mover camera."
-      Top             =   480
+      Top             =   345
       Width           =   6495
    End
    Begin VB.Label Label4 
       AutoSize        =   -1  'True
       Caption         =   "Épura (1ª e 2ª Proj.):"
       Height          =   195
-      Left            =   240
+      Left            =   915
       TabIndex        =   8
-      Top             =   3600
+      Top             =   3465
       Width           =   1440
    End
    Begin VB.Label Label3 
       AutoSize        =   -1  'True
       Caption         =   "Vista Frontal (2ª Proj.):"
       Height          =   195
-      Left            =   7080
+      Left            =   7755
       TabIndex        =   5
-      Top             =   240
+      Top             =   105
       Width           =   1560
    End
    Begin VB.Label Label2 
       AutoSize        =   -1  'True
       Caption         =   "Vista Lateral (3ª Proj.):"
       Height          =   195
-      Left            =   3720
+      Left            =   4395
       TabIndex        =   4
-      Top             =   3600
+      Top             =   3465
       Width           =   1560
    End
    Begin VB.Label Label1 
       AutoSize        =   -1  'True
       Caption         =   "Vista Superior (1ª Proj.):"
       Height          =   195
-      Left            =   7080
+      Left            =   7755
       TabIndex        =   3
-      Top             =   3600
+      Top             =   3465
       Width           =   1665
    End
    Begin VB.Label lblPerspectiva 
       Caption         =   "Perspectiva:"
       Height          =   195
-      Left            =   240
+      Left            =   915
       TabIndex        =   2
       ToolTipText     =   "Teclas [ + ] e [ - ] alteram a distância da câmera."
-      Top             =   240
+      Top             =   105
       Width           =   6465
    End
 End
@@ -132,27 +171,90 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
-Private Magnetismo
-Private X_Ini As Integer, Y_Ini As Integer
-Private Phi_Ini As GLfloat, Theta_Ini As GLfloat
-Private Px As GLdouble, Py As GLdouble, Pz As GLdouble
-Private Estado_Teclas As Integer, Posicionando As Boolean
-
+Private Magnetismo As Boolean 'Indica se os pontos devem "grudar" na malha quadriculada
+Private X_Ini As Integer, Y_Ini As Integer       'Usado no movimento da camera
+Private Phi_Ini As GLfloat, Theta_Ini As GLfloat 'Idem
+Private Px As GLdouble, Py As GLdouble, Pz As GLdouble '(Px,Py,Pz)=Unico objeto até agora
+Private Estado_Teclas As Integer 'Indica se ALT, CTRL e SHIFT estão pressionadas
+Private Posicionando As Boolean 'Indica se está sendo posicionado um ponto no espaço
+Private Type Ferramenta
+ IdImg As Integer
+ Key As String
+ TipText As String
+End Type
 Private Sub Form_Load()
-
  hDCPerspectiva = Me.picPerspectiva.hDC 'Identificador das ViewPort's
  hDCFrontal = Me.picFrontal.hDC
  hDCLateral = Me.picLateral.hDC
  hDCSuperior = Me.picSuperior.hDC
  hDCEpura = Me.picEpura.hDC
- Px = 0: Py = 0: Pz = 0
- Magnetismo = True
+ Carrega_Ferramentas
+ tbrFerramentas.Tag = tbrFerramentas.Buttons.Item(1).Key
+ Px = 0: Py = 0: Pz = 0 'O ponto deve coincidir com a origem
+ Magnetismo = True 'habilita o magnetismo entre "ponto" e "grade"
  Posicionando = False
  Call Inicializar_OpenGL 'Ajusta formato dos pixels, iluminação, matrizes de projeção...
 End Sub
 Private Sub Form_Unload(Cancel As Integer)
 Call Finalizar_OpenGL
 End Sub
+Sub Carrega_Ferramentas()
+ Const Arq_INI = "Tabela.ini"
+ Dim imgX As ListImage
+ Dim btnButton As Button
+ 
+ Dim Qtd As Integer
+ Dim FileNumber As Integer
+ Dim N As Integer
+ Dim F() As Ferramenta ' IdImg, Key e TipText
+ 
+ FileNumber = FreeFile
+ On Error GoTo ERRO
+  Open App.Path & "\" & Arq_INI For Input As #FileNumber
+ On Error GoTo 0
+  
+ N = 0
+ 'ReDim F(1 To N)
+ 
+ With ilsFerramentas
+   .ListImages.Clear
+   .MaskColor = vbWhite
+   Do
+    N = N + 1
+    ReDim Preserve F(1 To N)
+    Input #FileNumber, F(N).IdImg, F(N).Key, F(N).TipText
+    Set imgX = .ListImages. _
+    Add(N, F(N).Key, LoadPicture(App.Path & "\IMG\" & Format(N, "00") & ".bmp"))
+   Loop While Not EOF(FileNumber)
+   
+   Close #FileNumber
+   Qtd = .ListImages.Count '=N-1
+ End With
+ 
+ With tbrFerramentas
+   .Buttons.Clear
+   .ImageList = ilsFerramentas
+   For N = 1 To Qtd
+    Set btnButton = .Buttons.Add(N, F(N).Key, "", tbrDefault, N)
+    btnButton.ToolTipText = F(N).TipText
+    btnButton.Style = tbrButtonGroup
+   'If N > 3 Then btnButton.Enabled = False
+   Next N
+   .Buttons(1).Value = tbrPressed
+ End With
+ 
+ Exit Sub
+ERRO:
+ 'If Err.Number = 53 Then
+  'Err.Clear
+  'Recup_Arquivo
+  'Inicializa
+ 'Else
+  Err.Raise Err.Number
+ 'End If
+End Sub
+
+
 Private Sub Form_KeyPress(KeyAscii As Integer)
  If Chr(KeyAscii) = "m" Or Chr(KeyAscii) = "M" Then Magnetismo = Not Magnetismo
  If Chr(KeyAscii) = "+" Then Ro = Ro - 1
@@ -173,7 +275,7 @@ Private Sub Form_KeyPress(KeyAscii As Integer)
 End Sub
 Private Sub Des_Plano(Estado As Integer)
  Const RAIO = 3
- Dim K As GLdouble
+ Dim k As GLdouble
  Dim PosX As GLdouble, PosY As GLdouble, PosZ As GLdouble
  
  If Not Posicionando Then Exit Sub
@@ -183,8 +285,8 @@ Private Sub Des_Plano(Estado As Integer)
  glBegin bmLines
   Select Case Estado
   Case 0, vbCtrlMask
-    For K = -RAIO To RAIO
-      PosX = Fix(Px + K): PosY = Fix(Py + K)
+    For k = -RAIO To RAIO
+      PosX = Fix(Px + k): PosY = Fix(Py + k)
       If Abs(PosX - Px) < RAIO Then
       glVertex3d PosX, Py + (RAIO - Abs(PosX - Px)), 0#
       glVertex3d PosX, Py - (RAIO - Abs(PosX - Px)), 0#
@@ -193,10 +295,10 @@ Private Sub Des_Plano(Estado As Integer)
       glVertex3d Px + (RAIO - Abs(PosY - Py)), PosY, 0#
       glVertex3d Px - (RAIO - Abs(PosY - Py)), PosY, 0#
       End If
-    Next K
+    Next k
   Case vbShiftMask, vbShiftMask + vbCtrlMask
-    For K = -RAIO To RAIO
-      PosZ = Fix(Pz + K): PosY = Fix(Py + K)
+    For k = -RAIO To RAIO
+      PosZ = Fix(Pz + k): PosY = Fix(Py + k)
       If Abs(PosZ - Pz) < RAIO Then
       glVertex3d 0#, Py + (RAIO - Abs(PosZ - Pz)), PosZ
       glVertex3d 0#, Py - (RAIO - Abs(PosZ - Pz)), PosZ
@@ -205,10 +307,10 @@ Private Sub Des_Plano(Estado As Integer)
       glVertex3d 0#, PosY, Pz + (RAIO - Abs(PosY - Py))
       glVertex3d 0#, PosY, Pz - (RAIO - Abs(PosY - Py))
       End If
-    Next K
+    Next k
   Case vbAltMask, vbAltMask + vbCtrlMask
-    For K = -RAIO To RAIO
-      PosX = Fix(Px + K): PosZ = Fix(Pz + K)
+    For k = -RAIO To RAIO
+      PosX = Fix(Px + k): PosZ = Fix(Pz + k)
       If Abs(PosX - Px) < RAIO Then
       glVertex3d PosX, 0#, Pz + (RAIO - Abs(PosX - Px))
       glVertex3d PosX, 0#, Pz - (RAIO - Abs(PosX - Px))
@@ -217,7 +319,7 @@ Private Sub Des_Plano(Estado As Integer)
       glVertex3d Px + (RAIO - Abs(PosZ - Pz)), 0#, PosZ
       glVertex3d Px - (RAIO - Abs(PosZ - Pz)), 0#, PosZ
       End If
-    Next K
+    Next k
   End Select
  glEnd
 End Sub
@@ -421,6 +523,16 @@ Private Sub picPerspectiva_MouseMove(Button As Integer, Shift As Integer, X As S
  End Select
 End Sub
 Private Sub picPerspectiva_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+
+ Select Case UCase(tbrFerramentas.Tag)
+  Case "PONTEIRO"
+  
+  Case "PONTO"
+  
+  Case "SEGMENTO"
+  
+ End Select
+ 
  X_Ini = X: Y_Ini = Y
  Phi_Ini = Phi:  Theta_Ini = Theta
 End Sub
@@ -442,6 +554,7 @@ Private Sub picPerspectiva_Paint()
 
  Desenha_Todos
  Des_Plano (Estado_Teclas)
+ Des_pontinhos
  
  SwapBuffers hDCPerspectiva
 End Sub
@@ -489,4 +602,10 @@ Private Sub picLateral_Paint()
  glClear clrColorBufferBit Or clrDepthBufferBit
  Desenha_Todos
  SwapBuffers hDCLateral
+End Sub
+
+Private Sub tbrFerramentas_ButtonClick(ByVal Button As MSComctlLib.Button)
+'Convenção: Tag guarda um nome igual aos da enumeração pública de tipos dos objetos
+ tbrFerramentas.Tag = Button.Key
+ 
 End Sub
