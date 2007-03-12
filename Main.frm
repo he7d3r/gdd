@@ -111,11 +111,12 @@ Begin VB.Form frmMain
       ForeColor       =   &H80000008&
       Height          =   3000
       Left            =   915
+      MouseIcon       =   "Main.frx":1D86
       ScaleHeight     =   198
       ScaleMode       =   3  'Pixel
       ScaleWidth      =   431
       TabIndex        =   0
-      ToolTipText     =   "Botão esquerdo: Posicionar o ponto; Botão direito: Mover camera."
+      ToolTipText     =   "Botão direito: Mover camera."
       Top             =   345
       Width           =   6495
    End
@@ -183,6 +184,7 @@ Private Type Ferramenta
  Key As String
  TipText As String
 End Type
+
 Private Sub Form_Load()
  hDCPerspectiva = Me.picPerspectiva.hDC 'Identificador das ViewPort's
  hDCFrontal = Me.picFrontal.hDC
@@ -195,9 +197,19 @@ Private Sub Form_Load()
  ReDim basGeometria.Pts(1 To 1)
  
  Magnetismo = True 'habilita o magnetismo entre "ponto" e "grade"
- Posicionando = False
+ 
  Call Inicializar_OpenGL 'Ajusta formato dos pixels, iluminação, matrizes de projeção...
 End Sub
+
+Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Posicionando = False
+  picPerspectiva_Paint
+  picEpura_Paint
+  picSuperior_Paint
+  picFrontal_Paint
+  picLateral_Paint
+End Sub
+
 Private Sub Form_Unload(Cancel As Integer)
 Call Finalizar_OpenGL
 End Sub
@@ -261,6 +273,7 @@ Private Sub Form_KeyPress(KeyAscii As Integer)
  If Chr(KeyAscii) = "m" Or Chr(KeyAscii) = "M" Then Magnetismo = Not Magnetismo
  If Chr(KeyAscii) = "+" Then Ro = Ro - 1
  If Chr(KeyAscii) = "-" Then Ro = Ro + 1
+ If KeyAscii = vbKeyEscape Then tbrFerramentas.Buttons(1).Value = tbrPressed: tbrFerramentas.Tag = "PONTEIRO"
  If Ro < 3 Then Ro = 3
  If Ro > 20 Then Ro = 20
   Cam_X = Ro * Sin(Phi * DEG) * Cos(Theta * DEG)
@@ -416,13 +429,13 @@ Private Sub picPerspectiva_MouseMove(Button As Integer, Shift As Integer, X As S
  Dim px2 As GLdouble, py2 As GLdouble, pz2 As GLdouble
  
  Select Case Button
- Case 1 'botao esquerdo = Mover ponto
+ Case 0, 1 '"nenhum botao" ou "apenas o esquerdo" = Mover ponto
   Select Case tbrFerramentas.Tag
   Case "PONTEIRO"
   
   Case "PONTO"
    Estado_Teclas = Shift
-   
+   Posicionando = True
    wglMakeCurrent hDCPerspectiva, hGLRCPerspectiva
    glGetIntegerv GL_VIEWPORT, ViewPort(0)
    glGetDoublev GL_MODELVIEW_MATRIX, mvmatrix(0)
@@ -545,12 +558,13 @@ Private Sub picPerspectiva_MouseMove(Button As Integer, Shift As Integer, X As S
  End Select
 End Sub
 Private Sub picPerspectiva_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
-
+ 
+ If Button = 2 Then picPerspectiva.MousePointer = 99
  Select Case UCase(tbrFerramentas.Tag)
   Case "PONTEIRO"
    
   Case "PONTO"
-   Posicionando = True
+   
   'Case "SEGMENTO"
  End Select
  
@@ -558,15 +572,16 @@ Private Sub picPerspectiva_MouseDown(Button As Integer, Shift As Integer, X As S
  Phi_Ini = Phi:  Theta_Ini = Theta
 End Sub
 Private Sub picPerspectiva_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
-If Button = 1 Then
-  'Estado_Teclas = Shift
-  Posicionando = False
-  If basGeometria.Qtd_Pts < basGeometria.MAX_PONTOS Then
+Select Case Button
+ Case 1
+  Estado_Teclas = Shift
+  If tbrFerramentas.Tag = "PONTO" And basGeometria.Qtd_Pts < basGeometria.MAX_PONTOS Then
    basGeometria.Qtd_Pts = basGeometria.Qtd_Pts + 1
    ReDim Preserve basGeometria.Pts(1 To basGeometria.Qtd_Pts)
    basGeometria.Pts(Qtd_Pts).coord(0) = P_Aux(0)
    basGeometria.Pts(Qtd_Pts).coord(1) = P_Aux(1)
    basGeometria.Pts(Qtd_Pts).coord(2) = P_Aux(2)
+   'P_Aux(0) = 0: P_Aux(1) = 0: P_Aux(2) = 0
   End If
   
   picPerspectiva_Paint
@@ -574,7 +589,9 @@ If Button = 1 Then
   picSuperior_Paint
   picFrontal_Paint
   picLateral_Paint
-End If
+ Case 2
+  If Button = 2 Then picPerspectiva.MousePointer = 0
+ End Select
 End Sub
 Private Sub picPerspectiva_Paint()
 

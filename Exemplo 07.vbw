@@ -1,4 +1,4 @@
-frmMain = 22, 22, 751, 328, Z, 22, 29, 640, 552, C
+frmMain = 22, 22, 751, 328, , 22, 29, 640, 552, C
 basVbOpenGl = 66, 66, 795, 372, C
-basVisualização = 44, 44, 773, 350, 
-basGeometria = 44, 44, 596, 564, C
+basVisualização = 44, 44, 773, 350, C
+basGeometria = 44, 44, 596, 564, Z
