@@ -149,7 +149,7 @@ Dim Result As Long
   glClearColor 0.8, 0.95, 0.9, 1#
   glEnable GL_DEPTH_TEST
   glPolygonMode GL_FRONT_AND_BACK, GL_LINE
-  With frmMain.picSuperior
+  With frmMain.picEpura
    Larg = .ScaleWidth: Alt = .ScaleHeight
   End With
   glViewport 0, 0, Larg, Alt
@@ -159,6 +159,5 @@ Dim Result As Long
   glMatrixMode GL_MODELVIEW
   glLoadIdentity
   glMultMatrixf Troca_X_Y(0)
-  
-  basGeometria.Gera
+  glRotatef 90, 0#, 0#, 1#
 End Sub
