@@ -24,10 +24,8 @@ Private Declare Sub wglMakeCurrent Lib "OpenGL32" (ByVal l1 As Long, ByVal l2 As
 
 'Rendering context handles
 Public hDCPerspectiva As Long, hGLRCPerspectiva As Long
-Public hDCFrontal As Long, hGLRCFrontal As Long
-Public hDCLateral As Long, hGLRCLateral As Long
-Public hDCSuperior As Long, hGLRCSuperior As Long
-Public hDCEpura As Long, hGLRCEpura As Long
+Public hDCObservador As Long, hGLRCObservador As Long
+
 Global QObj As Long                   'GLU Quadric Object
 Sub FatalError(ByVal msgErro As String)
     MsgBox "ERRO FATAL: " & msgErro, _
@@ -68,20 +66,8 @@ Public Sub Finalizar_OpenGL() 'ByVal hDC As Long)
   wglMakeCurrent 0, 0 'NULL, NULL
   wglDeleteContext basVbOpenGl.hGLRCPerspectiva
  End If
- If basVbOpenGl.hGLRCFrontal <> 0 Then
+ If basVbOpenGl.hGLRCObservador <> 0 Then
   wglMakeCurrent 0, 0 'NULL, NULL
-  wglDeleteContext basVbOpenGl.hGLRCFrontal
- End If
- If basVbOpenGl.hGLRCLateral <> 0 Then
-  wglMakeCurrent 0, 0 'NULL, NULL
-  wglDeleteContext basVbOpenGl.hGLRCLateral
- End If
- If basVbOpenGl.hGLRCSuperior <> 0 Then
-  wglMakeCurrent 0, 0 'NULL, NULL
-  wglDeleteContext basVbOpenGl.hGLRCSuperior
- End If
- If basVbOpenGl.hGLRCEpura <> 0 Then
-  wglMakeCurrent 0, 0 'NULL, NULL
-  wglDeleteContext basVbOpenGl.hGLRCEpura
+  wglDeleteContext basVbOpenGl.hGLRCObservador
  End If
 End Sub

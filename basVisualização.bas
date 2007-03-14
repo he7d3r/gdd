@@ -8,35 +8,40 @@ Public ViewPort(0 To 3) As GLint
 Public Const PI = 3.14159265
 Public Const DEG = PI / 180
 Public Cam_X As Single, Cam_Y As Single, Cam_Z As Single
+Public Centro_X As Single, Centro_Y As Single, Centro_Z As Single
+Public Ox As GLfloat, Oy As GLfloat, Oz As GLfloat 'posição do observador
 Public Phi As GLfloat, Theta As GLfloat, Ro As GLfloat
+
+Public Const LADO_PRISMA = 2
+Public Const DIST_MIN = 3 * LADO_PRISMA
+Public Const DIST_MAX = 30 * LADO_PRISMA
+
 Public Larg As GLsizei, Alt As GLsizei
 Public fAspect As GLfloat
+Public Amb_Light(3) As GLfloat
+Public Dif_Light(3) As GLfloat
+Public Spec_Light(3) As GLfloat
+Public Light0Pos(3) As GLfloat
+
 
 Public Sub Inicializar_OpenGL()
 Dim pfd As PIXELFORMATDESCRIPTOR
 Dim Result As Long
+
+
  'Ajusta um contexto OpenGl para operar com o objeto com o hDC passado
  Result = basVbOpenGl.SetupPixelFormat(hDCPerspectiva)
  'Define o formato dos pixels conforme descrito em 'pfd'
  SetPixelFormat hDCPerspectiva, Result, pfd
  hGLRCPerspectiva = wglCreateContext(hDCPerspectiva)
  
- SetPixelFormat hDCFrontal, Result, pfd
- hGLRCFrontal = wglCreateContext(hDCFrontal)
- 
- SetPixelFormat hDCLateral, Result, pfd
- hGLRCLateral = wglCreateContext(hDCLateral)
- 
- SetPixelFormat hDCSuperior, Result, pfd
- hGLRCSuperior = wglCreateContext(hDCSuperior)
- 
- SetPixelFormat hDCEpura, Result, pfd
- hGLRCEpura = wglCreateContext(hDCEpura)
+ SetPixelFormat hDCObservador, Result, pfd
+ hGLRCObservador = wglCreateContext(hDCObservador)
  
  'inicialize AQUI algumas matrizes de iluminação, e outras...
  QObj = gluNewQuadric()
  
- Phi = 60: Theta = 45: Ro = 10
+ Phi = 60: Theta = 30: Ro = 20
  Cam_X = Ro * Sin(Phi * DEG) * Cos(Theta * DEG)
  Cam_Y = Ro * Sin(Phi * DEG) * Sin(Theta * DEG)
  Cam_Z = Ro * Cos(Phi * DEG)
@@ -51,14 +56,36 @@ Dim Result As Long
   'glClearDepth 1
   'glDepthFunc cfLEqual
   'glBlendFunc GL_SRC_ALPHA, GL_DST_ALPHA
-  glPolygonMode GL_FRONT_AND_BACK, GL_LINE
+  glPolygonMode GL_FRONT_AND_BACK, GL_FILL 'GL_LINE
   'glEnable GL_CULL_FACE
   glEnable GL_COLOR_MATERIAL
-  'glEnable GL_LIGHTING
-  'glLightfv GL_LIGHT0, GL_AMBIENT, Amb_Dif_Light(0)
-  'glLightfv GL_LIGHT0, GL_DIFFUSE, Amb_Dif_Light(0)
-  'glLightfv GL_LIGHT0, GL_POSITION, Light0Pos(0)
-  'glEnable GL_LIGHT0
+  
+  Amb_Light(0) = 0.5
+  Amb_Light(1) = 0.5
+  Amb_Light(2) = 0.5
+  Amb_Light(3) = 1
+     
+  Dif_Light(0) = 0.5
+  Dif_Light(1) = 0.5
+  Dif_Light(2) = 0.5
+  Dif_Light(3) = 1
+  
+  Spec_Light(0) = 1
+  Spec_Light(1) = 1
+  Spec_Light(2) = 1
+  Spec_Light(3) = 1
+  
+  Light0Pos(0) = 0
+  Light0Pos(1) = 0
+  Light0Pos(2) = 5
+  Light0Pos(3) = 1
+    
+  'ajusta LIGHT0
+  glLightfv GL_LIGHT0, GL_AMBIENT, Amb_Light(0)
+  glLightfv GL_LIGHT0, GL_DIFFUSE, Dif_Light(0)
+  glLightfv GL_LIGHT0, GL_POSITION, Light0Pos(0)
+  glLightfv GL_LIGHT0, GL_SPECULAR, Spec_Light(0)
+  glEnable GL_LIGHT0
   
   With frmMain.picPerspectiva
    Larg = .ScaleWidth
@@ -73,7 +100,7 @@ Dim Result As Long
   glMatrixMode GL_PROJECTION
   glLoadIdentity
   'glMultMatrixf Troca_X_Y(0)
-  gluPerspective 35!, fAspect, 1!, 100!
+  gluPerspective 35!, fAspect, 1!, 150!
   
   glMatrixMode GL_MODELVIEW
   glLoadIdentity
@@ -84,80 +111,28 @@ Dim Result As Long
    glGetFloatv GL_MODELVIEW_MATRIX, Troca_X_Y(0)
   glPopMatrix
   
-  gluLookAt Cam_X, Cam_Y, Cam_Z, 0, 0, 0, 0, 0, 1
+  gluLookAt Cam_X, Cam_Y, Cam_Z, Centro_X, Centro_Y, Centro_Z, 0, 0, 1
   glMultMatrixf Troca_X_Y(0)
   
-  'Configurações específicas da VISTA FRONTAL
-  wglMakeCurrent hDCFrontal, hGLRCFrontal
-  glClearColor 1#, 1#, 1#, 1#
-  glEnable GL_DEPTH_TEST
-  glPolygonMode GL_FRONT_AND_BACK, GL_LINE
-  With frmMain.picFrontal
-   Larg = .ScaleWidth: Alt = .ScaleHeight
-  End With
-  glViewport 0, 0, Larg, Alt
-  glMatrixMode GL_PROJECTION
-  glLoadIdentity
-  glOrtho -5, 5, -5, 5, -5, 5
-  glMatrixMode GL_MODELVIEW
-  glLoadIdentity
-  glMultMatrixf Troca_X_Y(0)
-  glRotatef 90, 0#, 0#, 1#
-  glRotatef 90, 1#, 0#, 0#
+  'Configurações específicas da VISTA OBSERVADOR
+  'wglMakeCurrent hDCObservador, hGLRCObservador
+  'glClearColor 1#, 1#, 1#, 1#
+  'glEnable GL_DEPTH_TEST
+  'glPolygonMode GL_FRONT_AND_BACK, GL_LINE
+  'glPolygonMode GL_FRONT_AND_BACK, GL_FILL  'GL_LINE
+  'With frmMain.picObservador
+  ' Larg = .ScaleWidth: Alt = .ScaleHeight
+  'End With
+  'glViewport 0, 0, Larg, Alt
+  'glMatrixMode GL_PROJECTION
+  'glOrtho -5, 5, -5, 5, -5, 5
+  'glLoadIdentity
+  'glFrustum 0, 2 * LADO_PRISMA + 1, 0, 2 * LADO_PRISMA + 1, 0, -10
+  'glMatrixMode GL_MODELVIEW
+  'glLoadIdentity
+  'gluLookAt Ox, Oy, Oz, 0, 1, 0, 0, 0, 1
+  'glMultMatrixf Troca_X_Y(0)
+  'glRotatef 90, 0#, 0#, 1#
+  'glRotatef 90, 1#, 0#, 0#
   
-  'Configurações específicas da VISTA LATERAL
-  wglMakeCurrent hDCLateral, hGLRCLateral
-  glClearColor 1#, 1#, 1#, 1#
-  glEnable GL_DEPTH_TEST
-  glPolygonMode GL_FRONT_AND_BACK, GL_LINE
-  With frmMain.picLateral
-   Larg = .ScaleWidth: Alt = .ScaleHeight
-  End With
-
-  glViewport 0, 0, Larg, Alt
-  glMatrixMode GL_PROJECTION
-  glLoadIdentity
-  glOrtho -5, 5, -5, 5, -5, 5
-  glMatrixMode GL_MODELVIEW
-  glLoadIdentity
-  glMultMatrixf Troca_X_Y(0)
-  glRotatef 180, 0#, 0#, 1#
-  glRotatef -90, 0#, 1#, 0#
-  
-  'Configurações específicas da VISTA SUPERIOR
-  wglMakeCurrent hDCSuperior, hGLRCSuperior
-  glClearColor 1#, 1#, 1#, 1#
-  glEnable GL_DEPTH_TEST
-  glPolygonMode GL_FRONT_AND_BACK, GL_LINE
-  'glEnable GL_COLOR_MATERIAL
-  'glEnable GL_LIGHTING
-  'glEnable GL_LIGHT0
-  With frmMain.picSuperior
-   Larg = .ScaleWidth: Alt = .ScaleHeight
-  End With
-  glViewport 0, 0, Larg, Alt
-  glMatrixMode GL_PROJECTION
-  glLoadIdentity
-  glOrtho -5, 5, -5, 5, -5, 5
-  glMatrixMode GL_MODELVIEW
-  glLoadIdentity
-  glMultMatrixf Troca_X_Y(0)
-  glRotatef 90, 0#, 0#, 1#
-  
-  'Configurações específicas da ÉPURA:
-  wglMakeCurrent hDCEpura, hGLRCEpura
-  glClearColor 0.8, 0.95, 0.9, 1#
-  glEnable GL_DEPTH_TEST
-  glPolygonMode GL_FRONT_AND_BACK, GL_LINE
-  With frmMain.picEpura
-   Larg = .ScaleWidth: Alt = .ScaleHeight
-  End With
-  glViewport 0, 0, Larg, Alt
-  glMatrixMode GL_PROJECTION
-  glLoadIdentity
-  glOrtho -5, 5, -5, 5, -5, 5
-  glMatrixMode GL_MODELVIEW
-  glLoadIdentity
-  glMultMatrixf Troca_X_Y(0)
-  glRotatef 90, 0#, 0#, 1#
 End Sub
