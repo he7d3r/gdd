@@ -247,6 +247,7 @@ Dim tam_membros As GLfloat
 
 End Sub
 Private Sub Des_Prisma(L As GLfloat)
+Exit Sub
 glEnable GL_LIGHTING
  glColor3f 0.2, 0.4, 0.4
  glBegin bmTriangles
@@ -260,6 +261,7 @@ glEnable GL_LIGHTING
   glVertex3f L, 2 * L, 0
   glVertex3f L / 2, 3 * L / 2, L * Sqr(6) / 2
  glEnd
+
  glBegin bmQuads
   glNormal3f 0, 0, -1
   glVertex3f 0, L, 0
@@ -383,15 +385,34 @@ Private Sub Des_Cena(Vista As GLuint)
   glVertex3f 0, Oz * (Ox - 3 * Oy) / (2 * Ox - 3 * Oz), Oz * (Sqr(6) * Ox - 3 * Oz) / (2 * Ox - 3 * Oz) 'Oz / 2, 3 * Oz / 2, Oz * Sqr(6) / 2
   glEnd
   
-  glColor3d 0.2, 0, 0
-  glBegin bmPolygon
-   'glVertex3f 0, Oz, 0
-   glVertex3f 0, -Oy * Oz / (Ox - Oz), Oz * Oz / (Oz - Ox) '0, Oz, 0
-   glVertex3f 0, (Oz * Ox - Oy * 2 * Oz) / (Ox - 2 * Oz), 2 * Oz * Oz / (2 * Oz - Ox) 'Oz, 2 * Oz, 0
-   glVertex3f 0, (2 * Oz * Ox - Oy * Oz) / (Ox - Oz), Oz * Oz / (Oz - Ox) '2 * Oz, Oz, 0
-   glVertex3f 0, Oz * (3 * Ox - Oy) / (2 * Ox - Oz), Oz * (Ox * Sqr(6) - Oz) / (2 * Ox - Oz) '3 * Oz / 2, Oz / 2, Oz * Sqr(6) / 2
-   glVertex3f 0, Oz * (Ox - 3 * Oy) / (2 * Ox - 3 * Oz), Oz * (Sqr(6) * Ox - 3 * Oz) / (2 * Ox - 3 * Oz) 'Oz / 2, 3 * Oz / 2, Oz * Sqr(6) / 2
+  glMatrixMode GL_MODELVIEW
+  glPushMatrix
+  'glLoadIdentity
+  glMultMatrixf M_proj(0)
+  'glMultMatrixf Troca_X_Y(0)
+  glBegin bmTriangles
+    glColor3d 0, 0, 0.3
+   glVertex3f LADO_PRISMA, 0, 0
+   glVertex3f 2 * LADO_PRISMA, LADO_PRISMA, 0
+   glVertex3f 3 * LADO_PRISMA / 2, LADO_PRISMA / 2, LADO_PRISMA * Sqr(6) / 2
+    glColor3d 0, 0.3, 0
+   glVertex3f 0, LADO_PRISMA, 0
+   glVertex3f LADO_PRISMA, 2 * LADO_PRISMA, 0
+   glVertex3f LADO_PRISMA / 2, 3 * LADO_PRISMA / 2, LADO_PRISMA * Sqr(6) / 2
   glEnd
+   
+  glPopMatrix
+  
+  
+  
+  'glBegin bmPolygon
+   'glVertex3f 0, Oz, 0
+  ' glVertex3f 0, -Oy * Oz / (Ox - Oz), Oz * Oz / (Oz - Ox) '0, Oz, 0
+  ' glVertex3f 0, (Oz * Ox - Oy * 2 * Oz) / (Ox - 2 * Oz), 2 * Oz * Oz / (2 * Oz - Ox) 'Oz, 2 * Oz, 0
+  ' glVertex3f 0, (2 * Oz * Ox - Oy * Oz) / (Ox - Oz), Oz * Oz / (Oz - Ox) '2 * Oz, Oz, 0
+  ' glVertex3f 0, Oz * (3 * Ox - Oy) / (2 * Ox - Oz), Oz * (Ox * Sqr(6) - Oz) / (2 * Ox - Oz) '3 * Oz / 2, Oz / 2, Oz * Sqr(6) / 2
+  ' glVertex3f 0, Oz * (Ox - 3 * Oy) / (2 * Ox - 3 * Oz), Oz * (Sqr(6) * Ox - 3 * Oz) / (2 * Ox - 3 * Oz) 'Oz / 2, 3 * Oz / 2, Oz * Sqr(6) / 2
+  'glEnd
  End Select
 End Sub
 

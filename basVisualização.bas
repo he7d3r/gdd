@@ -1,6 +1,8 @@
 Attribute VB_Name = "basVisualização"
 Option Explicit
 Public Troca_X_Y(0 To 15) As GLfloat
+Public M_proj(0 To 15) As GLfloat
+
 Public ModelViewMatrix(0 To 15) As GLfloat
 Public ProjectionMatrix(0 To 15) As GLfloat
 Public ViewPort(0 To 3) As GLint
@@ -27,6 +29,7 @@ Public Light0Pos(3) As GLfloat
 Public Sub Inicializar_OpenGL()
 Dim pfd As PIXELFORMATDESCRIPTOR
 Dim Result As Long
+Const EP = 0.1
 
 
  'Ajusta um contexto OpenGl para operar com o objeto com o hDC passado
@@ -113,6 +116,21 @@ Dim Result As Long
   
   gluLookAt Cam_X, Cam_Y, Cam_Z, Centro_X, Centro_Y, Centro_Z, 0, 0, 1
   glMultMatrixf Troca_X_Y(0)
+  
+  'M_proj(0) = 0:   M_proj(1) = 0:  M_proj(2) = 0:   M_proj(3) = 0
+  'M_proj(4) = -Oy: M_proj(5) = Ox: M_proj(6) = 0:   M_proj(7) = 0
+  'M_proj(8) = -Oz: M_proj(9) = 0:  M_proj(10) = Ox: M_proj(11) = 0
+  'M_proj(12) = -1: M_proj(13) = 0: M_proj(14) = 0:  M_proj(15) = Ox
+  
+  M_proj(0) = 0:  M_proj(1) = -Oy: M_proj(2) = -Oz: M_proj(3) = -1
+  M_proj(4) = 0:  M_proj(5) = Ox:  M_proj(6) = 0:   M_proj(7) = 0
+  M_proj(8) = 0:  M_proj(9) = 0:   M_proj(10) = Ox: M_proj(11) = 0
+  M_proj(12) = 0: M_proj(13) = 0:  M_proj(14) = 0:  M_proj(15) = Ox
+  
+  M_proj(0) = 1:  M_proj(1) = -Oy: M_proj(2) = -Oz: M_proj(3) = -1
+  M_proj(4) = 0:  M_proj(5) = Ox:  M_proj(6) = 0:   M_proj(7) = 0
+  M_proj(8) = 0:  M_proj(9) = 0:   M_proj(10) = Ox: M_proj(11) = 0
+  M_proj(12) = 0: M_proj(13) = 0:  M_proj(14) = 0:  M_proj(15) = 1
   
   'Configurações específicas da VISTA OBSERVADOR
   'wglMakeCurrent hDCObservador, hGLRCObservador
