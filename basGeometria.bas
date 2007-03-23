@@ -10,22 +10,17 @@ Public Enum Tipo_De_Objeto
  'TEXTO 'ÂNGULO 'EIXOS
 End Enum
 
-Public Enum Aparência
- PADRAO 'O objeto é desenhado normalmente
- SELECIONADO 'O objeto é desenhado com destaque
- OCULTO 'O objeto não será desenhado
-End Enum
-
 Type Objeto
- Id As Integer 'Identifica exclusivamente o objeto (por tipo??). Como o indice de Obj?
- Tipo As Tipo_De_Objeto 'Que item será guardado
- N_Param As Byte 'Número de objetos dos quais este é dependente
- Cor As Long 'Cor utilizada para desenhar na tela
- Espessura As Byte 'Raio dos pontos ou a largura de curvas e contornos
- Traço(1 To 2) As Byte 'Tipo de pontilhado
- Mostrar As Aparência 'Indica como o objeto será exibido
- Nome As String 'Um rótulo para exibição em tela
- Id_Dep() As Long 'Indices dos parametros (objetos)dos quais este depende
+ 'Id As Integer 'Identifica exclusivamente o objeto (por tipo??). Como o indice de Obj?
+ 'Tipo As Tipo_De_Objeto 'Que item será guardado
+ 'N_Param As Byte 'Número de objetos dos quais este é dependente
+ 'Cor As Long 'Cor utilizada para desenhar na tela
+ 'Espessura As Byte 'Raio dos pontos ou a largura de curvas e contornos
+ 'Traço(1 To 2) As Byte 'Tipo de pontilhado
+ Selec As Integer 'Indica que o objeto foi o "selec-ésimo" a ser selecionado
+ Mostrar As Boolean ' Aparência 'Indica como o objeto será exibido
+ 'Nome As String 'Um rótulo para exibição em tela
+ 'Id_Dep() As Long 'Indices dos parametros (objetos)dos quais este depende
  Coord(0 To 2) As GLdouble 'Coordenadas e angulos livres
 End Type
 Public ObjApontado As Long
@@ -34,12 +29,15 @@ Public Const MAX_OBJETOS = 10000
 Public Const TAM_BUFER = MAX_OBJETOS
 Public Qtd_Obj As Long 'É sempre = Ubound(Obj)
 Public Obj() As Objeto
+Public Obj_Sel() As Integer
+Public N_Sel As Integer 'É sempre = Ubound(Obj_Sel)
 Public P_Aux(0 To 2) As GLdouble 'Ponto auxiliar durante a definição de objetos
 Public Posicionando As Boolean 'Indica se está sendo posicionado um ponto no espaço
 Public Estado_Teclas As Integer 'Indica se ALT, CTRL e SHIFT estão pressionadas
 
 Public Sub Inicializa()
  ReDim Obj(1 To 1)
+ ReDim Obj_Sel(1 To 1)
 End Sub
 
 Public Sub Des_Plano(Estado As Integer)
@@ -173,15 +171,23 @@ Public Sub Des_Objetos(Modo As GLenum, Ferram As String)
 
  For i = 1 To basGeometria.Qtd_Obj
   If Modo = GL_SELECT Then glLoadName i
-  glBegin bmPoints
-   If basGeometria.Obj(i).Mostrar = SELECIONADO Or i = ObjApontado Then
-    glColor3d 0.9, 0.4, 0#: glPointSize (5#)
-    glVertex3dv basGeometria.Obj(i).Coord(0)
-    glColor3d 0#, 0#, 0#: glPointSize (3#)
-   Else
-    glVertex3dv basGeometria.Obj(i).Coord(0)
-   End If
-  glEnd
+  If i = ObjApontado Then
+   glColor3d 0.8, 0#, 0.5: glPointSize (5#)
+   glBegin bmPoints
+     glVertex3dv basGeometria.Obj(i).Coord(0)
+   glEnd
+   glColor3d 0#, 0#, 0#: glPointSize (3#)
+  ElseIf basGeometria.Obj(i).Selec > 0 Then
+   glColor3d 0.9, 0.4, 0#: glPointSize (3#)
+   glBegin bmPoints
+     glVertex3dv basGeometria.Obj(i).Coord(0)
+   glEnd
+   glColor3d 0#, 0#, 0#: glPointSize (3#)
+  Else
+   glBegin bmPoints
+     glVertex3dv basGeometria.Obj(i).Coord(0)
+   glEnd
+  End If
  Next i
   
  Select Case UCase(Ferram)
@@ -194,7 +200,7 @@ Public Sub Des_Objetos(Modo As GLenum, Ferram As String)
  End Select
   
 End Sub
-Public Function Avalia_Selecao(hits As GLint, Buf() As GLuint) As String
+Public Function ApontaObjeto(hits As GLint, Buf() As GLuint) As String
  'Static Sel_Ant As GLuint 'Indice do objeto que estava selecionado no movimento anterior
  Dim h As Long, Id As Long
  Dim Qtd_Nomes As GLuint 'Cada nome é composto de 'tantas' coordenadas
@@ -221,18 +227,10 @@ Public Function Avalia_Selecao(hits As GLint, Buf() As GLuint) As String
  Next h
  
  If Nome > 0 Then
-  Avalia_Selecao = "Ponto " & Nome
-  'If Sel_Ant > 0 Then basGeometria.Obj(Sel_Ant).Mostrar = PADRAO
-  'basGeometria.Obj(Nome).Mostrar = SELECIONADO
+  ApontaObjeto = "Ponto " & Nome
   ObjApontado = Nome
-  'Sel_Ant = Nome
  Else
-  Avalia_Selecao = ""
+  ApontaObjeto = ""
   ObjApontado = 0
-  'If Sel_Ant > 0 Then basGeometria.Obj(Sel_Ant).Mostrar = PADRAO
  End If
- 'For h = 1 To Qtd_Obj
- '  If Nome <> h Then basGeometria.Obj(h).Mostrar = PADRAO 'terei problema com objetos ocultos
- 'Next h
-
 End Function

@@ -410,7 +410,7 @@ Private Sub picPerspectiva_MouseMove(Button As Integer, Shift As Integer, X As S
    
    'conferir se PRECISA INDICE (?) ao passar matriz
    
-   picPerspectiva.ToolTipText = basGeometria.Avalia_Selecao(N_Hits, Buf_Selec)
+   picPerspectiva.ToolTipText = basGeometria.ApontaObjeto(N_Hits, Buf_Selec)
    
   Case "PONTO"
    Estado_Teclas = Shift
@@ -554,18 +554,62 @@ Private Sub picPerspectiva_MouseDown(Button As Integer, Shift As Integer, X As S
  Phi_Ini = Phi:  Theta_Ini = Theta
 End Sub
 Private Sub picPerspectiva_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
-Select Case Button
+ Dim i As Integer
+  
+ Select Case Button
  Case 1
   Estado_Teclas = Shift
-  If tbrFerramentas.Tag = "PONTO" And basGeometria.Qtd_Obj < basGeometria.MAX_OBJETOS Then
-   basGeometria.Qtd_Obj = basGeometria.Qtd_Obj + 1
-   ReDim Preserve basGeometria.Obj(1 To basGeometria.Qtd_Obj)
-   basGeometria.Obj(Qtd_Obj).Coord(0) = P_Aux(0)
-   basGeometria.Obj(Qtd_Obj).Coord(1) = P_Aux(1)
-   basGeometria.Obj(Qtd_Obj).Coord(2) = P_Aux(2)
-   'P_Aux(0) = 0: P_Aux(1) = 0: P_Aux(2) = 0
-  End If
-  
+  Select Case tbrFerramentas.Tag
+  Case "PONTO"
+   If basGeometria.Qtd_Obj < basGeometria.MAX_OBJETOS Then
+    basGeometria.Qtd_Obj = basGeometria.Qtd_Obj + 1
+    ReDim Preserve basGeometria.Obj(1 To basGeometria.Qtd_Obj)
+    basGeometria.Obj(Qtd_Obj).Coord(0) = P_Aux(0)
+    basGeometria.Obj(Qtd_Obj).Coord(1) = P_Aux(1)
+    basGeometria.Obj(Qtd_Obj).Coord(2) = P_Aux(2)
+    'P_Aux(0) = 0: P_Aux(1) = 0: P_Aux(2) = 0
+   End If
+  Case "PONTEIRO"
+   If ObjApontado > 0 Then
+    'N_Sel = UBound(basGeometria.Obj_Sel)
+    If Estado_Teclas = 0 Then
+     
+     If N_Sel = 0 Then 'Ainda não há obj. selecionado
+      N_Sel = 1
+      basGeometria.Obj(ObjApontado).Selec = 1
+      basGeometria.Obj_Sel(1) = ObjApontado
+     Else
+      For i = 1 To N_Sel
+       basGeometria.Obj(basGeometria.Obj_Sel(i)).Selec = 0 'duplicado
+      Next i
+      If N_Sel > 1 Or basGeometria.Obj(ObjApontado).Selec = 0 Then _
+                      basGeometria.Obj(ObjApontado).Selec = 1
+      N_Sel = IIf((basGeometria.Obj(ObjApontado).Selec = 0) And (N_Sel = 1), 0, 1)
+      
+      ReDim basGeometria.Obj_Sel(1 To 1)
+      If N_Sel > 0 Then basGeometria.Obj_Sel(1) = ObjApontado
+     End If
+     
+    Else 'not Estado_Teclas = 0
+     If basGeometria.Obj(ObjApontado).Selec > 0 Then
+      N_Sel = N_Sel - 1
+      For i = basGeometria.Obj(ObjApontado).Selec To N_Sel
+       basGeometria.Obj_Sel(i) = basGeometria.Obj_Sel(i + 1)
+       basGeometria.Obj(basGeometria.Obj_Sel(i + 1)).Selec = i
+      Next i
+      If N_Sel > 0 Then ReDim Preserve basGeometria.Obj_Sel(1 To N_Sel)
+      basGeometria.Obj(ObjApontado).Selec = 0
+      
+     Else 'o obj apontado nao estava selecionado
+      N_Sel = N_Sel + 1
+      ReDim Preserve basGeometria.Obj_Sel(1 To N_Sel)
+      basGeometria.Obj_Sel(N_Sel) = ObjApontado
+      basGeometria.Obj(ObjApontado).Selec = N_Sel
+     End If 'basGeometria.Obj(ObjApontado).Selec > 0
+     
+    End If 'Estado_Teclas = 0
+   End If 'ObjApontado > 0
+  End Select 'tbrFerramentas.Tag
   Paint_Geral
  Case 2
   If Button = 2 Then picPerspectiva.MousePointer = 0
