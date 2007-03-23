@@ -9,8 +9,6 @@ Begin VB.Form frmMain
    ClientWidth     =   10980
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
-   MaxButton       =   0   'False
-   MinButton       =   0   'False
    ScaleHeight     =   461
    ScaleMode       =   3  'Pixel
    ScaleWidth      =   732
@@ -63,7 +61,7 @@ Begin VB.Form frmMain
       ScaleMode       =   3  'Pixel
       ScaleWidth      =   198
       TabIndex        =   9
-      Top             =   3705
+      Top             =   3750
       Width           =   3000
    End
    Begin VB.PictureBox picLateral 
@@ -76,7 +74,7 @@ Begin VB.Form frmMain
       ScaleMode       =   3  'Pixel
       ScaleWidth      =   198
       TabIndex        =   7
-      Top             =   3705
+      Top             =   3750
       Width           =   3000
    End
    Begin VB.PictureBox picSuperior 
@@ -89,7 +87,7 @@ Begin VB.Form frmMain
       ScaleMode       =   3  'Pixel
       ScaleWidth      =   198
       TabIndex        =   6
-      Top             =   3705
+      Top             =   3750
       Width           =   3000
    End
    Begin VB.PictureBox picFrontal 
@@ -102,7 +100,7 @@ Begin VB.Form frmMain
       ScaleMode       =   3  'Pixel
       ScaleWidth      =   198
       TabIndex        =   1
-      Top             =   345
+      Top             =   375
       Width           =   3000
    End
    Begin VB.PictureBox picPerspectiva 
@@ -117,43 +115,43 @@ Begin VB.Form frmMain
       ScaleWidth      =   431
       TabIndex        =   0
       ToolTipText     =   "Botão direito: Mover camera."
-      Top             =   345
+      Top             =   375
       Width           =   6495
    End
-   Begin VB.Label Label4 
+   Begin VB.Label lblEpura 
       AutoSize        =   -1  'True
       Caption         =   "Épura (1ª e 2ª Proj.):"
       Height          =   195
       Left            =   915
       TabIndex        =   8
-      Top             =   3465
+      Top             =   3525
       Width           =   1440
    End
-   Begin VB.Label Label3 
+   Begin VB.Label lblFrontal 
       AutoSize        =   -1  'True
       Caption         =   "Vista Frontal (2ª Proj.):"
       Height          =   195
       Left            =   7755
       TabIndex        =   5
-      Top             =   105
+      Top             =   150
       Width           =   1560
    End
-   Begin VB.Label Label2 
+   Begin VB.Label lblLateral 
       AutoSize        =   -1  'True
       Caption         =   "Vista Lateral (3ª Proj.):"
       Height          =   195
       Left            =   4395
       TabIndex        =   4
-      Top             =   3465
+      Top             =   3525
       Width           =   1560
    End
-   Begin VB.Label Label1 
+   Begin VB.Label lblSuperior 
       AutoSize        =   -1  'True
       Caption         =   "Vista Superior (1ª Proj.):"
       Height          =   195
       Left            =   7755
       TabIndex        =   3
-      Top             =   3465
+      Top             =   3525
       Width           =   1665
    End
    Begin VB.Label lblPerspectiva 
@@ -162,7 +160,7 @@ Begin VB.Form frmMain
       Left            =   915
       TabIndex        =   2
       ToolTipText     =   "Teclas [ + ] e [ - ] alteram a distância da câmera."
-      Top             =   105
+      Top             =   150
       Width           =   6465
    End
 End
@@ -182,7 +180,13 @@ Private Type Ferramenta
  Key As String
  TipText As String
 End Type
-
+Private Sub Paint_Geral()
+  picPerspectiva_Paint
+  picEpura_Paint
+  picSuperior_Paint
+  picFrontal_Paint
+  picLateral_Paint
+End Sub
 Private Sub Form_Load()
  hDCPerspectiva = Me.picPerspectiva.hDC 'Identificador das ViewPort's
  hDCFrontal = Me.picFrontal.hDC
@@ -201,11 +205,7 @@ End Sub
 
 Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
 Posicionando = False
-  picPerspectiva_Paint
-  picEpura_Paint
-  picSuperior_Paint
-  picFrontal_Paint
-  picLateral_Paint
+Paint_Geral
 End Sub
 
 Private Sub Form_KeyPress(KeyAscii As Integer)
@@ -214,11 +214,7 @@ Private Sub Form_KeyPress(KeyAscii As Integer)
  If Chr(KeyAscii) = "-" Then Ro = Ro + 1
  If KeyAscii = vbKeyEscape Then tbrFerramentas.Buttons(1).Value = tbrPressed: tbrFerramentas.Tag = "PONTEIRO"
  If Chr(KeyAscii) = "r" Or Chr(KeyAscii) = "R" Then
-  picPerspectiva_Paint
-  picEpura_Paint
-  picSuperior_Paint
-  picFrontal_Paint
-  picLateral_Paint
+  Paint_Geral
  End If
  If Ro < 3 Then Ro = 3
  If Ro > 20 Then Ro = 20
@@ -233,6 +229,77 @@ Private Sub Form_KeyPress(KeyAscii As Integer)
   glMultMatrixf Troca_X_Y(0)
   
   picPerspectiva_Paint
+End Sub
+
+Private Sub Form_Resize()
+ Const ESP = 25
+ Dim TAM As Single
+ Dim Barra As Single
+ Dim l As Single, a As Single
+ 
+ Barra = tbrFerramentas.Width
+ a = (Me.ScaleHeight - 3 * ESP) / 2
+ l = (Me.ScaleWidth - 4 * ESP - Barra) / 3
+ TAM = IIf(a < l, a, l)
+ 
+ If TAM <= 0 Then Exit Sub
+ picPerspectiva.Move Barra + ESP, ESP, 2 * TAM + ESP, TAM
+ picFrontal.Move Barra + 3 * ESP + 2 * TAM, ESP, TAM, TAM
+ picEpura.Move Barra + ESP, 2 * ESP + TAM, TAM, TAM
+ picLateral.Move Barra + 2 * ESP + TAM, 2 * ESP + TAM, TAM, TAM
+ picSuperior.Move Barra + 3 * ESP + 2 * TAM, 2 * ESP + TAM, TAM, TAM
+ 
+ lblPerspectiva.Move picPerspectiva.Left, picPerspectiva.Top - 15
+ lblFrontal.Move picFrontal.Left, picFrontal.Top - 15
+ lblEpura.Move picEpura.Left, picEpura.Top - 15
+ lblLateral.Move picLateral.Left, picLateral.Top - 15
+ lblSuperior.Move picSuperior.Left, picSuperior.Top - 15
+ 
+ 'Configurações específicas da PERSPECTIVA
+ wglMakeCurrent hDCPerspectiva, hGLRCPerspectiva
+ With picPerspectiva
+   l = .ScaleWidth: a = .ScaleHeight
+ End With
+ If a > 0 Then
+  fAspect = l / a
+ Else
+  fAspect = 0
+ End If
+ glViewport 0, 0, l, a
+ glMatrixMode GL_PROJECTION
+  glLoadIdentity
+  gluPerspective 35!, fAspect, 1!, 100!
+ glMatrixMode GL_MODELVIEW
+ 
+ 'Configurações específicas da VISTA FRONTAL
+  wglMakeCurrent hDCFrontal, hGLRCFrontal
+  With picFrontal
+   l = .ScaleWidth: a = .ScaleHeight
+  End With
+  glViewport 0, 0, l, a
+  
+  'Configurações específicas da VISTA LATERAL
+  wglMakeCurrent hDCLateral, hGLRCLateral
+  With frmMain.picLateral
+   l = .ScaleWidth: a = .ScaleHeight
+  End With
+  glViewport 0, 0, l, a
+  
+  'Configurações específicas da VISTA SUPERIOR
+  wglMakeCurrent hDCSuperior, hGLRCSuperior
+  With frmMain.picSuperior
+   l = .ScaleWidth: a = .ScaleHeight
+  End With
+  glViewport 0, 0, l, a
+  
+  'Configurações específicas da ÉPURA:
+  wglMakeCurrent hDCEpura, hGLRCEpura
+  With frmMain.picEpura
+   l = .ScaleWidth: a = .ScaleHeight
+  End With
+  glViewport 0, 0, l, a
+  
+  Paint_Geral
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
@@ -446,13 +513,11 @@ Private Sub picPerspectiva_MouseMove(Button As Integer, Shift As Integer, X As S
   Case "SEGMENTO"
   
   End Select
-  picPerspectiva_Paint
-  picEpura_Paint
-  picSuperior_Paint
-  picFrontal_Paint
-  picLateral_Paint
+  Paint_Geral
   
  Case 2 '=Button: Mover camera (botao direito)
+  Posicionando = False
+  ObjApontado = 0
   dx = VELOCIDADE * (X - X_Ini)
   dy = VELOCIDADE * (Y - Y_Ini)
 
@@ -501,11 +566,7 @@ Select Case Button
    'P_Aux(0) = 0: P_Aux(1) = 0: P_Aux(2) = 0
   End If
   
-  picPerspectiva_Paint
-  picEpura_Paint
-  picSuperior_Paint
-  picFrontal_Paint
-  picLateral_Paint
+  Paint_Geral
  Case 2
   If Button = 2 Then picPerspectiva.MousePointer = 0
  End Select

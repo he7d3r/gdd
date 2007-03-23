@@ -28,6 +28,7 @@ Type Objeto
  Id_Dep() As Long 'Indices dos parametros (objetos)dos quais este depende
  Coord(0 To 2) As GLdouble 'Coordenadas e angulos livres
 End Type
+Public ObjApontado As Long
 
 Public Const MAX_OBJETOS = 10000
 Public Const TAM_BUFER = MAX_OBJETOS
@@ -38,7 +39,7 @@ Public Posicionando As Boolean 'Indica se está sendo posicionado um ponto no esp
 Public Estado_Teclas As Integer 'Indica se ALT, CTRL e SHIFT estão pressionadas
 
 Public Sub Inicializa()
- ReDim basGeometria.Obj(1 To 1)
+ ReDim Obj(1 To 1)
 End Sub
 
 Public Sub Des_Plano(Estado As Integer)
@@ -92,19 +93,34 @@ Public Sub Des_Plano(Estado As Integer)
  glEnd
 End Sub
 Public Sub Des_Eixos()
+ Const PONTA = 3
+ Const INI_SETA = PONTA - PONTA / 10
+ Const AF_SETA = PONTA / 20
  'glLineWidth (2#)
  glBegin bmLines
    glColor3f 1#, 0#, 0#
    glVertex3f 0#, 0#, 0#
-   glVertex3f 3#, 0#, 0#
-   
+   glVertex3f PONTA, 0#, 0#
+     glVertex3f PONTA, 0#, 0#: glVertex3f INI_SETA, AF_SETA, 0#
+     glVertex3f PONTA, 0#, 0#: glVertex3f INI_SETA, -AF_SETA, 0#
+     glVertex3f PONTA, 0#, 0#: glVertex3f INI_SETA, 0#, AF_SETA
+     glVertex3f PONTA, 0#, 0#: glVertex3f INI_SETA, 0#, -AF_SETA
+     
    glColor3f 0#, 1#, 0#
    glVertex3f 0#, 0#, 0#
-   glVertex3f 0#, 3#, 0#
-   
+   glVertex3f 0#, PONTA, 0#
+     glVertex3f 0#, PONTA, 0#: glVertex3f 0#, INI_SETA, AF_SETA
+     glVertex3f 0#, PONTA, 0#: glVertex3f 0#, INI_SETA, -AF_SETA
+     glVertex3f 0#, PONTA, 0#: glVertex3f AF_SETA, INI_SETA, 0#
+     glVertex3f 0#, PONTA, 0#: glVertex3f -AF_SETA, INI_SETA, 0#
+     
    glColor3f 0#, 0#, 1#
    glVertex3f 0#, 0#, 0#
-   glVertex3f 0#, 0#, 3#
+   glVertex3f 0#, 0#, PONTA
+     glVertex3f 0#, 0#, PONTA: glVertex3f 0#, AF_SETA, INI_SETA
+     glVertex3f 0#, 0#, PONTA: glVertex3f 0#, -AF_SETA, INI_SETA
+     glVertex3f 0#, 0#, PONTA: glVertex3f AF_SETA, 0#, INI_SETA
+     glVertex3f 0#, 0#, PONTA: glVertex3f -AF_SETA, 0#, INI_SETA
  glEnd
 End Sub
 Public Sub Des_Ponto_Aux(Estado As Integer)
@@ -157,13 +173,17 @@ Public Sub Des_Objetos(Modo As GLenum, Ferram As String)
 
  For i = 1 To basGeometria.Qtd_Obj
   If Modo = GL_SELECT Then glLoadName i
-  If basGeometria.Obj(i).Mostrar = SELECIONADO Then glColor3d 0.9, 0.4, 0#: glPointSize (5#)
   glBegin bmPoints
-   glVertex3dv basGeometria.Obj(i).Coord(0)
+   If basGeometria.Obj(i).Mostrar = SELECIONADO Or i = ObjApontado Then
+    glColor3d 0.9, 0.4, 0#: glPointSize (5#)
+    glVertex3dv basGeometria.Obj(i).Coord(0)
+    glColor3d 0#, 0#, 0#: glPointSize (3#)
+   Else
+    glVertex3dv basGeometria.Obj(i).Coord(0)
+   End If
   glEnd
-  If basGeometria.Obj(i).Mostrar = SELECIONADO Then glColor3d 0#, 0#, 0#: glPointSize (3#)
  Next i
- 
+  
  Select Case UCase(Ferram)
   Case "PONTEIRO"
   
@@ -175,7 +195,7 @@ Public Sub Des_Objetos(Modo As GLenum, Ferram As String)
   
 End Sub
 Public Function Avalia_Selecao(hits As GLint, Buf() As GLuint) As String
- Static Sel_Ant As GLuint 'Indice do objeto que estava selecionado no movimento anterior
+ 'Static Sel_Ant As GLuint 'Indice do objeto que estava selecionado no movimento anterior
  Dim h As Long, Id As Long
  Dim Qtd_Nomes As GLuint 'Cada nome é composto de 'tantas' coordenadas
  Dim Nome As GLuint 'Indice do objeto que está selecionado ao clicar o mouse
@@ -202,12 +222,14 @@ Public Function Avalia_Selecao(hits As GLint, Buf() As GLuint) As String
  
  If Nome > 0 Then
   Avalia_Selecao = "Ponto " & Nome
-  If Sel_Ant > 0 Then basGeometria.Obj(Sel_Ant).Mostrar = PADRAO
-  basGeometria.Obj(Nome).Mostrar = SELECIONADO
-  Sel_Ant = Nome
+  'If Sel_Ant > 0 Then basGeometria.Obj(Sel_Ant).Mostrar = PADRAO
+  'basGeometria.Obj(Nome).Mostrar = SELECIONADO
+  ObjApontado = Nome
+  'Sel_Ant = Nome
  Else
   Avalia_Selecao = ""
-  If Sel_Ant > 0 Then basGeometria.Obj(Sel_Ant).Mostrar = PADRAO
+  ObjApontado = 0
+  'If Sel_Ant > 0 Then basGeometria.Obj(Sel_Ant).Mostrar = PADRAO
  End If
  'For h = 1 To Qtd_Obj
  '  If Nome <> h Then basGeometria.Obj(h).Mostrar = PADRAO 'terei problema com objetos ocultos
