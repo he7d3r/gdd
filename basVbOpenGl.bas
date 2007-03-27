@@ -22,66 +22,50 @@ Private Declare Function wglCreateContext Lib "OpenGL32" (ByVal hDC As Long) As 
 Private Declare Sub wglDeleteContext Lib "OpenGL32" (ByVal hContext As Long)
 Private Declare Sub wglMakeCurrent Lib "OpenGL32" (ByVal l1 As Long, ByVal l2 As Long)
 
-'Rendering context handles
-Public hDCPerspectiva As Long, hGLRCPerspectiva As Long
-Public hDCFrontal As Long, hGLRCFrontal As Long
-Public hDCLateral As Long, hGLRCLateral As Long
-Public hDCSuperior As Long, hGLRCSuperior As Long
-Public hDCEpura As Long, hGLRCEpura As Long
-Global QObj As Long                   'GLU Quadric Object
-Sub FatalError(ByVal msgErro As String)
-    MsgBox "ERRO FATAL: " & msgErro, _
-     vbCritical + vbApplicationModal + vbOKOnly + vbDefaultButton1, _
-     "Erro fatal com """ & App.Title & """"
-    Unload frmMain
-    Set frmMain = Nothing
-    End
+Public Sub ErroFatal(ByVal msgErro As String)
+   MsgBox "ERRO FATAL: " & msgErro, _
+      vbCritical + vbApplicationModal + vbOKOnly + vbDefaultButton1, _
+      "Erro fatal com """ & App.Title & """"
+   Unload frmMDIGeo3d
+   Set frmMDIGeo3d = Nothing
+   End
 End Sub
-Public Function SetupPixelFormat(ByVal hDC As Long) As Long
-    Dim pfd As PIXELFORMATDESCRIPTOR
-    'PIXEL FORMAT: Sempre há 24 tipos básicos disponíveis.
-    'Surgem outros se existir uma placa 3d no computador...
-    Dim PixelFormat As Integer
-    Const DESC_ERRO = "Não foi possível obter um formato adequado para os pixels!"
-    
-    'Define em 'pfd' as propriedades requeridas para os pixels...
-    With pfd
-    .nSize = Len(pfd)
-    .nVersion = 1
-    .dwFlags = PFD_SUPPORT_OPENGL Or _
-               PFD_DRAW_TO_WINDOW Or _
-               PFD_DOUBLEBUFFER Or _
-               PFD_TYPE_RGBA
-    .iPixelType = PFD_TYPE_RGBA
-    .cColorBits = 24
-    .cDepthBits = 24
-    .iLayerType = PFD_MAIN_PLANE
-    End With
-    
-    'Verifica se está disponível o formato 'pfd'...
-    PixelFormat = ChoosePixelFormat(hDC, pfd)
-    If PixelFormat = 0 Then FatalError DESC_ERRO
-    SetupPixelFormat = PixelFormat
+Public Function Ajusta_FormatoPixel(ByVal hDC As Long) As Long
+   Dim pfd As PIXELFORMATDESCRIPTOR
+   'PIXEL FORMAT: Sempre há 24 tipos básicos disponíveis.
+   'Surgem outros se existir uma placa 3d no computador...
+   Dim PixelFormat As Integer
+   Const ERR_PIX_FORMAT = "Erro na rotina 'ChoosePixelFormat'!"
+   
+   'Define em 'pfd' as propriedades requeridas para os pixels...
+   With pfd
+      .nSize = Len(pfd)
+      .nVersion = 1
+      .dwFlags = PFD_SUPPORT_OPENGL Or _
+                 PFD_DRAW_TO_WINDOW Or _
+                 PFD_DOUBLEBUFFER Or _
+                 PFD_TYPE_RGBA
+      .iPixelType = PFD_TYPE_RGBA
+      .cColorBits = 24
+      .cDepthBits = 24
+      .iLayerType = PFD_MAIN_PLANE
+   End With
+   
+   'Verifica se está disponível o formato 'pfd'...
+   PixelFormat = ChoosePixelFormat(hDC, pfd)
+   If PixelFormat = 0 Then ErroFatal ERR_PIX_FORMAT
+   Ajusta_FormatoPixel = PixelFormat
 End Function
-Public Sub Finalizar_OpenGL() 'ByVal hDC As Long)
- If basVbOpenGl.hGLRCPerspectiva <> 0 Then
-  wglMakeCurrent 0, 0 'NULL, NULL
-  wglDeleteContext basVbOpenGl.hGLRCPerspectiva
- End If
- If basVbOpenGl.hGLRCFrontal <> 0 Then
-  wglMakeCurrent 0, 0 'NULL, NULL
-  wglDeleteContext basVbOpenGl.hGLRCFrontal
- End If
- If basVbOpenGl.hGLRCLateral <> 0 Then
-  wglMakeCurrent 0, 0 'NULL, NULL
-  wglDeleteContext basVbOpenGl.hGLRCLateral
- End If
- If basVbOpenGl.hGLRCSuperior <> 0 Then
-  wglMakeCurrent 0, 0 'NULL, NULL
-  wglDeleteContext basVbOpenGl.hGLRCSuperior
- End If
- If basVbOpenGl.hGLRCEpura <> 0 Then
-  wglMakeCurrent 0, 0 'NULL, NULL
-  wglDeleteContext basVbOpenGl.hGLRCEpura
- End If
+Public Sub Finalizar_OpenGL(IdDoc As Integer)
+   Dim j As Vista ' Cada vista no documento
+   Dim Qtd As Integer  ' Total de documentos
+   
+   If Not Doc(IdDoc).Deletado Then
+      For j = PERSPECTIVA To EPURA
+         If Doc(IdDoc).frm.hGLRC_Vista(j) <> 0 Then
+            wglMakeCurrent 0, 0 'NULL, NULL
+            wglDeleteContext Doc(IdDoc).frm.hGLRC_Vista(j)
+         End If
+      Next j
+   End If
 End Sub

@@ -1,21 +1,23 @@
 VERSION 5.00
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Begin VB.Form frmMain 
-   BorderStyle     =   1  'Fixed Single
    Caption         =   "Exemplo - Integrando Vb e OpenGl"
-   ClientHeight    =   6915
-   ClientLeft      =   585
-   ClientTop       =   1170
-   ClientWidth     =   10980
+   ClientHeight    =   4050
+   ClientLeft      =   255
+   ClientTop       =   540
+   ClientWidth     =   6540
+   Icon            =   "Main.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
-   ScaleHeight     =   461
+   MDIChild        =   -1  'True
+   ScaleHeight     =   270
    ScaleMode       =   3  'Pixel
-   ScaleWidth      =   732
-   StartUpPosition =   2  'CenterScreen
+   ScaleWidth      =   436
+   Visible         =   0   'False
+   WindowState     =   2  'Maximized
    Begin MSComctlLib.ImageList ilsFerramentas 
-      Left            =   180
-      Top             =   6120
+      Left            =   5445
+      Top             =   900
       _ExtentX        =   1005
       _ExtentY        =   1005
       BackColor       =   -2147483643
@@ -26,97 +28,97 @@ Begin VB.Form frmMain
       BeginProperty Images {2C247F25-8591-11D1-B16A-00C0F0283628} 
          NumListImages   =   2
          BeginProperty ListImage1 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "Main.frx":0000
+            Picture         =   "Main.frx":030A
             Key             =   ""
          EndProperty
          BeginProperty ListImage2 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "Main.frx":0D36
+            Picture         =   "Main.frx":1040
             Key             =   ""
          EndProperty
       EndProperty
    End
    Begin MSComctlLib.Toolbar tbrFerramentas 
       Align           =   3  'Align Left
-      Height          =   6915
+      Height          =   4050
       Left            =   0
       TabIndex        =   10
       Top             =   0
       Width           =   630
       _ExtentX        =   1111
-      _ExtentY        =   12197
+      _ExtentY        =   7144
       ButtonWidth     =   609
       ButtonHeight    =   953
       Appearance      =   1
       _Version        =   393216
       MousePointer    =   99
-      MouseIcon       =   "Main.frx":1A6C
+      MouseIcon       =   "Main.frx":1D76
    End
    Begin VB.PictureBox picEpura 
       Appearance      =   0  'Flat
       BackColor       =   &H00C0FFFF&
       ForeColor       =   &H80000008&
-      Height          =   3000
+      Height          =   1500
       Left            =   915
-      ScaleHeight     =   198
+      ScaleHeight     =   98
       ScaleMode       =   3  'Pixel
-      ScaleWidth      =   198
+      ScaleWidth      =   98
       TabIndex        =   9
-      Top             =   3750
-      Width           =   3000
+      Top             =   2400
+      Width           =   1500
    End
    Begin VB.PictureBox picLateral 
       Appearance      =   0  'Flat
       BackColor       =   &H00C0FFC0&
       ForeColor       =   &H80000008&
-      Height          =   3000
-      Left            =   4395
-      ScaleHeight     =   198
+      Height          =   1500
+      Left            =   2610
+      ScaleHeight     =   98
       ScaleMode       =   3  'Pixel
-      ScaleWidth      =   198
+      ScaleWidth      =   98
       TabIndex        =   7
-      Top             =   3750
-      Width           =   3000
+      Top             =   2400
+      Width           =   1500
    End
    Begin VB.PictureBox picSuperior 
       Appearance      =   0  'Flat
       BackColor       =   &H00C0FFC0&
       ForeColor       =   &H80000008&
-      Height          =   3000
-      Left            =   7755
-      ScaleHeight     =   198
+      Height          =   1500
+      Left            =   4380
+      ScaleHeight     =   98
       ScaleMode       =   3  'Pixel
-      ScaleWidth      =   198
+      ScaleWidth      =   98
       TabIndex        =   6
-      Top             =   3750
-      Width           =   3000
+      Top             =   2400
+      Width           =   1500
    End
    Begin VB.PictureBox picFrontal 
       Appearance      =   0  'Flat
       BackColor       =   &H00C0FFC0&
       ForeColor       =   &H80000008&
-      Height          =   3000
-      Left            =   7755
-      ScaleHeight     =   198
+      Height          =   1500
+      Left            =   3555
+      ScaleHeight     =   98
       ScaleMode       =   3  'Pixel
-      ScaleWidth      =   198
+      ScaleWidth      =   98
       TabIndex        =   1
-      Top             =   375
-      Width           =   3000
+      Top             =   450
+      Width           =   1500
    End
    Begin VB.PictureBox picPerspectiva 
       Appearance      =   0  'Flat
       BackColor       =   &H00404040&
       ForeColor       =   &H80000008&
-      Height          =   3000
+      Height          =   1500
       Left            =   915
-      MouseIcon       =   "Main.frx":1D86
-      ScaleHeight     =   198
+      MouseIcon       =   "Main.frx":2090
+      ScaleHeight     =   98
       ScaleMode       =   3  'Pixel
-      ScaleWidth      =   431
+      ScaleWidth      =   98
       TabIndex        =   0
       ToolTipText     =   "Botão direito: Mover camera."
-      Top             =   375
-      Width           =   6495
+      Top             =   450
+      Width           =   1500
    End
    Begin VB.Label lblEpura 
       AutoSize        =   -1  'True
@@ -124,14 +126,14 @@ Begin VB.Form frmMain
       Height          =   195
       Left            =   915
       TabIndex        =   8
-      Top             =   3525
+      Top             =   2175
       Width           =   1440
    End
    Begin VB.Label lblFrontal 
       AutoSize        =   -1  'True
       Caption         =   "Vista Frontal (2ª Proj.):"
       Height          =   195
-      Left            =   7755
+      Left            =   3510
       TabIndex        =   5
       Top             =   150
       Width           =   1560
@@ -140,28 +142,29 @@ Begin VB.Form frmMain
       AutoSize        =   -1  'True
       Caption         =   "Vista Lateral (3ª Proj.):"
       Height          =   195
-      Left            =   4395
+      Left            =   2640
       TabIndex        =   4
-      Top             =   3525
+      Top             =   2175
       Width           =   1560
    End
    Begin VB.Label lblSuperior 
       AutoSize        =   -1  'True
       Caption         =   "Vista Superior (1ª Proj.):"
       Height          =   195
-      Left            =   7755
+      Left            =   4380
       TabIndex        =   3
-      Top             =   3525
+      Top             =   2175
       Width           =   1665
    End
    Begin VB.Label lblPerspectiva 
+      AutoSize        =   -1  'True
       Caption         =   "Perspectiva:"
       Height          =   195
-      Left            =   915
+      Left            =   1035
       TabIndex        =   2
       ToolTipText     =   "Teclas [ + ] e [ - ] alteram a distância da câmera."
       Top             =   150
-      Width           =   6465
+      Width           =   885
    End
 End
 Attribute VB_Name = "frmMain"
@@ -170,51 +173,63 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
-Private Magnetismo As Boolean 'Indica se os pontos devem "grudar" na malha quadriculada
-Private X_Ini As Integer, Y_Ini As Integer       'Usado no movimento da camera
-Private Phi_Ini As GLfloat, Theta_Ini As GLfloat 'Idem
-'Private Px As GLdouble, Py As GLdouble, Pz As GLdouble '(Px,Py,Pz)=Unico objeto até agora
 
-Private Type Ferramenta
- IdImg As Integer
- Key As String
- TipText As String
-End Type
-Private Sub Paint_Geral()
+Private X_Ini As Integer, Y_Ini As Integer         'Usado no movimento da camera
+Private Phi_Ini As GLfloat, Theta_Ini As GLfloat   'Idem
+Private hDC_V(1 To 5) As Long                      'Device Contexts de cada tela no Doc
+Private hGLRC_V(1 To 5) As Long                    'GL Rendering Context de cada tela no Doc
+
+Public N_Sel As Integer                                  'Em geral = Ubound(Obj_Sel)
+Public Cam_X As Single, Cam_Y As Single, Cam_Z As Single 'Coord. cartesianas da câmera
+Public Phi As GLfloat, Theta As GLfloat, Ro As GLfloat   'Coord. esféricas da câmera
+Public Posicionando As Boolean      'Indica se está sendo posicionado um ponto no espaço
+Public ObjApontado As Long          'Indica o índice do objeto sob o mouse
+Public Sobre_Plano As Tipo_De_Plano 'Indica plano adequado à combinação de ALT, CTRL e SHIFT
+Public fAspect As GLfloat           'Proporção entre os lados da picPerspectiva
+Property Get hDC_Vista(index As Vista) As Long
+   If index > UBound(hDC_V) Then ErroFatal "Não existe uma Vista com índice " & index & "!"
+   hDC_Vista = hDC_V(index)
+End Property
+Property Get hGLRC_Vista(index As Vista) As Long
+   If index > UBound(hGLRC_V) Then ErroFatal "Não existe uma Vista com índice " & index & "!"
+   hGLRC_Vista = hGLRC_V(index)
+End Property
+Property Let hGLRC_Vista(index As Vista, v As Long)
+   If index > UBound(hGLRC_V) Then ErroFatal "Não existe uma Vista com índice " & index & "!"
+   hGLRC_V(index) = v
+End Property
+Public Sub Redesenhar_Todos()
   picPerspectiva_Paint
   picEpura_Paint
   picSuperior_Paint
   picFrontal_Paint
   picLateral_Paint
 End Sub
+
 Private Sub Form_Load()
- hDCPerspectiva = Me.picPerspectiva.hDC 'Identificador das ViewPort's
- hDCFrontal = Me.picFrontal.hDC
- hDCLateral = Me.picLateral.hDC
- hDCSuperior = Me.picSuperior.hDC
- hDCEpura = Me.picEpura.hDC
- 
- Carrega_Ferramentas
- tbrFerramentas.Tag = tbrFerramentas.Buttons.Item(1).Key
- basGeometria.Inicializa
- 
- Magnetismo = True 'habilita o magnetismo entre "ponto" e "grade"
- 
- Call Inicializar_OpenGL 'Ajusta formato dos pixels, iluminação, matrizes de projeção...
+
+ hDC_V(PERSPECTIVA) = Me.picPerspectiva.hDC 'Identificador das ViewPort's
+ hDC_V(FRONTAL) = Me.picFrontal.hDC
+ hDC_V(LATERAL) = Me.picLateral.hDC
+ hDC_V(SUPERIOR) = Me.picSuperior.hDC
+ hDC_V(EPURA) = Me.picEpura.hDC
+ 'Me.Tag = 1
+ N_Sel = 0
 End Sub
 
 Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
 Posicionando = False
-Paint_Geral
+Redesenhar_Todos
 End Sub
 
 Private Sub Form_KeyPress(KeyAscii As Integer)
- If Chr(KeyAscii) = "m" Or Chr(KeyAscii) = "M" Then Magnetismo = Not Magnetismo
  If Chr(KeyAscii) = "+" Then Ro = Ro - 1
  If Chr(KeyAscii) = "-" Then Ro = Ro + 1
  If KeyAscii = vbKeyEscape Then tbrFerramentas.Buttons(1).Value = tbrPressed: tbrFerramentas.Tag = "PONTEIRO"
+ 'O ALT NÃO ESTÁ COM PROBLEMA.
+ 'VOCÊ SELECIONOU O MENU!
  If Chr(KeyAscii) = "r" Or Chr(KeyAscii) = "R" Then
-  Paint_Geral
+  Redesenhar_Todos
  End If
  If Ro < 3 Then Ro = 3
  If Ro > 20 Then Ro = 20
@@ -222,7 +237,7 @@ Private Sub Form_KeyPress(KeyAscii As Integer)
   Cam_Y = Ro * Sin(Phi * DEG) * Sin(Theta * DEG)
   Cam_Z = Ro * Cos(Phi * DEG)
   
-  wglMakeCurrent hDCPerspectiva, hGLRCPerspectiva
+  wglMakeCurrent hDC_Vista(PERSPECTIVA), hGLRC_Vista(PERSPECTIVA)
   glMatrixMode GL_MODELVIEW
   glLoadIdentity
   gluLookAt Cam_X, Cam_Y, Cam_Z, 0, 0, 0, 0, 0, 1
@@ -233,21 +248,21 @@ End Sub
 
 Private Sub Form_Resize()
  Const ESP = 25
- Dim TAM As Single
+ Dim Tam As Single
  Dim Barra As Single
  Dim l As Single, a As Single
- 
+  
  Barra = tbrFerramentas.Width
  a = (Me.ScaleHeight - 3 * ESP) / 2
  l = (Me.ScaleWidth - 4 * ESP - Barra) / 3
- TAM = IIf(a < l, a, l)
+ Tam = IIf(a < l, a, l)
  
- If TAM <= 0 Then Exit Sub
- picPerspectiva.Move Barra + ESP, ESP, 2 * TAM + ESP, TAM
- picFrontal.Move Barra + 3 * ESP + 2 * TAM, ESP, TAM, TAM
- picEpura.Move Barra + ESP, 2 * ESP + TAM, TAM, TAM
- picLateral.Move Barra + 2 * ESP + TAM, 2 * ESP + TAM, TAM, TAM
- picSuperior.Move Barra + 3 * ESP + 2 * TAM, 2 * ESP + TAM, TAM, TAM
+ If Tam <= 0 Then Exit Sub
+ picPerspectiva.Move Barra + ESP, ESP, 2 * Tam + ESP, Tam
+ picFrontal.Move Barra + 3 * ESP + 2 * Tam, ESP, Tam, Tam
+ picEpura.Move Barra + ESP, 2 * ESP + Tam, Tam, Tam
+ picLateral.Move Barra + 2 * ESP + Tam, 2 * ESP + Tam, Tam, Tam
+ picSuperior.Move Barra + 3 * ESP + 2 * Tam, 2 * ESP + Tam, Tam, Tam
  
  lblPerspectiva.Move picPerspectiva.Left, picPerspectiva.Top - 15
  lblFrontal.Move picFrontal.Left, picFrontal.Top - 15
@@ -256,7 +271,7 @@ Private Sub Form_Resize()
  lblSuperior.Move picSuperior.Left, picSuperior.Top - 15
  
  'Configurações específicas da PERSPECTIVA
- wglMakeCurrent hDCPerspectiva, hGLRCPerspectiva
+ wglMakeCurrent hDC_Vista(PERSPECTIVA), hGLRC_Vista(PERSPECTIVA)
  With picPerspectiva
    l = .ScaleWidth: a = .ScaleHeight
  End With
@@ -272,98 +287,46 @@ Private Sub Form_Resize()
  glMatrixMode GL_MODELVIEW
  
  'Configurações específicas da VISTA FRONTAL
-  wglMakeCurrent hDCFrontal, hGLRCFrontal
+  wglMakeCurrent hDC_Vista(FRONTAL), hGLRC_Vista(FRONTAL)
   With picFrontal
    l = .ScaleWidth: a = .ScaleHeight
   End With
   glViewport 0, 0, l, a
   
   'Configurações específicas da VISTA LATERAL
-  wglMakeCurrent hDCLateral, hGLRCLateral
-  With frmMain.picLateral
+  wglMakeCurrent hDC_Vista(LATERAL), hGLRC_Vista(LATERAL)
+  With picLateral
    l = .ScaleWidth: a = .ScaleHeight
   End With
   glViewport 0, 0, l, a
   
   'Configurações específicas da VISTA SUPERIOR
-  wglMakeCurrent hDCSuperior, hGLRCSuperior
-  With frmMain.picSuperior
+  wglMakeCurrent hDC_Vista(SUPERIOR), hGLRC_Vista(SUPERIOR)
+  With picSuperior
    l = .ScaleWidth: a = .ScaleHeight
   End With
   glViewport 0, 0, l, a
   
   'Configurações específicas da ÉPURA:
-  wglMakeCurrent hDCEpura, hGLRCEpura
-  With frmMain.picEpura
+  wglMakeCurrent hDC_Vista(EPURA), hGLRC_Vista(EPURA)
+  With picEpura
    l = .ScaleWidth: a = .ScaleHeight
   End With
   glViewport 0, 0, l, a
   
-  Paint_Geral
+  Redesenhar_Todos
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
- Call Finalizar_OpenGL
+ Doc(Me.Tag).Deletado = True
+ Call Finalizar_OpenGL(Me.Tag)
 End Sub
-
-Sub Carrega_Ferramentas()
- Const Arq_INI = "Tabela.ini"
- Dim imgX As ListImage
- Dim btnButton As Button
- 
- Dim Qtd As Integer
- Dim FileNumber As Integer
- Dim N As Integer
- Dim F() As Ferramenta ' IdImg, Key e TipText
- 
- FileNumber = FreeFile
- On Error GoTo ERRO
-  Open App.Path & "\" & Arq_INI For Input As #FileNumber
- On Error GoTo 0
-  
- N = 0
- 'ReDim F(1 To N)
- 
- With ilsFerramentas
-   .ListImages.Clear
-   .MaskColor = vbWhite
-   Do
-    N = N + 1
-    ReDim Preserve F(1 To N)
-    Input #FileNumber, F(N).IdImg, F(N).Key, F(N).TipText
-    Set imgX = .ListImages. _
-    Add(N, F(N).Key, LoadPicture(App.Path & "\IMG\" & Format(N, "00") & ".bmp"))
-   Loop While Not EOF(FileNumber)
-   
-   Close #FileNumber
-   Qtd = .ListImages.Count '=N-1
- End With
- 
- With tbrFerramentas
-   .Buttons.Clear
-   .ImageList = ilsFerramentas
-   For N = 1 To Qtd
-    Set btnButton = .Buttons.Add(N, F(N).Key, "", tbrDefault, N)
-    btnButton.ToolTipText = F(N).TipText
-    btnButton.Style = tbrButtonGroup
-   'If N > 3 Then btnButton.Enabled = False
-   Next N
-   .Buttons(1).Value = tbrPressed
- End With
- 
- Exit Sub
-ERRO:
- 'If Err.Number = 53 Then
-  'Err.Clear
-  'Recup_Arquivo
-  'Inicializa
- 'Else
-  Err.Raise Err.Number
- 'End If
+Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
+ If Doc(Me.Tag).Alterado Then MsgBox "O documento foi alterado, mas não foi salvo."
 End Sub
-
 Private Sub picPerspectiva_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
  Const VELOCIDADE = 0.5
+ Const PROX = 7
  Dim dx As Integer, dy As Integer
  Dim winX As GLdouble, winY As GLdouble, winZ As GLdouble
   
@@ -386,7 +349,7 @@ Private Sub picPerspectiva_MouseMove(Button As Integer, Shift As Integer, X As S
   Select Case tbrFerramentas.Tag
   Case "PONTEIRO"
    'Obtem cópia da matriz de ViewPort, define qual será o Buffer e inicia modo de seleção
-   wglMakeCurrent hDCPerspectiva, hGLRCPerspectiva
+   wglMakeCurrent hDC_Vista(PERSPECTIVA), hGLRC_Vista(PERSPECTIVA)
    glGetIntegerv GL_VIEWPORT, M_ViewPort(0)
    glSelectBuffer TAM_BUFER, Buf_Selec(0)
    glRenderMode GL_SELECT
@@ -397,25 +360,31 @@ Private Sub picPerspectiva_MouseMove(Button As Integer, Shift As Integer, X As S
    glMatrixMode GL_PROJECTION
    glPushMatrix
     glLoadIdentity
-    gluPickMatrix X, M_ViewPort(3) - Y, 5#, 5#, M_ViewPort(0)
+    gluPickMatrix X, M_ViewPort(3) - Y, PROX, PROX, M_ViewPort(0)
     gluPerspective 35!, fAspect, 1!, 100!
     
     glClear clrDepthBufferBit Or clrColorBufferBit
-    basGeometria.Des_Objetos GL_SELECT, tbrFerramentas.Tag 'GL_RENDER
+    basGeometria.Des_Objetos Me.Tag, GL_SELECT, tbrFerramentas.Tag    'GL_RENDER
     glMatrixMode GL_PROJECTION 'As rotinas de desenho mudam para GL_MODELVIEW
    glPopMatrix
    glFlush
    'Envia dados sobre selecao para o basGeometria
    N_Hits = glRenderMode(GL_RENDER)
-   
-   'conferir se PRECISA INDICE (?) ao passar matriz
-   
-   picPerspectiva.ToolTipText = basGeometria.ApontaObjeto(N_Hits, Buf_Selec)
+      
+   picPerspectiva.ToolTipText = basGeometria.Aponta_Objeto(Me.Tag, N_Hits, Buf_Selec)
    
   Case "PONTO"
-   Estado_Teclas = Shift
+   Select Case Shift
+   Case 0, 0 + vbCtrlMask
+      Sobre_Plano = PL_HORIZONTAL
+   Case vbShiftMask, vbShiftMask + vbCtrlMask
+      Sobre_Plano = PL_PERFIL
+   Case vbAltMask, vbAltMask + vbCtrlMask
+      Sobre_Plano = PL_FRONTAL
+   End Select
+   
    Posicionando = True
-   wglMakeCurrent hDCPerspectiva, hGLRCPerspectiva
+   wglMakeCurrent hDC_Vista(PERSPECTIVA), hGLRC_Vista(PERSPECTIVA)
    glGetIntegerv GL_VIEWPORT, M_ViewPort(0)
    glGetDoublev GL_MODELVIEW_MATRIX, M_ModelView(0)
    glGetDoublev GL_PROJECTION_MATRIX, M_Projection(0)
@@ -426,7 +395,7 @@ Private Sub picPerspectiva_MouseMove(Button As Integer, Shift As Integer, X As S
    vx = x1 - x0
    vy = y1 - y0
    vz = z1 - z0
-   Select Case Estado_Teclas
+   Select Case Shift
    Case 0 'Mover sobre um PLANO HORIZONTAL
     If vz = 0 Then vz = z0 - P_Aux(2): MsgBox "vz=0"
     Pos = (P_Aux(2) - z0) / vz
@@ -496,7 +465,7 @@ Private Sub picPerspectiva_MouseMove(Button As Integer, Shift As Integer, X As S
      If pz2 <> pz1 Then P_Aux(1) = py1 + (P_Aux(2) - pz1) * (py2 - py1) / (pz2 - pz1)
      'P_Aux(2) = P_Aux(2)
    End Select
-   If (Estado_Teclas = 0 Or Estado_Teclas = vbShiftMask Or Estado_Teclas = vbAltMask) Then
+   If (Shift = 0 Or Shift = vbShiftMask Or Shift = vbAltMask) Then
      If (Pos < 0 Or 1 < Pos) Then Exit Sub
      'Calcula a interseção do raio projetante com o plano escolhido
      P_Aux(0) = x0 + Pos * vx
@@ -504,7 +473,7 @@ Private Sub picPerspectiva_MouseMove(Button As Integer, Shift As Integer, X As S
      P_Aux(2) = z0 + Pos * vz
    End If
    
-   If Magnetismo Then
+   If frmMDIGeo3d.mnuEditarMagnetismo.Checked Then
     P_Aux(0) = Round(P_Aux(0))
     P_Aux(1) = Round(P_Aux(1))
     P_Aux(2) = Round(P_Aux(2))
@@ -513,7 +482,7 @@ Private Sub picPerspectiva_MouseMove(Button As Integer, Shift As Integer, X As S
   Case "SEGMENTO"
   
   End Select
-  Paint_Geral
+  Redesenhar_Todos
   
  Case 2 '=Button: Mover camera (botao direito)
   Posicionando = False
@@ -530,7 +499,7 @@ Private Sub picPerspectiva_MouseMove(Button As Integer, Shift As Integer, X As S
   Cam_Y = Ro * Sin(Phi * DEG) * Sin(Theta * DEG)
   Cam_Z = Ro * Cos(Phi * DEG)
   
-  wglMakeCurrent hDCPerspectiva, hGLRCPerspectiva
+  wglMakeCurrent hDC_Vista(PERSPECTIVA), hGLRC_Vista(PERSPECTIVA)
   glMatrixMode GL_MODELVIEW
   glLoadIdentity
   gluLookAt Cam_X, Cam_Y, Cam_Z, 0, 0, 0, 0, 0, 1
@@ -540,7 +509,6 @@ Private Sub picPerspectiva_MouseMove(Button As Integer, Shift As Integer, X As S
  End Select
 End Sub
 Private Sub picPerspectiva_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
- 
  If Button = 2 Then picPerspectiva.MousePointer = 99
  Select Case UCase(tbrFerramentas.Tag)
   Case "PONTEIRO"
@@ -554,117 +522,131 @@ Private Sub picPerspectiva_MouseDown(Button As Integer, Shift As Integer, X As S
  Phi_Ini = Phi:  Theta_Ini = Theta
 End Sub
 Private Sub picPerspectiva_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
- Dim i As Integer
-  
- Select Case Button
- Case 1
-  Estado_Teclas = Shift
-  Select Case tbrFerramentas.Tag
-  Case "PONTO"
-   If basGeometria.Qtd_Obj < basGeometria.MAX_OBJETOS Then
-    basGeometria.Qtd_Obj = basGeometria.Qtd_Obj + 1
-    ReDim Preserve basGeometria.Obj(1 To basGeometria.Qtd_Obj)
-    basGeometria.Obj(Qtd_Obj).Coord(0) = P_Aux(0)
-    basGeometria.Obj(Qtd_Obj).Coord(1) = P_Aux(1)
-    basGeometria.Obj(Qtd_Obj).Coord(2) = P_Aux(2)
-    'P_Aux(0) = 0: P_Aux(1) = 0: P_Aux(2) = 0
-   End If
-  Case "PONTEIRO"
-   If ObjApontado > 0 Then
-    'N_Sel = UBound(basGeometria.Obj_Sel)
-    If Estado_Teclas = 0 Then
-     
-     If N_Sel = 0 Then 'Ainda não há obj. selecionado
-      N_Sel = 1
-      basGeometria.Obj(ObjApontado).Selec = 1
-      basGeometria.Obj_Sel(1) = ObjApontado
-     Else
-      For i = 1 To N_Sel
-       basGeometria.Obj(basGeometria.Obj_Sel(i)).Selec = 0 'duplicado
-      Next i
-      If N_Sel > 1 Or basGeometria.Obj(ObjApontado).Selec = 0 Then _
-                      basGeometria.Obj(ObjApontado).Selec = 1
-      N_Sel = IIf((basGeometria.Obj(ObjApontado).Selec = 0) And (N_Sel = 1), 0, 1)
+   Dim i As Integer
+   Dim N_Obj As Integer 'Em geral = Ubound(Doc(me.tag).Obj)
+   
+   N_Obj = UBound(Doc(Me.Tag).Obj)
+   Select Case Button
+   Case 1
+      Select Case Shift
+      Case 0, 0 + vbCtrlMask
+         Sobre_Plano = PL_HORIZONTAL
+      Case vbShiftMask, vbShiftMask + vbCtrlMask
+         Sobre_Plano = PL_PERFIL
+      Case vbAltMask, vbAltMask + vbCtrlMask
+         Sobre_Plano = PL_FRONTAL
+      End Select
       
-      ReDim basGeometria.Obj_Sel(1 To 1)
-      If N_Sel > 0 Then basGeometria.Obj_Sel(1) = ObjApontado
-     End If
-     
-    Else 'not Estado_Teclas = 0
-     If basGeometria.Obj(ObjApontado).Selec > 0 Then
-      N_Sel = N_Sel - 1
-      For i = basGeometria.Obj(ObjApontado).Selec To N_Sel
-       basGeometria.Obj_Sel(i) = basGeometria.Obj_Sel(i + 1)
-       basGeometria.Obj(basGeometria.Obj_Sel(i + 1)).Selec = i
-      Next i
-      If N_Sel > 0 Then ReDim Preserve basGeometria.Obj_Sel(1 To N_Sel)
-      basGeometria.Obj(ObjApontado).Selec = 0
-      
-     Else 'o obj apontado nao estava selecionado
-      N_Sel = N_Sel + 1
-      ReDim Preserve basGeometria.Obj_Sel(1 To N_Sel)
-      basGeometria.Obj_Sel(N_Sel) = ObjApontado
-      basGeometria.Obj(ObjApontado).Selec = N_Sel
-     End If 'basGeometria.Obj(ObjApontado).Selec > 0
-     
-    End If 'Estado_Teclas = 0
-   End If 'ObjApontado > 0
-  End Select 'tbrFerramentas.Tag
-  Paint_Geral
- Case 2
-  If Button = 2 Then picPerspectiva.MousePointer = 0
- End Select
+      Select Case tbrFerramentas.Tag
+      Case "PONTO"
+        If N_Obj < MAX_OBJETOS Then
+           N_Obj = N_Obj + 1
+           ReDim Preserve Doc(Me.Tag).Obj(1 To N_Obj)
+           Doc(Me.Tag).Obj(N_Obj).Coord(0) = P_Aux(0)
+           Doc(Me.Tag).Obj(N_Obj).Coord(1) = P_Aux(1)
+           Doc(Me.Tag).Obj(N_Obj).Coord(2) = P_Aux(2)
+           'P_Aux(0) = 0: P_Aux(1) = 0: P_Aux(2) = 0
+        End If
+      Case "PONTEIRO"
+         If ObjApontado <= 0 Then
+            If Shift = 0 Then Marcar_Todos Me.Tag, False
+         Else
+            With Doc(Me.Tag)
+            'N_Sel = UBound(.Obj_Sel)
+            If Shift = 0 Then
+               If N_Sel = 0 Then 'Ainda não há obj. selecionado
+                  N_Sel = 1
+                  .Obj(ObjApontado).Selec = 1
+                  .Obj_Sel(1) = ObjApontado
+               Else
+                  For i = 1 To N_Sel
+                   .Obj(.Obj_Sel(i)).Selec = 0 'duplicado
+                  Next i
+                  If N_Sel > 1 Or .Obj(ObjApontado).Selec = 0 Then _
+                                  .Obj(ObjApontado).Selec = 1
+                  N_Sel = IIf((.Obj(ObjApontado).Selec = 0) And (N_Sel = 1), 0, 1)
+                  
+                  ReDim .Obj_Sel(1 To 1)
+                  If N_Sel > 0 Then .Obj_Sel(1) = ObjApontado
+               End If
+             
+            Else 'not Shift = 0
+               If .Obj(ObjApontado).Selec > 0 Then
+                  N_Sel = N_Sel - 1
+                  For i = .Obj(ObjApontado).Selec To N_Sel
+                   .Obj_Sel(i) = .Obj_Sel(i + 1)
+                   .Obj(.Obj_Sel(i + 1)).Selec = i
+                  Next i
+                  If N_Sel > 0 Then ReDim Preserve .Obj_Sel(1 To N_Sel)
+                  .Obj(ObjApontado).Selec = 0
+                
+               Else 'o obj apontado nao estava selecionado
+                  N_Sel = N_Sel + 1
+                  ReDim Preserve .Obj_Sel(1 To N_Sel)
+                  .Obj_Sel(N_Sel) = ObjApontado
+                  .Obj(ObjApontado).Selec = N_Sel
+               End If '.Obj(ObjApontado).Selec > 0
+             
+            End If 'Shift = 0
+            End With
+         End If 'ObjApontado > 0
+      End Select 'tbrFerramentas.Tag
+      Redesenhar_Todos
+   Case 2
+      picPerspectiva.MousePointer = 0
+      If X_Ini = X And Y_Ini = Y And Not ObjApontado Then PopupMenu frmMDIGeo3d.mnuEditar
+   End Select
 End Sub
 Private Sub picPerspectiva_Paint()
 
- wglMakeCurrent hDCPerspectiva, hGLRCPerspectiva
+ wglMakeCurrent hDC_Vista(PERSPECTIVA), hGLRC_Vista(PERSPECTIVA)
  glClear clrColorBufferBit Or clrDepthBufferBit
  
  basGeometria.Des_Eixos
- basGeometria.Des_Objetos GL_RENDER, tbrFerramentas.Tag 'GL_SELECT
+ basGeometria.Des_Objetos Me.Tag, GL_RENDER, tbrFerramentas.Tag 'GL_SELECT
  
  Select Case UCase(tbrFerramentas.Tag)
   'Case "PONTEIRO"
   Case "PONTO"
-   If Posicionando Then Des_Plano (Estado_Teclas)
+   If Posicionando Then Des_Plano Sobre_Plano, P_Aux
   'Case "SEGMENTO"
  End Select
- SwapBuffers hDCPerspectiva
+ SwapBuffers hDC_Vista(PERSPECTIVA)
 End Sub
 Private Sub picSuperior_Paint()
 
- wglMakeCurrent hDCSuperior, hGLRCSuperior
+ wglMakeCurrent hDC_Vista(SUPERIOR), hGLRC_Vista(SUPERIOR)
  glClear clrColorBufferBit Or clrDepthBufferBit
  Des_Eixos
- basGeometria.Des_Objetos GL_RENDER, tbrFerramentas.Tag 'GL_SELECT
- SwapBuffers hDCSuperior
+ basGeometria.Des_Objetos Me.Tag, GL_RENDER, tbrFerramentas.Tag 'GL_SELECT
+ SwapBuffers hDC_Vista(SUPERIOR)
 End Sub
 Private Sub picFrontal_Paint()
 
- wglMakeCurrent hDCFrontal, hGLRCFrontal
+ wglMakeCurrent hDC_Vista(FRONTAL), hGLRC_Vista(FRONTAL)
  glClear clrColorBufferBit Or clrDepthBufferBit
  Des_Eixos
- basGeometria.Des_Objetos GL_RENDER, tbrFerramentas.Tag 'GL_SELECT
- SwapBuffers hDCFrontal
+ basGeometria.Des_Objetos Me.Tag, GL_RENDER, tbrFerramentas.Tag 'GL_SELECT
+ SwapBuffers hDC_Vista(FRONTAL)
 End Sub
 Private Sub picLateral_Paint()
 
- wglMakeCurrent hDCLateral, hGLRCLateral
+ wglMakeCurrent hDC_Vista(LATERAL), hGLRC_Vista(LATERAL)
  glClear clrColorBufferBit Or clrDepthBufferBit
  Des_Eixos
- basGeometria.Des_Objetos GL_RENDER, tbrFerramentas.Tag 'GL_SELECT
- SwapBuffers hDCLateral
+ basGeometria.Des_Objetos Me.Tag, GL_RENDER, tbrFerramentas.Tag 'GL_SELECT
+ SwapBuffers hDC_Vista(LATERAL)
 End Sub
 Private Sub picEpura_Paint()
 
- wglMakeCurrent hDCEpura, hGLRCEpura
+ wglMakeCurrent hDC_Vista(EPURA), hGLRC_Vista(EPURA)
  glClear clrColorBufferBit Or clrDepthBufferBit
  
  Des_LT
  
  'Posicionado por padrão para vista superior
  'Desenha 1ª projeção
- basGeometria.Des_Objetos GL_RENDER, tbrFerramentas.Tag 'GL_SELECT
+ basGeometria.Des_Objetos Me.Tag, GL_RENDER, tbrFerramentas.Tag 'GL_SELECT
  
  'Reposiciona para vista frontal
  glMatrixMode GL_MODELVIEW
@@ -673,9 +655,9 @@ Private Sub picEpura_Paint()
   glRotatef 90, 0#, 0#, 1#
   glRotatef 90, 1#, 0#, 0#
  'Desenha 2ª projeção
- basGeometria.Des_Objetos GL_RENDER, tbrFerramentas.Tag 'GL_SELECT
+ basGeometria.Des_Objetos Me.Tag, GL_RENDER, tbrFerramentas.Tag 'GL_SELECT
  
- SwapBuffers hDCEpura
+ SwapBuffers hDC_Vista(EPURA)
 End Sub
 Private Sub tbrFerramentas_ButtonClick(ByVal Button As MSComctlLib.Button)
 'Convenção: Tag guarda um nome igual aos da enumeração pública de tipos dos objetos

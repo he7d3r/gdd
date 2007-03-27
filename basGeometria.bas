@@ -1,207 +1,57 @@
 Attribute VB_Name = "basGeometria"
 Option Explicit
-Public Enum Tipo_De_Objeto
- PONTO 'PONTO = 0. É o valor padrão de novos objetos.
- 'PONTO_SOBRE 'PONTO_DE_INTERSECÇÃO
- SEGMENTO
- 'VETOR 'SEMI_RETA 'RETA 'TRIÂNGULO 'POLÍGONO 'POLÍGONO_REGULAR 'CIRCUNFERÊNCIA
- 'ARCO 'CÔNICA 'PARALELA 'PERPENDICULAR 'MEDIATRIZ 'PONTO_MÉDIO 'BISSETRIZ_PONTOS
- 'BISSETRIZ_RETAS  'COMPASSO 'REFLEXÃO 'SIMETRIA 'TRANSLAÇÃO 'INVERSO_CIRCUNFERÊNCIA
- 'TEXTO 'ÂNGULO 'EIXOS
-End Enum
 
-Type Objeto
- 'Id As Integer 'Identifica exclusivamente o objeto (por tipo??). Como o indice de Obj?
- 'Tipo As Tipo_De_Objeto 'Que item será guardado
- 'N_Param As Byte 'Número de objetos dos quais este é dependente
- 'Cor As Long 'Cor utilizada para desenhar na tela
- 'Espessura As Byte 'Raio dos pontos ou a largura de curvas e contornos
- 'Traço(1 To 2) As Byte 'Tipo de pontilhado
- Selec As Integer 'Indica que o objeto foi o "selec-ésimo" a ser selecionado
- Mostrar As Boolean ' Aparência 'Indica como o objeto será exibido
- 'Nome As String 'Um rótulo para exibição em tela
- 'Id_Dep() As Long 'Indices dos parametros (objetos)dos quais este depende
- Coord(0 To 2) As GLdouble 'Coordenadas e angulos livres
-End Type
-Public ObjApontado As Long
-
-Public Const MAX_OBJETOS = 10000
-Public Const TAM_BUFER = MAX_OBJETOS
-Public Qtd_Obj As Long 'É sempre = Ubound(Obj)
-Public Obj() As Objeto
-Public Obj_Sel() As Integer
-Public N_Sel As Integer 'É sempre = Ubound(Obj_Sel)
-Public P_Aux(0 To 2) As GLdouble 'Ponto auxiliar durante a definição de objetos
-Public Posicionando As Boolean 'Indica se está sendo posicionado um ponto no espaço
-Public Estado_Teclas As Integer 'Indica se ALT, CTRL e SHIFT estão pressionadas
-
-Public Sub Inicializa()
- ReDim Obj(1 To 1)
- ReDim Obj_Sel(1 To 1)
+Public Sub Inicializa_Objetos(IdDoc As Integer)
+ ReDim Doc(IdDoc).Obj(1 To 1)
+ ReDim Doc(IdDoc).Obj_Sel(1 To 1)
+End Sub
+Public Sub Inverter_Todos(IdDoc As Integer)
+   Dim N_Obj As Integer
+   Dim i As Integer, s As Integer
+   With Doc(IdDoc)
+      N_Obj = UBound(.Obj)
+      .frm.N_Sel = N_Obj - .frm.N_Sel
+      If .frm.N_Sel = 0 Then
+         ReDim .Obj_Sel(1 To 1)
+      Else
+         ReDim .Obj_Sel(1 To .frm.N_Sel)
+      End If
+      s = 1
+      For i = 1 To N_Obj
+         If .Obj(i).Selec Then
+            .Obj(i).Selec = 0
+         Else
+            .Obj(i).Selec = s 'vale sempre 's<=i'
+            .Obj_Sel(s) = i
+            s = s + 1
+         End If
+      Next i
+   End With
+End Sub
+Public Sub Marcar_Todos(IdDoc As Integer, Selecionar As Boolean)
+   Dim N_Obj As Integer
+   Dim i As Integer
+   
+   With Doc(IdDoc)
+      N_Obj = UBound(.Obj)
+      If Selecionar = True Then
+         .frm.N_Sel = N_Obj
+         ReDim .Obj_Sel(1 To N_Obj)
+         For i = 1 To N_Obj
+            .Obj(i).Selec = i
+            .Obj_Sel(i) = i
+         Next i
+      Else
+         .frm.N_Sel = 0
+         ReDim .Obj_Sel(1 To 1)
+         For i = 1 To N_Obj
+            .Obj(i).Selec = 0
+         Next i
+      End If
+   End With
 End Sub
 
-Public Sub Des_Plano(Estado As Integer)
- Const RAIO = 3
- Dim k As GLdouble
- Dim PosX As GLdouble, PosY As GLdouble, PosZ As GLdouble
- 
- 'If Not Posicionando Then Exit Sub
- 
- glColor3f 0.5, 0.5, 0.5
- 'glLineWidth (1#)
- glBegin bmLines
-  Select Case Estado
-  Case 0, vbCtrlMask
-    For k = -RAIO To RAIO 'Desenhar "bola" sobre xOy
-      PosX = Fix(P_Aux(0) + k): PosY = Fix(P_Aux(1) + k)
-      If Abs(PosX - P_Aux(0)) < RAIO Then
-      glVertex3d PosX, P_Aux(1) + (RAIO - Abs(PosX - P_Aux(0))), 0#
-      glVertex3d PosX, P_Aux(1) - (RAIO - Abs(PosX - P_Aux(0))), 0#
-      End If
-      If Abs(PosY - P_Aux(1)) < RAIO Then
-      glVertex3d P_Aux(0) + (RAIO - Abs(PosY - P_Aux(1))), PosY, 0#
-      glVertex3d P_Aux(0) - (RAIO - Abs(PosY - P_Aux(1))), PosY, 0#
-      End If
-    Next k
-  Case vbShiftMask, vbShiftMask + vbCtrlMask
-    For k = -RAIO To RAIO 'Desenhar "bola" sobre yOz (lembre que o sistema é negativo)
-      PosZ = Fix(P_Aux(2) + k): PosY = Fix(P_Aux(1) + k)
-      If Abs(PosZ - P_Aux(2)) < RAIO Then
-      glVertex3d 0#, P_Aux(1) + (RAIO - Abs(PosZ - P_Aux(2))), PosZ
-      glVertex3d 0#, P_Aux(1) - (RAIO - Abs(PosZ - P_Aux(2))), PosZ
-      End If
-      If Abs(PosY - P_Aux(1)) < RAIO Then
-      glVertex3d 0#, PosY, P_Aux(2) + (RAIO - Abs(PosY - P_Aux(1)))
-      glVertex3d 0#, PosY, P_Aux(2) - (RAIO - Abs(PosY - P_Aux(1)))
-      End If
-    Next k
-  Case vbAltMask, vbAltMask + vbCtrlMask
-    For k = -RAIO To RAIO 'Desenhar "bola" sobre xOz (lembre que o sistema é negativo)
-      PosX = Fix(P_Aux(0) + k): PosZ = Fix(P_Aux(2) + k)
-      If Abs(PosX - P_Aux(0)) < RAIO Then
-      glVertex3d PosX, 0#, P_Aux(2) + (RAIO - Abs(PosX - P_Aux(0)))
-      glVertex3d PosX, 0#, P_Aux(2) - (RAIO - Abs(PosX - P_Aux(0)))
-      End If
-      If Abs(PosZ - P_Aux(2)) < RAIO Then
-      glVertex3d P_Aux(0) + (RAIO - Abs(PosZ - P_Aux(2))), 0#, PosZ
-      glVertex3d P_Aux(0) - (RAIO - Abs(PosZ - P_Aux(2))), 0#, PosZ
-      End If
-    Next k
-  End Select
- glEnd
-End Sub
-Public Sub Des_Eixos()
- Const PONTA = 3
- Const INI_SETA = PONTA - PONTA / 10
- Const AF_SETA = PONTA / 20
- 'glLineWidth (2#)
- glBegin bmLines
-   glColor3f 1#, 0#, 0#
-   glVertex3f 0#, 0#, 0#
-   glVertex3f PONTA, 0#, 0#
-     glVertex3f PONTA, 0#, 0#: glVertex3f INI_SETA, AF_SETA, 0#
-     glVertex3f PONTA, 0#, 0#: glVertex3f INI_SETA, -AF_SETA, 0#
-     glVertex3f PONTA, 0#, 0#: glVertex3f INI_SETA, 0#, AF_SETA
-     glVertex3f PONTA, 0#, 0#: glVertex3f INI_SETA, 0#, -AF_SETA
-     
-   glColor3f 0#, 1#, 0#
-   glVertex3f 0#, 0#, 0#
-   glVertex3f 0#, PONTA, 0#
-     glVertex3f 0#, PONTA, 0#: glVertex3f 0#, INI_SETA, AF_SETA
-     glVertex3f 0#, PONTA, 0#: glVertex3f 0#, INI_SETA, -AF_SETA
-     glVertex3f 0#, PONTA, 0#: glVertex3f AF_SETA, INI_SETA, 0#
-     glVertex3f 0#, PONTA, 0#: glVertex3f -AF_SETA, INI_SETA, 0#
-     
-   glColor3f 0#, 0#, 1#
-   glVertex3f 0#, 0#, 0#
-   glVertex3f 0#, 0#, PONTA
-     glVertex3f 0#, 0#, PONTA: glVertex3f 0#, AF_SETA, INI_SETA
-     glVertex3f 0#, 0#, PONTA: glVertex3f 0#, -AF_SETA, INI_SETA
-     glVertex3f 0#, 0#, PONTA: glVertex3f AF_SETA, 0#, INI_SETA
-     glVertex3f 0#, 0#, PONTA: glVertex3f -AF_SETA, 0#, INI_SETA
- glEnd
-End Sub
-Public Sub Des_Ponto_Aux(Estado As Integer)
-  glColor3d 1#, 0.4, 0.1
-  
-  glPointSize (3#)
-  glBegin bmPoints
-    glVertex3dv P_Aux(0)
-  glEnd
-  'If Not Posicionando Then Exit Sub
-  glColor3d 0.7, 0.7, 0.7
-  glBegin bmLines
-   glVertex3d P_Aux(0), P_Aux(1), P_Aux(2)
-   Select Case Estado
-   Case 0, vbCtrlMask 'Segmento vertical
-     glVertex3d P_Aux(0), P_Aux(1), 0#
-   Case vbShiftMask, vbShiftMask + vbCtrlMask 'Segmento fronto-horizontal
-     glVertex3d 0#, P_Aux(1), P_Aux(2)
-   Case vbAltMask, vbAltMask + vbCtrlMask 'Segmento de topo
-     glVertex3d P_Aux(0), 0#, P_Aux(2)
-   End Select
-  glEnd
-End Sub
-'Public Sub Des_Figura()
- 'glPushMatrix
- ' glTranslatef -0.5, 1.5, 0.5
- ' glColor3d 0, 0, 0
- ' gluCylinder QObj, 1.5, 0.5, 2, 12, 2
- 'glPopMatrix
-'End Sub
-Public Sub Des_LT()
- glBegin GL_LINES
-  glColor3d 0.5, 0, 0
-  glVertex3f -3, 0, 0
-  glVertex3f 3, 0, 0
- glEnd
- glPointSize 3#
- glBegin GL_POINTS
-  glColor3d 0.5, 0, 0
-  glVertex3f 0, 0, 0
- glEnd
-End Sub
-Public Sub Des_Objetos(Modo As GLenum, Ferram As String)
- Dim i As Long
- 
- 'já ocorreu um glPushName 0, inicializando a pilha de nomes arbitrariamente
- 
- glColor3d 0#, 0#, 0#
- glPointSize (3#)
-
- For i = 1 To basGeometria.Qtd_Obj
-  If Modo = GL_SELECT Then glLoadName i
-  If i = ObjApontado Then
-   glColor3d 0.8, 0#, 0.5: glPointSize (5#)
-   glBegin bmPoints
-     glVertex3dv basGeometria.Obj(i).Coord(0)
-   glEnd
-   glColor3d 0#, 0#, 0#: glPointSize (3#)
-  ElseIf basGeometria.Obj(i).Selec > 0 Then
-   glColor3d 0.9, 0.4, 0#: glPointSize (3#)
-   glBegin bmPoints
-     glVertex3dv basGeometria.Obj(i).Coord(0)
-   glEnd
-   glColor3d 0#, 0#, 0#: glPointSize (3#)
-  Else
-   glBegin bmPoints
-     glVertex3dv basGeometria.Obj(i).Coord(0)
-   glEnd
-  End If
- Next i
-  
- Select Case UCase(Ferram)
-  Case "PONTEIRO"
-  
-  Case "PONTO"
-   If Posicionando Then Des_Ponto_Aux (Estado_Teclas)
-  Case "SEGMENTO"
-  
- End Select
-  
-End Sub
-Public Function ApontaObjeto(hits As GLint, Buf() As GLuint) As String
- 'Static Sel_Ant As GLuint 'Indice do objeto que estava selecionado no movimento anterior
+Public Function Aponta_Objeto(IdDoc As Integer, hits As GLint, Buf() As GLuint) As String
  Dim h As Long, Id As Long
  Dim Qtd_Nomes As GLuint 'Cada nome é composto de 'tantas' coordenadas
  Dim Nome As GLuint 'Indice do objeto que está selecionado ao clicar o mouse
@@ -227,10 +77,172 @@ Public Function ApontaObjeto(hits As GLint, Buf() As GLuint) As String
  Next h
  
  If Nome > 0 Then
-  ApontaObjeto = "Ponto " & Nome
-  ObjApontado = Nome
+  Aponta_Objeto = "Ponto " & Nome
+  Doc(IdDoc).frm.ObjApontado = Nome
  Else
-  ApontaObjeto = ""
-  ObjApontado = 0
+  Aponta_Objeto = ""
+  Doc(IdDoc).frm.ObjApontado = 0
  End If
 End Function
+
+Public Sub Des_Plano(Plano As Tipo_De_Plano, Aux() As GLdouble)
+   Const RAIO = 3
+   Dim k As GLdouble
+   Dim PosX As GLdouble, PosY As GLdouble, PosZ As GLdouble
+      
+   glColor3f 0.5, 0.5, 0.5
+   'glLineWidth (1#)
+   glBegin bmLines
+   Select Case Plano
+   Case PL_HORIZONTAL
+      For k = -RAIO To RAIO 'Desenhar "bola" sobre xOy
+         PosX = Fix(Aux(0) + k): PosY = Fix(Aux(1) + k)
+         If Abs(PosX - Aux(0)) < RAIO Then
+            glVertex3d PosX, Aux(1) + (RAIO - Abs(PosX - Aux(0))), 0#
+            glVertex3d PosX, Aux(1) - (RAIO - Abs(PosX - Aux(0))), 0#
+         End If
+         If Abs(PosY - Aux(1)) < RAIO Then
+            glVertex3d Aux(0) + (RAIO - Abs(PosY - Aux(1))), PosY, 0#
+            glVertex3d Aux(0) - (RAIO - Abs(PosY - Aux(1))), PosY, 0#
+         End If
+      Next k
+   Case PL_PERFIL
+      For k = -RAIO To RAIO 'Desenhar "bola" sobre yOz (lembre que o sistema é negativo)
+         PosZ = Fix(Aux(2) + k): PosY = Fix(Aux(1) + k)
+         If Abs(PosZ - Aux(2)) < RAIO Then
+            glVertex3d 0#, Aux(1) + (RAIO - Abs(PosZ - Aux(2))), PosZ
+            glVertex3d 0#, Aux(1) - (RAIO - Abs(PosZ - Aux(2))), PosZ
+         End If
+         If Abs(PosY - Aux(1)) < RAIO Then
+            glVertex3d 0#, PosY, Aux(2) + (RAIO - Abs(PosY - Aux(1)))
+            glVertex3d 0#, PosY, Aux(2) - (RAIO - Abs(PosY - Aux(1)))
+         End If
+      Next k
+   Case PL_FRONTAL
+      For k = -RAIO To RAIO 'Desenhar "bola" sobre xOz (lembre que o sistema é negativo)
+         PosX = Fix(Aux(0) + k): PosZ = Fix(Aux(2) + k)
+         If Abs(PosX - Aux(0)) < RAIO Then
+            glVertex3d PosX, 0#, Aux(2) + (RAIO - Abs(PosX - Aux(0)))
+            glVertex3d PosX, 0#, Aux(2) - (RAIO - Abs(PosX - Aux(0)))
+         End If
+         If Abs(PosZ - Aux(2)) < RAIO Then
+            glVertex3d Aux(0) + (RAIO - Abs(PosZ - Aux(2))), 0#, PosZ
+            glVertex3d Aux(0) - (RAIO - Abs(PosZ - Aux(2))), 0#, PosZ
+         End If
+      Next k
+   End Select
+   glEnd
+End Sub
+Public Sub Des_Eixos()
+ Const PONTA = 3
+ Const INI_SETA = PONTA - PONTA / 10
+ Const ABERTURA_SETA = PONTA / 20
+ 'glLineWidth (2#)
+ glBegin bmLines
+   glColor3f 1#, 0#, 0#
+   glVertex3f 0#, 0#, 0#
+   glVertex3f PONTA, 0#, 0#
+     glVertex3f PONTA, 0#, 0#: glVertex3f INI_SETA, ABERTURA_SETA, 0#
+     glVertex3f PONTA, 0#, 0#: glVertex3f INI_SETA, -ABERTURA_SETA, 0#
+     glVertex3f PONTA, 0#, 0#: glVertex3f INI_SETA, 0#, ABERTURA_SETA
+     glVertex3f PONTA, 0#, 0#: glVertex3f INI_SETA, 0#, -ABERTURA_SETA
+     
+   glColor3f 0#, 1#, 0#
+   glVertex3f 0#, 0#, 0#
+   glVertex3f 0#, PONTA, 0#
+     glVertex3f 0#, PONTA, 0#: glVertex3f 0#, INI_SETA, ABERTURA_SETA
+     glVertex3f 0#, PONTA, 0#: glVertex3f 0#, INI_SETA, -ABERTURA_SETA
+     glVertex3f 0#, PONTA, 0#: glVertex3f ABERTURA_SETA, INI_SETA, 0#
+     glVertex3f 0#, PONTA, 0#: glVertex3f -ABERTURA_SETA, INI_SETA, 0#
+     
+   glColor3f 0#, 0#, 1#
+   glVertex3f 0#, 0#, 0#
+   glVertex3f 0#, 0#, PONTA
+     glVertex3f 0#, 0#, PONTA: glVertex3f 0#, ABERTURA_SETA, INI_SETA
+     glVertex3f 0#, 0#, PONTA: glVertex3f 0#, -ABERTURA_SETA, INI_SETA
+     glVertex3f 0#, 0#, PONTA: glVertex3f ABERTURA_SETA, 0#, INI_SETA
+     glVertex3f 0#, 0#, PONTA: glVertex3f -ABERTURA_SETA, 0#, INI_SETA
+ glEnd
+End Sub
+Public Sub Des_Ponto_Aux(Plano As Tipo_De_Plano, Aux() As GLdouble)
+   glColor3d 1#, 0.4, 0.1
+   
+   glPointSize (3#)
+   glBegin bmPoints
+      glVertex3dv Aux(0)
+   glEnd
+   'If Not Posicionando Then Exit Sub
+   glColor3d 0.7, 0.7, 0.7
+   glBegin bmLines
+      glVertex3dv Aux(0) ', Aux(1), Aux(2)
+      Select Case Plano
+      Case PL_HORIZONTAL 'Segmento vertical
+         glVertex3d Aux(0), Aux(1), 0#
+      Case PL_PERFIL 'Segmento fronto-horizontal
+         glVertex3d 0#, Aux(1), Aux(2)
+      Case PL_FRONTAL 'Segmento de topo
+         glVertex3d Aux(0), 0#, Aux(2)
+      End Select
+   glEnd
+End Sub
+'Public Sub Des_Figura()
+ 'glPushMatrix
+ ' glTranslatef -0.5, 1.5, 0.5
+ ' glColor3d 0, 0, 0
+ ' gluCylinder QObj, 1.5, 0.5, 2, 12, 2
+ 'glPopMatrix
+'End Sub
+Public Sub Des_LT()
+ glBegin GL_LINES
+  glColor3d 0.5, 0, 0
+  glVertex3f -3, 0, 0
+  glVertex3f 3, 0, 0
+ glEnd
+ glPointSize 3#
+ glBegin GL_POINTS
+  glColor3d 0.5, 0, 0
+  glVertex3f 0, 0, 0
+ glEnd
+End Sub
+Public Sub Des_Objetos(IdDoc As Integer, Modo As GLenum, Ferram As String)
+ Dim i As Long
+ Dim N_Obj As Long
+ 
+ 'já ocorreu um glPushName 0, inicializando a pilha de nomes arbitrariamente
+ 
+ glColor3d 0#, 0#, 0#
+ glPointSize (3#)
+ 'CAUSOU UM PONTO NA ORIGEM
+ N_Obj = UBound(Doc(IdDoc).Obj)
+ For i = 1 To N_Obj
+  If Modo = GL_SELECT Then glLoadName i
+  If i = Doc(IdDoc).frm.ObjApontado Then
+   glColor3d 0.8, 0#, 0.5: glPointSize (5#)
+   glBegin bmPoints
+     glVertex3dv Doc(IdDoc).Obj(i).Coord(0)
+   glEnd
+   glColor3d 0#, 0#, 0#: glPointSize (3#)
+  ElseIf Doc(IdDoc).Obj(i).Selec > 0 Then
+   glColor3d 0.9, 0.4, 0#: glPointSize (3#)
+   glBegin bmPoints
+     glVertex3dv Doc(IdDoc).Obj(i).Coord(0)
+   glEnd
+   glColor3d 0#, 0#, 0#: glPointSize (3#)
+  Else
+   glBegin bmPoints
+     glVertex3dv Doc(IdDoc).Obj(i).Coord(0)
+   glEnd
+  End If
+ Next i
+  
+ Select Case UCase(Ferram)
+  Case "PONTEIRO"
+  
+  Case "PONTO"
+   If Doc(IdDoc).frm.Posicionando Then Des_Ponto_Aux Doc(IdDoc).frm.Sobre_Plano, P_Aux
+   
+  Case "SEGMENTO"
+  
+ End Select
+  
+End Sub
