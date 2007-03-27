@@ -174,29 +174,28 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
-Private X_Ini As Integer, Y_Ini As Integer         'Usado no movimento da camera
-Private Phi_Ini As GLfloat, Theta_Ini As GLfloat   'Idem
 Private hDC_V(1 To 5) As Long                      'Device Contexts de cada tela no Doc
 Private hGLRC_V(1 To 5) As Long                    'GL Rendering Context de cada tela no Doc
 
+Public X_Ini As Integer, Y_Ini As Integer                'Usado no movimento da camera
+Public Phi_Ini As GLfloat, Theta_Ini As GLfloat          'Idem
 Public N_Sel As Integer                                  'Em geral = Ubound(Obj_Sel)
 Public Cam_X As Single, Cam_Y As Single, Cam_Z As Single 'Coord. cartesianas da câmera
 Public Phi As GLfloat, Theta As GLfloat, Ro As GLfloat   'Coord. esféricas da câmera
 Public Posicionando As Boolean      'Indica se está sendo posicionado um ponto no espaço
 Public ObjApontado As Long          'Indica o índice do objeto sob o mouse
-Public Sobre_Plano As Tipo_De_Plano 'Indica plano adequado à combinação de ALT, CTRL e SHIFT
 Public fAspect As GLfloat           'Proporção entre os lados da picPerspectiva
-Property Get hDC_Vista(index As Vista) As Long
-   If index > UBound(hDC_V) Then ErroFatal "Não existe uma Vista com índice " & index & "!"
-   hDC_Vista = hDC_V(index)
+Property Get hDC_Vista(Index As Vista) As Long
+   If Index > UBound(hDC_V) Then ErroFatal "Não existe uma Vista com índice " & Index & "!"
+   hDC_Vista = hDC_V(Index)
 End Property
-Property Get hGLRC_Vista(index As Vista) As Long
-   If index > UBound(hGLRC_V) Then ErroFatal "Não existe uma Vista com índice " & index & "!"
-   hGLRC_Vista = hGLRC_V(index)
+Property Get hGLRC_Vista(Index As Vista) As Long
+   If Index > UBound(hGLRC_V) Then ErroFatal "Não existe uma Vista com índice " & Index & "!"
+   hGLRC_Vista = hGLRC_V(Index)
 End Property
-Property Let hGLRC_Vista(index As Vista, v As Long)
-   If index > UBound(hGLRC_V) Then ErroFatal "Não existe uma Vista com índice " & index & "!"
-   hGLRC_V(index) = v
+Property Let hGLRC_Vista(Index As Vista, v As Long)
+   If Index > UBound(hGLRC_V) Then ErroFatal "Não existe uma Vista com índice " & Index & "!"
+   hGLRC_V(Index) = v
 End Property
 Public Sub Redesenhar_Todos()
   picPerspectiva_Paint
@@ -325,191 +324,199 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
  If Doc(Me.Tag).Alterado Then MsgBox "O documento foi alterado, mas não foi salvo."
 End Sub
 Private Sub picPerspectiva_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
- Const VELOCIDADE = 0.5
- Const PROX = 7
- Dim dx As Integer, dy As Integer
- Dim winX As GLdouble, winY As GLdouble, winZ As GLdouble
-  
- Dim M_ViewPort(0 To 3) As GLint
- Dim M_ModelView(0 To 15) As GLdouble
- Dim M_Projection(0 To 15) As GLdouble
- Dim Pos As GLdouble
- Dim Y_real As GLint
- Dim x1 As GLdouble, y1 As GLdouble, z1 As GLdouble
- Dim x0 As GLdouble, y0 As GLdouble, z0 As GLdouble
- Dim vx As GLdouble, vy As GLdouble, vz As GLdouble
- Dim px1 As GLdouble, py1 As GLdouble, pz1 As GLdouble
- Dim px2 As GLdouble, py2 As GLdouble, pz2 As GLdouble
- 
- Dim Buf_Selec(0 To TAM_BUFER - 1) As GLuint
- Dim N_Hits As GLint
- 
- Select Case Button
- Case 0, 1  '=Button: Mover ou definir objetos, conforme tbrFerramentas.Tag
-  Select Case tbrFerramentas.Tag
-  Case "PONTEIRO"
-   'Obtem cópia da matriz de ViewPort, define qual será o Buffer e inicia modo de seleção
-   wglMakeCurrent hDC_Vista(PERSPECTIVA), hGLRC_Vista(PERSPECTIVA)
-   glGetIntegerv GL_VIEWPORT, M_ViewPort(0)
-   glSelectBuffer TAM_BUFER, Buf_Selec(0)
-   glRenderMode GL_SELECT
-   glInitNames
-   glPushName 0 'valor arbitrário para iniciar a pilha
+   Dim dx As Integer, dy As Integer
+   Const VELOCIDADE = 0.5
    
-   'Define uma matriz para desenhar apenas próximo do mouse
-   glMatrixMode GL_PROJECTION
-   glPushMatrix
-    glLoadIdentity
-    gluPickMatrix X, M_ViewPort(3) - Y, PROX, PROX, M_ViewPort(0)
-    gluPerspective 35!, fAspect, 1!, 100!
+   Const PROX = 7
+   Dim winX As GLdouble, winY As GLdouble, winZ As GLdouble
     
-    glClear clrDepthBufferBit Or clrColorBufferBit
-    basGeometria.Des_Objetos Me.Tag, GL_SELECT, tbrFerramentas.Tag    'GL_RENDER
-    glMatrixMode GL_PROJECTION 'As rotinas de desenho mudam para GL_MODELVIEW
-   glPopMatrix
-   glFlush
-   'Envia dados sobre selecao para o basGeometria
-   N_Hits = glRenderMode(GL_RENDER)
+   Dim M_ViewPort(0 To 3) As GLint
+   Dim M_ModelView(0 To 15) As GLdouble
+   Dim M_Projection(0 To 15) As GLdouble
+   Dim Pos As GLdouble
+   Dim Y_real As GLint
+   Dim x1 As GLdouble, y1 As GLdouble, z1 As GLdouble
+   Dim x0 As GLdouble, y0 As GLdouble, z0 As GLdouble
+   Dim vx As GLdouble, vy As GLdouble, vz As GLdouble
+   Dim px1 As GLdouble, py1 As GLdouble, pz1 As GLdouble
+   Dim px2 As GLdouble, py2 As GLdouble, pz2 As GLdouble
+   
+   Dim Buf_Selec(0 To TAM_BUFER - 1) As GLuint
+   Dim N_Hits As GLint
+   
+   If ((Button And vbRightButton) = vbRightButton) Then
+      Posicionando = False
+      ObjApontado = 0
+      dx = VELOCIDADE * (X - X_Ini)
+      dy = VELOCIDADE * (Y - Y_Ini)
       
-   picPerspectiva.ToolTipText = basGeometria.Aponta_Objeto(Me.Tag, N_Hits, Buf_Selec)
-   
-  Case "PONTO"
-   Select Case Shift
-   Case 0, 0 + vbCtrlMask
-      Sobre_Plano = PL_HORIZONTAL
-   Case vbShiftMask, vbShiftMask + vbCtrlMask
-      Sobre_Plano = PL_PERFIL
-   Case vbAltMask, vbAltMask + vbCtrlMask
-      Sobre_Plano = PL_FRONTAL
-   End Select
-   
-   Posicionando = True
-   wglMakeCurrent hDC_Vista(PERSPECTIVA), hGLRC_Vista(PERSPECTIVA)
-   glGetIntegerv GL_VIEWPORT, M_ViewPort(0)
-   glGetDoublev GL_MODELVIEW_MATRIX, M_ModelView(0)
-   glGetDoublev GL_PROJECTION_MATRIX, M_Projection(0)
-   
-   Y_real = M_ViewPort(3) - Y - 1
-   gluUnProject X, Y_real, 0#, M_ModelView(0), M_Projection(0), M_ViewPort(0), x0, y0, z0
-   gluUnProject X, Y_real, 1#, M_ModelView(0), M_Projection(0), M_ViewPort(0), x1, y1, z1
-   vx = x1 - x0
-   vy = y1 - y0
-   vz = z1 - z0
-   Select Case Shift
-   Case 0 'Mover sobre um PLANO HORIZONTAL
-    If vz = 0 Then vz = z0 - P_Aux(2): MsgBox "vz=0"
-    Pos = (P_Aux(2) - z0) / vz
-   Case vbShiftMask 'Mover sobre um PLANO DE PERFIL
-    If vx = 0 Then vx = x0 - P_Aux(0): MsgBox "vx=0"
-    Pos = (P_Aux(0) - x0) / vx
-   Case vbAltMask 'Mover sobre um PLANO FRONTAL
-    If vy = 0 Then vy = y0 - P_Aux(1): MsgBox "vy=0"
-    Pos = (P_Aux(1) - y0) / vy
-    
-   Case vbCtrlMask + 0 'Mover sobre uma RETA VERTICAL
-     If vx = 0 Then vx = x0: MsgBox "vx=0"
-     'P1 sobre um PLANO DE PERFIL
-     Pos = (P_Aux(0) - x0) / vx
-     If (Pos < 0 Or 1 < Pos) Then Exit Sub
-     px1 = P_Aux(0): py1 = y0 + Pos * vy: pz1 = z0 + Pos * vz
-     
-     If X < 5 Then X = 5
-     gluUnProject X - 5, Y_real, 0#, M_ModelView(0), M_Projection(0), M_ViewPort(0), x0, y0, z0
-     gluUnProject X - 5, Y_real, 1#, M_ModelView(0), M_Projection(0), M_ViewPort(0), x1, y1, z1
-     vx = x1 - x0
-     vy = y1 - y0
-     vz = z1 - z0
-     If vx = 0 Then vx = x0: MsgBox "vx=0"
-     Pos = (P_Aux(0) - x0) / vx
-     If (Pos < 0 Or 1 < Pos) Then Exit Sub
-     px2 = P_Aux(0):  py2 = y0 + Pos * vy:  pz2 = z0 + Pos * vz
-     'P_Aux(0) = P_Aux(0)
-     'P_Aux(1) = P_Aux(1)
-     If py2 <> py1 Then P_Aux(2) = pz1 + (P_Aux(1) - py1) * (pz2 - pz1) / (py2 - py1)
-   Case vbCtrlMask + vbShiftMask 'Mover sobre uma RETA FRONTO-HORIZONTAL
-     If vy = 0 Then vy = y0 - P_Aux(1): MsgBox "vy=0"
-     Pos = (P_Aux(1) - y0) / vy 'P1 sobre um PLANO FRONTAL
-     If (Pos < 0 Or 1 < Pos) Then Exit Sub
-     px1 = x0 + Pos * vx:   py1 = P_Aux(1):   pz1 = z0 + Pos * vz
-     
-     If Y_real < 5 Then Y_real = 5
-     gluUnProject X, Y_real - 5, 0#, M_ModelView(0), M_Projection(0), M_ViewPort(0), x0, y0, z0
-     gluUnProject X, Y_real - 5, 1#, M_ModelView(0), M_Projection(0), M_ViewPort(0), x1, y1, z1
-     vx = x1 - x0
-     vy = y1 - y0
-     vz = z1 - z0
-     If vy = 0 Then vy = y0 - P_Aux(1): MsgBox "vy=0"
-     Pos = (P_Aux(1) - y0) / vy 'P1 sobre um PLANO FRONTAL
-     If (Pos < 0 Or 1 < Pos) Then Exit Sub
-     px2 = x0 + Pos * vx:   py2 = P_Aux(1):   pz2 = z0 + Pos * vz
-     If pz2 <> pz1 Then P_Aux(0) = px1 + (P_Aux(2) - pz1) * (px2 - px1) / (pz2 - pz1)
-     'P_Aux(1) = P_Aux(1)
-     'P_Aux(2) = P_Aux(2)
-   Case vbCtrlMask + vbAltMask 'Mover sobre uma RETA DE TOPO
-     If vx = 0 Then vx = x0: MsgBox "vx=0"
-     Pos = (P_Aux(0) - x0) / vx 'P1 sobre um PLANO DE PERFIL
-     If (Pos < 0 Or 1 < Pos) Then Exit Sub
-     px1 = P_Aux(0): py1 = y0 + Pos * vy: pz1 = z0 + Pos * vz
-     
-     If Y_real < 5 Then Y_real = 5
-     gluUnProject X, Y_real - 5, 0#, M_ModelView(0), M_Projection(0), M_ViewPort(0), x0, y0, z0
-     gluUnProject X, Y_real - 5, 1#, M_ModelView(0), M_Projection(0), M_ViewPort(0), x1, y1, z1
-     vx = x1 - x0
-     vy = y1 - y0
-     vz = z1 - z0
-     If vx = 0 Then vx = x0: MsgBox "vx=0"
-     Pos = (P_Aux(0) - x0) / vx 'P1 sobre um PLANO DE PERFIL
-     If (Pos < 0 Or 1 < Pos) Then Exit Sub
-     px2 = P_Aux(0):  py2 = y0 + Pos * vy:  pz2 = z0 + Pos * vz
-     'P_Aux(0) = P_Aux(0)
-     If pz2 <> pz1 Then P_Aux(1) = py1 + (P_Aux(2) - pz1) * (py2 - py1) / (pz2 - pz1)
-     'P_Aux(2) = P_Aux(2)
-   End Select
-   If (Shift = 0 Or Shift = vbShiftMask Or Shift = vbAltMask) Then
-     If (Pos < 0 Or 1 < Pos) Then Exit Sub
-     'Calcula a interseção do raio projetante com o plano escolhido
-     P_Aux(0) = x0 + Pos * vx
-     P_Aux(1) = y0 + Pos * vy
-     P_Aux(2) = z0 + Pos * vz
+      Phi = Phi_Ini - dy
+      Theta = Theta_Ini - dx
+      Phi = IIf(Phi <= 0, 0.0001, Phi): Phi = IIf(Phi > 180, 180, Phi)
+      Theta = IIf(Theta <= -180, Theta + 360, Theta): Theta = IIf(Theta > 180, Theta - 360, Theta)
+      
+      Cam_X = Ro * Sin(Phi * DEG) * Cos(Theta * DEG)
+      Cam_Y = Ro * Sin(Phi * DEG) * Sin(Theta * DEG)
+      Cam_Z = Ro * Cos(Phi * DEG)
+      
+      wglMakeCurrent hDC_Vista(PERSPECTIVA), hGLRC_Vista(PERSPECTIVA)
+      glMatrixMode GL_MODELVIEW
+      glLoadIdentity
+      gluLookAt Cam_X, Cam_Y, Cam_Z, 0, 0, 0, 0, 0, 1
+      glMultMatrixf Troca_X_Y(0)
+      
+      picPerspectiva_Paint
+      Exit Sub
    End If
    
-   If frmMDIGeo3d.mnuEditarMagnetismo.Checked Then
-    P_Aux(0) = Round(P_Aux(0))
-    P_Aux(1) = Round(P_Aux(1))
-    P_Aux(2) = Round(P_Aux(2))
-   End If
-
-  Case "SEGMENTO"
-  
-  End Select
-  Redesenhar_Todos
-  
- Case 2 '=Button: Mover camera (botao direito)
-  Posicionando = False
-  ObjApontado = 0
-  dx = VELOCIDADE * (X - X_Ini)
-  dy = VELOCIDADE * (Y - Y_Ini)
-
-  Phi = Phi_Ini - dy
-  Theta = Theta_Ini - dx
-  Phi = IIf(Phi <= 0, 0.0001, Phi): Phi = IIf(Phi > 180, 180, Phi)
-  Theta = IIf(Theta <= -180, Theta + 360, Theta): Theta = IIf(Theta > 180, Theta - 360, Theta)
-  
-  Cam_X = Ro * Sin(Phi * DEG) * Cos(Theta * DEG)
-  Cam_Y = Ro * Sin(Phi * DEG) * Sin(Theta * DEG)
-  Cam_Z = Ro * Cos(Phi * DEG)
-  
-  wglMakeCurrent hDC_Vista(PERSPECTIVA), hGLRC_Vista(PERSPECTIVA)
-  glMatrixMode GL_MODELVIEW
-  glLoadIdentity
-  gluLookAt Cam_X, Cam_Y, Cam_Z, 0, 0, 0, 0, 0, 1
-  glMultMatrixf Troca_X_Y(0)
-  
-  picPerspectiva_Paint
- End Select
+   Select Case tbrFerramentas.Tag
+   Case "PONTEIRO"
+      Select Case Button
+      Case 0 'Apontar objetos
+         'Obtem cópia da matriz de ViewPort, define qual será o Buffer e inicia modo de seleção
+         wglMakeCurrent hDC_Vista(PERSPECTIVA), hGLRC_Vista(PERSPECTIVA)
+         glGetIntegerv GL_VIEWPORT, M_ViewPort(0)
+         glSelectBuffer TAM_BUFER, Buf_Selec(0)
+         glRenderMode GL_SELECT
+         glInitNames
+         glPushName 0 'valor arbitrário para iniciar a pilha
+         
+         'Define uma matriz para desenhar apenas próximo do mouse
+         glMatrixMode GL_PROJECTION
+         glPushMatrix
+          glLoadIdentity
+          gluPickMatrix X, M_ViewPort(3) - Y, PROX, PROX, M_ViewPort(0)
+          gluPerspective 35!, fAspect, 1!, 100!
+          
+          glClear clrDepthBufferBit Or clrColorBufferBit
+          basGeometria.Des_Objetos Me.Tag, GL_SELECT, tbrFerramentas.Tag    'GL_RENDER
+          glMatrixMode GL_PROJECTION 'As rotinas de desenho mudam para GL_MODELVIEW
+         glPopMatrix
+         glFlush
+         'Envia dados sobre selecao para o basGeometria
+         N_Hits = glRenderMode(GL_RENDER)
+            
+         picPerspectiva.ToolTipText = basGeometria.Aponta_Objeto(Me.Tag, N_Hits, Buf_Selec)
+      
+      Case vbLeftButton 'Se aponta alguem, mova-o
+         
+         
+         
+         
+      End Select
+   Case "PONTO"
+      Select Case Button
+      Case 0, vbLeftButton
+         Posicionando = True
+         wglMakeCurrent hDC_Vista(PERSPECTIVA), hGLRC_Vista(PERSPECTIVA)
+         glGetIntegerv GL_VIEWPORT, M_ViewPort(0)
+         glGetDoublev GL_MODELVIEW_MATRIX, M_ModelView(0)
+         glGetDoublev GL_PROJECTION_MATRIX, M_Projection(0)
+         
+         Y_real = M_ViewPort(3) - Y - 1
+         gluUnProject X, Y_real, 0#, M_ModelView(0), M_Projection(0), M_ViewPort(0), x0, y0, z0
+         gluUnProject X, Y_real, 1#, M_ModelView(0), M_Projection(0), M_ViewPort(0), x1, y1, z1
+         vx = x1 - x0
+         vy = y1 - y0
+         vz = z1 - z0
+       
+         Select Case Sobre_Plano
+         Case PL_HORIZONTAL
+            If Shift = vbCtrlMask Then 'Mover sobre uma RETA VERTICAL
+               If vx = 0 Then vx = x0: MsgBox "vx=0"
+               'P1 sobre um PLANO DE PERFIL
+               Pos = (P_Aux(0) - x0) / vx
+               If (Pos < 0 Or 1 < Pos) Then Exit Sub
+               px1 = P_Aux(0): py1 = y0 + Pos * vy: pz1 = z0 + Pos * vz
+               
+               If X < 5 Then X = 5
+               gluUnProject X - 5, Y_real, 0#, M_ModelView(0), M_Projection(0), M_ViewPort(0), x0, y0, z0
+               gluUnProject X - 5, Y_real, 1#, M_ModelView(0), M_Projection(0), M_ViewPort(0), x1, y1, z1
+               vx = x1 - x0
+               vy = y1 - y0
+               vz = z1 - z0
+               If vx = 0 Then vx = x0: MsgBox "vx=0"
+               Pos = (P_Aux(0) - x0) / vx
+               If (Pos < 0 Or 1 < Pos) Then Exit Sub
+               px2 = P_Aux(0):  py2 = y0 + Pos * vy:  pz2 = z0 + Pos * vz
+               'P_Aux(0) = P_Aux(0)
+               'P_Aux(1) = P_Aux(1)
+               If py2 <> py1 Then P_Aux(2) = pz1 + (P_Aux(1) - py1) * (pz2 - pz1) / (py2 - py1)
+            Else 'Mover sobre um PLANO HORIZONTAL
+               If vz = 0 Then vz = z0 - P_Aux(2): MsgBox "vz=0"
+               Pos = (P_Aux(2) - z0) / vz
+            End If
+         Case PL_PERFIL 'Mover sobre um PLANO DE PERFIL
+            If Shift = vbCtrlMask Then 'Mover sobre uma RETA FRONTO-HORIZONTAL
+               If vy = 0 Then vy = y0 - P_Aux(1): MsgBox "vy=0"
+               Pos = (P_Aux(1) - y0) / vy 'P1 sobre um PLANO FRONTAL
+               If (Pos < 0 Or 1 < Pos) Then Exit Sub
+               px1 = x0 + Pos * vx:   py1 = P_Aux(1):   pz1 = z0 + Pos * vz
+               
+               If Y_real < 5 Then Y_real = 5
+               gluUnProject X, Y_real - 5, 0#, M_ModelView(0), M_Projection(0), M_ViewPort(0), x0, y0, z0
+               gluUnProject X, Y_real - 5, 1#, M_ModelView(0), M_Projection(0), M_ViewPort(0), x1, y1, z1
+               vx = x1 - x0
+               vy = y1 - y0
+               vz = z1 - z0
+               If vy = 0 Then vy = y0 - P_Aux(1): MsgBox "vy=0"
+               Pos = (P_Aux(1) - y0) / vy 'P1 sobre um PLANO FRONTAL
+               If (Pos < 0 Or 1 < Pos) Then Exit Sub
+               px2 = x0 + Pos * vx:   py2 = P_Aux(1):   pz2 = z0 + Pos * vz
+               If pz2 <> pz1 Then P_Aux(0) = px1 + (P_Aux(2) - pz1) * (px2 - px1) / (pz2 - pz1)
+               'P_Aux(1) = P_Aux(1)
+               'P_Aux(2) = P_Aux(2)
+            Else 'Mover sobre um PLANO FRONTAL
+               If vx = 0 Then vx = x0 - P_Aux(0): MsgBox "vx=0"
+               Pos = (P_Aux(0) - x0) / vx
+            End If
+         Case PL_FRONTAL
+            If Shift = vbCtrlMask Then 'Mover sobre uma RETA DE TOPO
+               If vx = 0 Then vx = x0: MsgBox "vx=0"
+               Pos = (P_Aux(0) - x0) / vx 'P1 sobre um PLANO DE PERFIL
+               If (Pos < 0 Or 1 < Pos) Then Exit Sub
+               px1 = P_Aux(0): py1 = y0 + Pos * vy: pz1 = z0 + Pos * vz
+               
+               If Y_real < 5 Then Y_real = 5
+               gluUnProject X, Y_real - 5, 0#, M_ModelView(0), M_Projection(0), M_ViewPort(0), x0, y0, z0
+               gluUnProject X, Y_real - 5, 1#, M_ModelView(0), M_Projection(0), M_ViewPort(0), x1, y1, z1
+               vx = x1 - x0
+               vy = y1 - y0
+               vz = z1 - z0
+               If vx = 0 Then vx = x0: MsgBox "vx=0"
+               Pos = (P_Aux(0) - x0) / vx 'P1 sobre um PLANO DE PERFIL
+               If (Pos < 0 Or 1 < Pos) Then Exit Sub
+               px2 = P_Aux(0):  py2 = y0 + Pos * vy:  pz2 = z0 + Pos * vz
+               'P_Aux(0) = P_Aux(0)
+               If pz2 <> pz1 Then P_Aux(1) = py1 + (P_Aux(2) - pz1) * (py2 - py1) / (pz2 - pz1)
+               'P_Aux(2) = P_Aux(2)
+            Else 'Mover sobre um PLANO FRONTAL
+               If vy = 0 Then vy = y0 - P_Aux(1): MsgBox "vy=0"
+               Pos = (P_Aux(1) - y0) / vy
+            End If
+         End Select
+         If (Shift <> vbCtrlMask) Then
+            If (Pos < 0 Or 1 < Pos) Then Exit Sub
+            'Calcula a interseção do raio projetante com o plano escolhido
+            P_Aux(0) = x0 + Pos * vx
+            P_Aux(1) = y0 + Pos * vy
+            P_Aux(2) = z0 + Pos * vz
+         End If
+       
+         If frmMDIGeo3d.mnuEditarMagnetismo.Checked Then
+            P_Aux(0) = Round(P_Aux(0))
+            P_Aux(1) = Round(P_Aux(1))
+            P_Aux(2) = Round(P_Aux(2))
+         End If
+      End Select
+   Case "SEGMENTO"
+   
+   End Select
+   
+   Redesenhar_Todos
+   
 End Sub
 Private Sub picPerspectiva_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
- If Button = 2 Then picPerspectiva.MousePointer = 99
  Select Case UCase(tbrFerramentas.Tag)
   Case "PONTEIRO"
    
@@ -517,9 +524,11 @@ Private Sub picPerspectiva_MouseDown(Button As Integer, Shift As Integer, X As S
    
   'Case "SEGMENTO"
  End Select
- 
- X_Ini = X: Y_Ini = Y
- Phi_Ini = Phi:  Theta_Ini = Theta
+ If (Button And vbRightButton) = vbRightButton Then
+   picPerspectiva.MousePointer = 99
+   X_Ini = X: Y_Ini = Y
+   Phi_Ini = Phi:  Theta_Ini = Theta
+ End If
 End Sub
 Private Sub picPerspectiva_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
    Dim i As Integer
@@ -528,15 +537,6 @@ Private Sub picPerspectiva_MouseUp(Button As Integer, Shift As Integer, X As Sin
    N_Obj = UBound(Doc(Me.Tag).Obj)
    Select Case Button
    Case 1
-      Select Case Shift
-      Case 0, 0 + vbCtrlMask
-         Sobre_Plano = PL_HORIZONTAL
-      Case vbShiftMask, vbShiftMask + vbCtrlMask
-         Sobre_Plano = PL_PERFIL
-      Case vbAltMask, vbAltMask + vbCtrlMask
-         Sobre_Plano = PL_FRONTAL
-      End Select
-      
       Select Case tbrFerramentas.Tag
       Case "PONTO"
         If N_Obj < MAX_OBJETOS Then

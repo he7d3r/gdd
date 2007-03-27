@@ -25,6 +25,22 @@ Begin VB.MDIForm frmMDIGeo3d
    End
    Begin VB.Menu mnuEditar 
       Caption         =   "&Editar"
+      Begin VB.Menu mnuEditarDefPontos 
+         Caption         =   "Definir &pontos"
+         Begin VB.Menu mnuEditarDefPlano 
+            Caption         =   "Usando planos &horizontais"
+            Checked         =   -1  'True
+            Index           =   1
+         End
+         Begin VB.Menu mnuEditarDefPlano 
+            Caption         =   "Usando planos &frontais"
+            Index           =   2
+         End
+         Begin VB.Menu mnuEditarDefPlano 
+            Caption         =   "Usando planos de &perfil"
+            Index           =   3
+         End
+      End
       Begin VB.Menu mnuEditarMagnetismo 
          Caption         =   "&Magnetismo"
          Checked         =   -1  'True
@@ -57,6 +73,7 @@ Private Sub MDIForm_Load()
  
  ReDim Doc(1 To 1)
  ReDim EstadoForm(1)
+ Sobre_Plano = PL_HORIZONTAL
  
  Doc(1).frm.Tag = 1
  Doc(1).frm.Caption = "Novo_" & 1
@@ -97,6 +114,14 @@ Private Sub mnuArquivoSair_Click()
  'Descarregando o form MDI, ocorrerá o evento QueryUnload
  'para cada form filho, seguido do próprio MDI
  Unload frmMDIGeo3d
+End Sub
+
+Private Sub mnuEditarDefPLano_Click(Index As Integer)
+   Dim i As Tipo_De_Plano
+   For i = PL_HORIZONTAL To PL_PERFIL
+      mnuEditarDefPLano(i).Checked = IIf(Index = i, True, False)
+   Next i
+   Sobre_Plano = Index
 End Sub
 
 Private Sub mnuEditarInverter_Click()

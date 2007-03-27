@@ -239,7 +239,7 @@ Public Sub Des_Objetos(IdDoc As Integer, Modo As GLenum, Ferram As String)
   Case "PONTEIRO"
   
   Case "PONTO"
-   If Doc(IdDoc).frm.Posicionando Then Des_Ponto_Aux Doc(IdDoc).frm.Sobre_Plano, P_Aux
+   If Doc(IdDoc).frm.Posicionando Then Des_Ponto_Aux Sobre_Plano, P_Aux
    
   Case "SEGMENTO"
   

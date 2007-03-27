@@ -64,6 +64,7 @@ End Type
 Public Doc() As udtDocumento        'Matriz contendo cada documento.
                                     '(Cada atributo 'frm' é um 'child' do frmMDIGeo3d)
 Public P_Aux(0 To 2) As GLdouble    'Coordenadas de um ponto auxiliar para a definir objetos
+Public Sobre_Plano As Tipo_De_Plano 'Indica plano usado ao definir pontos do espaço
 
 Function ExisteDocAberto() As Integer
    Dim i As Integer
