@@ -14,6 +14,7 @@ End Enum
 'Constantes matemáticas utilizadas com frequência
 Public Const PI = 3.14159265
 Public Const DEG = PI / 180
+Public Const ZERO = 0.0000001 'Usado em rotinas que tem problemas com o número zero=0.0
 
 'Constantes limitadoras do tamanho de cada construção
 Public Const MAX_OBJETOS = 10000       'usado como extremo superior da matriz Obj()

@@ -1,7 +1,8 @@
-frmMain = 88, 88, 659, 608, Z, 44, 44, 615, 564, C
+frmMain = 407, 0, 814, 762, C, 8, 16, 579, 536, C
 basVbOpenGl = 0, 0, 573, 520, C
-basVisualização = 0, 0, 0, 0, C
-basGeometria = 110, 110, 681, 630, C
+basVisualização = 0, 0, 407, 762, 
+basGeometria = 110, 110, 681, 630, Z
 frmMDIGeo3d = 44, 44, 615, 564, C, 22, 22, 593, 542, C
-basMDI = 132, 132, 703, 652, C
+basMDI = 137, 189, 708, 709, C
 basArquivos = 0, 0, 0, 0, C
+frmSplash1 = 110, 110, 687, 630, C, 88, 88, 665, 608, C

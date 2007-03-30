@@ -43,7 +43,6 @@ Begin VB.MDIForm frmMDIGeo3d
       End
       Begin VB.Menu mnuEditarMagnetismo 
          Caption         =   "&Magnetismo"
-         Checked         =   -1  'True
       End
       Begin VB.Menu mnuEditarSelecionarTudo 
          Caption         =   "Selecionar &Tudo"
@@ -58,7 +57,9 @@ Begin VB.MDIForm frmMDIGeo3d
    End
    Begin VB.Menu mnuAjuda 
       Caption         =   "A&juda"
-      Enabled         =   0   'False
+      Begin VB.Menu mnuAjudaSobre 
+         Caption         =   "&Sobre..."
+      End
    End
 End
 Attribute VB_Name = "frmMDIGeo3d"
@@ -92,6 +93,10 @@ Private Sub MDIForm_Unload(Cancel As Integer)
  End If
 End Sub
 
+Private Sub mnuAjudaSobre_Click()
+frmSplash1.Show vbModal, Me
+End Sub
+
 Private Sub mnuArquivoNovo_Click()
  Dim Id As Integer
  Dim Existe As Integer
@@ -119,7 +124,7 @@ End Sub
 Private Sub mnuEditarDefPLano_Click(Index As Integer)
    Dim i As Tipo_De_Plano
    For i = PL_HORIZONTAL To PL_PERFIL
-      mnuEditarDefPLano(i).Checked = IIf(Index = i, True, False)
+      mnuEditarDefPlano(i).Checked = IIf(Index = i, True, False)
    Next i
    Sobre_Plano = Index
 End Sub

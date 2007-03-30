@@ -162,6 +162,12 @@ Public Sub Des_Eixos()
      glVertex3f 0#, 0#, PONTA: glVertex3f 0#, -ABERTURA_SETA, INI_SETA
      glVertex3f 0#, 0#, PONTA: glVertex3f ABERTURA_SETA, 0#, INI_SETA
      glVertex3f 0#, 0#, PONTA: glVertex3f -ABERTURA_SETA, 0#, INI_SETA
+   
+   'glColor3f 0.8, 0.8, 0.8
+   'glVertex4f 1, 0#, 0#, ZERO:   glVertex4f -1#, 0#, 0#, ZERO
+   'glVertex4f 0#, 1#, 0#, ZERO:  glVertex4f 0#, -1#, 0#, ZERO
+   'glVertex4f 0#, 0#, 1#, ZERO:  glVertex4f 0#, 0#, -1#, ZERO
+
  glEnd
 End Sub
 Public Sub Des_Ponto_Aux(Plano As Tipo_De_Plano, Aux() As GLdouble)
@@ -193,16 +199,25 @@ End Sub
  'glPopMatrix
 'End Sub
 Public Sub Des_LT()
- glBegin GL_LINES
-  glColor3d 0.5, 0, 0
-  glVertex3f -3, 0, 0
-  glVertex3f 3, 0, 0
- glEnd
- glPointSize 3#
- glBegin GL_POINTS
-  glColor3d 0.5, 0, 0
-  glVertex3f 0, 0, 0
- glEnd
+   Const TAM = 7
+   Const DIST = 0.3
+   glColor3d 0.5, 0, 0
+   glLineWidth (1#)
+   glBegin GL_LINES
+      glColor3d 0.5, 0, 0
+      glVertex3f -TAM, 0, 0
+      glVertex3f TAM, 0, 0
+      
+      glVertex3f -TAM, DIST, 0
+      glVertex3f 1 - TAM, DIST, 0
+      glVertex3f TAM, DIST, 0
+      glVertex3f TAM - 1, DIST, 0
+   glEnd
+   
+   glPointSize 3#
+   glBegin GL_POINTS
+      glVertex3f 0, 0, 0
+   glEnd
 End Sub
 Public Sub Des_Objetos(IdDoc As Integer, Modo As GLenum, Ferram As String)
  Dim i As Long
