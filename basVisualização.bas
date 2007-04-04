@@ -30,7 +30,13 @@ Public Sub Inicializa_OpenGL(IdDoc As Integer)
       .Cam_X = .Ro * Sin(.Phi * DEG) * Cos(.Theta * DEG)
       .Cam_Y = .Ro * Sin(.Phi * DEG) * Sin(.Theta * DEG)
       .Cam_Z = .Ro * Cos(.Phi * DEG)
-      
+      frmMDIGeo3d.staInfo.Panels(2).Text = "CÂMERA:  ( " _
+                                             & Format(.Cam_X, "0.0") & " ;  " _
+                                             & Format(.Cam_Y, "0.0") & " ;  " _
+                                             & Format(.Cam_Z, "0.0") & ")cart     ( " _
+                                             & Format(.Phi, "0") & " ;  " _
+                                             & Format(.Theta, "#0") & " ;  " _
+                                             & Format(.Ro, "#0") & ")esf"
       For v = PERSPECTIVA To EPURA
          wglMakeCurrent .hDC_Vista(v), .hGLRC_Vista(v)
          
@@ -83,9 +89,9 @@ Public Sub Inicializa_OpenGL(IdDoc As Integer)
                glHint GL_FOG_HINT, GL_DONT_CARE
                glFogf GL_FOG_START, .Ro
                glFogf GL_FOG_END, DIST_MAX_CENA
-               
             glShadeModel (GL_SMOOTH)
             glEnable GL_COLOR_MATERIAL
+            
             'glEnable GL_CULL_FACE  'glFrontFace GL_CCW
             'glClearDepth 1         'glDepthFunc cfLEqual
             'glBlendFunc GL_SRC_ALPHA, GL_DST_ALPHA

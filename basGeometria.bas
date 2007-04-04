@@ -7,7 +7,7 @@ Public Sub Inicializa_Objetos(IdDoc As Integer)
 End Sub
 Public Sub Inverter_Todos(IdDoc As Integer)
    Dim N_Obj As Integer
-   Dim I As Integer, s As Integer
+   Dim i As Integer, s As Integer
    With Doc(IdDoc)
       N_Obj = UBound(.Obj)
       .frm.N_Sel = N_Obj - .frm.N_Sel
@@ -17,36 +17,36 @@ Public Sub Inverter_Todos(IdDoc As Integer)
          ReDim .Obj_Sel(1 To .frm.N_Sel)
       End If
       s = 1
-      For I = 1 To N_Obj
-         If .Obj(I).Selec Then
-            .Obj(I).Selec = 0
+      For i = 1 To N_Obj
+         If .Obj(i).Selec Then
+            .Obj(i).Selec = 0
          Else
-            .Obj(I).Selec = s 'vale sempre 's<=i'
-            .Obj_Sel(s) = I
+            .Obj(i).Selec = s 'vale sempre 's<=i'
+            .Obj_Sel(s) = i
             s = s + 1
          End If
-      Next I
+      Next i
    End With
 End Sub
 Public Sub Marcar_Todos(IdDoc As Integer, Selecionar As Boolean)
    Dim N_Obj As Integer
-   Dim I As Integer
+   Dim i As Integer
    
    With Doc(IdDoc)
       N_Obj = UBound(.Obj)
       If Selecionar = True Then
          .frm.N_Sel = N_Obj
          ReDim .Obj_Sel(1 To N_Obj)
-         For I = 1 To N_Obj
-            .Obj(I).Selec = I
-            .Obj_Sel(I) = I
-         Next I
+         For i = 1 To N_Obj
+            .Obj(i).Selec = i
+            .Obj_Sel(i) = i
+         Next i
       Else
          .frm.N_Sel = 0
          ReDim .Obj_Sel(1 To 1)
-         For I = 1 To N_Obj
-            .Obj(I).Selec = 0
-         Next I
+         For i = 1 To N_Obj
+            .Obj(i).Selec = 0
+         Next i
       End If
    End With
 End Sub
@@ -84,6 +84,46 @@ Public Function Aponta_Objeto(IdDoc As Integer, hits As GLint, Buf() As GLuint) 
   Doc(IdDoc).frm.ObjApontado = 0
  End If
 End Function
+Public Sub Des_Planos()
+ Const INI_PLANO = -5
+ Const FIM_PLANO = 5
+ 
+ Dim k As GLdouble
+  
+ glColor4f 0.7, 0.7, 0.7, 0.1
+ glLineWidth (1#)
+ glPolygonMode GL_FRONT_AND_BACK, pgmFILL
+ glBegin bmPolygon
+   glEdgeFlag GL_FALSE
+   glVertex3d INI_PLANO, INI_PLANO, 0
+   glEdgeFlag GL_FALSE
+   glVertex3d FIM_PLANO, INI_PLANO, 0
+   glEdgeFlag GL_FALSE
+   glVertex3d FIM_PLANO, FIM_PLANO, 0
+   glEdgeFlag GL_FALSE
+   glVertex3d INI_PLANO, FIM_PLANO, 0
+ glEnd
+ Exit Sub
+ glBegin bmLines
+ For k = INI_PLANO To FIM_PLANO
+  glVertex3d k, INI_PLANO, 0 'Plano Horizontal (PI')
+  glVertex3d k, FIM_PLANO, 0
+  glVertex3d INI_PLANO, k, 0
+  glVertex3d FIM_PLANO, k, 0
+  
+  glVertex3d k, 0, INI_PLANO 'Plano Frontal (PI'')
+  glVertex3d k, 0, FIM_PLANO
+  glVertex3d INI_PLANO, 0, k
+  glVertex3d FIM_PLANO, 0, k
+  
+  glVertex3d 0, k, INI_PLANO 'Plano de Perfil (PI''')
+  glVertex3d 0, k, FIM_PLANO
+  glVertex3d 0, INI_PLANO, k
+  glVertex3d 0, FIM_PLANO, k
+ Next k
+ glEnd
+ 
+End Sub
 
 Public Sub Des_Plano(Plano As Tipo_De_Plano, Aux() As GLdouble)
    Const RAIO = 3
@@ -91,7 +131,7 @@ Public Sub Des_Plano(Plano As Tipo_De_Plano, Aux() As GLdouble)
    Dim PosX As GLdouble, PosY As GLdouble, PosZ As GLdouble
       
    glColor3f 0.5, 0.5, 0.5
-   'glLineWidth (1#)
+   glLineWidth (1#)
    glBegin bmLines
    Select Case Plano
    Case PL_HORIZONTAL
@@ -139,7 +179,7 @@ Public Sub Des_Eixos()
  Const ABERTURA_SETA = PONTA / 20
  'glLineWidth (2#)
  glBegin bmLines
-   glColor3f 1#, 0#, 0#
+   glColor4f 1#, 0#, 0#, 1#
    glVertex3f 0#, 0#, 0#
    glVertex3f PONTA, 0#, 0#
      glVertex3f PONTA, 0#, 0#: glVertex3f INI_SETA, ABERTURA_SETA, 0#
@@ -147,7 +187,7 @@ Public Sub Des_Eixos()
      glVertex3f PONTA, 0#, 0#: glVertex3f INI_SETA, 0#, ABERTURA_SETA
      glVertex3f PONTA, 0#, 0#: glVertex3f INI_SETA, 0#, -ABERTURA_SETA
      
-   glColor3f 0#, 1#, 0#
+   glColor4f 0#, 1#, 0#, 1#
    glVertex3f 0#, 0#, 0#
    glVertex3f 0#, PONTA, 0#
      glVertex3f 0#, PONTA, 0#: glVertex3f 0#, INI_SETA, ABERTURA_SETA
@@ -155,7 +195,7 @@ Public Sub Des_Eixos()
      glVertex3f 0#, PONTA, 0#: glVertex3f ABERTURA_SETA, INI_SETA, 0#
      glVertex3f 0#, PONTA, 0#: glVertex3f -ABERTURA_SETA, INI_SETA, 0#
      
-   glColor3f 0#, 0#, 1#
+   glColor4f 0#, 0#, 1#, 1#
    glVertex3f 0#, 0#, 0#
    glVertex3f 0#, 0#, PONTA
      glVertex3f 0#, 0#, PONTA: glVertex3f 0#, ABERTURA_SETA, INI_SETA
@@ -220,7 +260,7 @@ Public Sub Des_LT()
    glEnd
 End Sub
 Public Sub Des_Objetos(IdDoc As Integer, Modo As GLenum, Ferram As String)
- Dim I As Long
+ Dim i As Long
  Dim N_Obj As Long
  
  'já ocorreu um glPushName 0, inicializando a pilha de nomes arbitrariamente
@@ -229,30 +269,30 @@ Public Sub Des_Objetos(IdDoc As Integer, Modo As GLenum, Ferram As String)
  glPointSize (3#)
  'CAUSOU UM PONTO NA ORIGEM
  N_Obj = UBound(Doc(IdDoc).Obj)
- For I = 1 To N_Obj
-  If Modo = GL_SELECT Then glLoadName I
-  If I = Doc(IdDoc).frm.ObjApontado Then
+ For i = 1 To N_Obj
+  If Modo = GL_SELECT Then glLoadName i
+  If i = Doc(IdDoc).frm.ObjApontado Then
    glColor3d 0.8, 0#, 0.5: glPointSize (5#)
    glBegin bmPoints
-     glVertex3dv Doc(IdDoc).Obj(I).Coord(0)
+     glVertex3dv Doc(IdDoc).Obj(i).Coord(0)
    glEnd
    glColor3d 0#, 0#, 0#: glPointSize (3#)
-  ElseIf Doc(IdDoc).Obj(I).Selec > 0 Then
+  ElseIf Doc(IdDoc).Obj(i).Selec > 0 Then
    glColor3d 0.9, 0.4, 0#: glPointSize (3#)
    glBegin bmPoints
-     glVertex3dv Doc(IdDoc).Obj(I).Coord(0)
+     glVertex3dv Doc(IdDoc).Obj(i).Coord(0)
    glEnd
    glColor3d 0#, 0#, 0#: glPointSize (3#)
   Else
    glBegin bmPoints
-     glVertex3dv Doc(IdDoc).Obj(I).Coord(0)
+     glVertex3dv Doc(IdDoc).Obj(i).Coord(0)
    glEnd
   End If
- Next I
+ Next i
   
  Select Case UCase(Ferram)
   Case "PONTEIRO"
-  
+   If Doc(IdDoc).frm.Posicionando Then Des_Ponto_Aux Sobre_Plano, Doc(IdDoc).Obj(Doc(IdDoc).frm.ObjApontado).Coord
   Case "PONTO"
    If Doc(IdDoc).frm.Posicionando Then Des_Ponto_Aux Sobre_Plano, P_Aux
    

@@ -105,12 +105,12 @@ Private Sub MDIForm_Load()
 End Sub
 Private Sub GeraBarraStatus()
    Const TAM_BARRA = 400
-   Dim I As Integer
+   Dim i As Integer
 
    With staInfo
-      For I = 1 To 6
+      For i = 1 To 6
          .Panels.Add  'Index, Key, Text, Style
-      Next I
+      Next i
       With .Panels
          .Item(1).Style = sbrText
          .Item(1).AutoSize = sbrSpring
@@ -168,10 +168,10 @@ Private Sub mnuArquivoSair_Click()
 End Sub
 
 Private Sub mnuEditarDefPLano_Click(Index As Integer)
-   Dim I As Tipo_De_Plano
-   For I = PL_HORIZONTAL To PL_PERFIL
-      mnuEditarDefPlano(I).Checked = IIf(Index = I, True, False)
-   Next I
+   Dim i As Tipo_De_Plano
+   For i = PL_HORIZONTAL To PL_PERFIL
+      mnuEditarDefPlano(i).Checked = IIf(Index = i, True, False)
+   Next i
    Sobre_Plano = Index
 End Sub
 
