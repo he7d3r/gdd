@@ -1,4 +1,5 @@
 VERSION 5.00
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Begin VB.MDIForm frmMDIGeo3d 
    AutoShowChildren=   0   'False
    BackColor       =   &H8000000C&
@@ -10,6 +11,22 @@ Begin VB.MDIForm frmMDIGeo3d
    Icon            =   "frmMDIGeo3d.frx":0000
    LinkTopic       =   "MDIForm1"
    WindowState     =   2  'Maximized
+   Begin MSComctlLib.StatusBar staInfo 
+      Align           =   2  'Align Bottom
+      Height          =   405
+      Left            =   0
+      TabIndex        =   0
+      Top             =   9195
+      Width           =   9885
+      _ExtentX        =   17436
+      _ExtentY        =   714
+      _Version        =   393216
+      BeginProperty Panels {8E3867A5-8586-11D1-B16A-00C0F0283628} 
+         NumPanels       =   1
+         BeginProperty Panel1 {8E3867AB-8586-11D1-B16A-00C0F0283628} 
+         EndProperty
+      EndProperty
+   End
    Begin VB.Menu mnuArquivo 
       Caption         =   "&Arquivo"
       Begin VB.Menu mnuArquivoSalvar 
@@ -71,6 +88,7 @@ Option Explicit
 
 Private Sub MDIForm_Load()
  ChDir App.Path 'Pode ser útil usar a pasta atual
+ GeraBarraStatus
  
  ReDim Doc(1 To 1)
  ReDim EstadoForm(1)
@@ -85,7 +103,35 @@ Private Sub MDIForm_Load()
  
  Doc(1).frm.Show
 End Sub
+Private Sub GeraBarraStatus()
+   Const TAM_BARRA = 400
+   Dim I As Integer
 
+   With staInfo
+      For I = 1 To 6
+         .Panels.Add  'Index, Key, Text, Style
+      Next I
+      With .Panels
+         .Item(1).Style = sbrText
+         .Item(1).AutoSize = sbrSpring
+         .Item(1).MinWidth = 140
+         
+         .Item(2).Style = sbrText
+         .Item(2).AutoSize = sbrSpring
+         .Item(2).MinWidth = 140
+         
+         .Item(3).Style = sbrNum
+         .Item(4).Style = sbrIns
+         .Item(5).Style = sbrScrl
+         .Item(6).Style = sbrTime
+         .Item(7).Style = sbrDate
+
+      End With
+      .Height = TAM_BARRA
+      .Align = vbAlignBottom
+   End With
+   
+End Sub
 Private Sub MDIForm_Unload(Cancel As Integer)
  'Se não foi cancelado o Unload em nenhum form, não restaram documentos abertos.
  If Not ExisteDocAberto() Then
@@ -122,10 +168,10 @@ Private Sub mnuArquivoSair_Click()
 End Sub
 
 Private Sub mnuEditarDefPLano_Click(Index As Integer)
-   Dim i As Tipo_De_Plano
-   For i = PL_HORIZONTAL To PL_PERFIL
-      mnuEditarDefPlano(i).Checked = IIf(Index = i, True, False)
-   Next i
+   Dim I As Tipo_De_Plano
+   For I = PL_HORIZONTAL To PL_PERFIL
+      mnuEditarDefPlano(I).Checked = IIf(Index = I, True, False)
+   Next I
    Sobre_Plano = Index
 End Sub
 

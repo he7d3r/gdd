@@ -15,6 +15,8 @@ End Enum
 Public Const PI = 3.14159265
 Public Const DEG = PI / 180
 Public Const ZERO = 0.0000001 'Usado em rotinas que tem problemas com o número zero=0.0
+Public Const DIST_MAX_CENA = 100
+Public Const DIST_MIN_CENA = 1
 
 'Constantes limitadoras do tamanho de cada construção
 Public Const MAX_OBJETOS = 10000       'usado como extremo superior da matriz Obj()

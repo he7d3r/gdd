@@ -7,7 +7,7 @@ Public Sub Inicializa_Objetos(IdDoc As Integer)
 End Sub
 Public Sub Inverter_Todos(IdDoc As Integer)
    Dim N_Obj As Integer
-   Dim i As Integer, s As Integer
+   Dim I As Integer, s As Integer
    With Doc(IdDoc)
       N_Obj = UBound(.Obj)
       .frm.N_Sel = N_Obj - .frm.N_Sel
@@ -17,36 +17,36 @@ Public Sub Inverter_Todos(IdDoc As Integer)
          ReDim .Obj_Sel(1 To .frm.N_Sel)
       End If
       s = 1
-      For i = 1 To N_Obj
-         If .Obj(i).Selec Then
-            .Obj(i).Selec = 0
+      For I = 1 To N_Obj
+         If .Obj(I).Selec Then
+            .Obj(I).Selec = 0
          Else
-            .Obj(i).Selec = s 'vale sempre 's<=i'
-            .Obj_Sel(s) = i
+            .Obj(I).Selec = s 'vale sempre 's<=i'
+            .Obj_Sel(s) = I
             s = s + 1
          End If
-      Next i
+      Next I
    End With
 End Sub
 Public Sub Marcar_Todos(IdDoc As Integer, Selecionar As Boolean)
    Dim N_Obj As Integer
-   Dim i As Integer
+   Dim I As Integer
    
    With Doc(IdDoc)
       N_Obj = UBound(.Obj)
       If Selecionar = True Then
          .frm.N_Sel = N_Obj
          ReDim .Obj_Sel(1 To N_Obj)
-         For i = 1 To N_Obj
-            .Obj(i).Selec = i
-            .Obj_Sel(i) = i
-         Next i
+         For I = 1 To N_Obj
+            .Obj(I).Selec = I
+            .Obj_Sel(I) = I
+         Next I
       Else
          .frm.N_Sel = 0
          ReDim .Obj_Sel(1 To 1)
-         For i = 1 To N_Obj
-            .Obj(i).Selec = 0
-         Next i
+         For I = 1 To N_Obj
+            .Obj(I).Selec = 0
+         Next I
       End If
    End With
 End Sub
@@ -58,7 +58,7 @@ Public Function Aponta_Objeto(IdDoc As Integer, hits As GLint, Buf() As GLuint) 
  Dim MinZ As Double
  
  Id = 0
- MinZ = 2121212121 'inicializa minZ para um valor grande
+ MinZ = 1E+60 'inicializa minZ para um valor grande
  Nome = -1 'Nada selecionado até agora
  
 'Para compreender o laço "FOR NEXT", lembre-se do formato de cada REGISTRO (HIT)...
@@ -199,19 +199,19 @@ End Sub
  'glPopMatrix
 'End Sub
 Public Sub Des_LT()
-   Const TAM = 7
+   Const Tam = 7
    Const DIST = 0.3
    glColor3d 0.5, 0, 0
    glLineWidth (1#)
    glBegin GL_LINES
       glColor3d 0.5, 0, 0
-      glVertex3f -TAM, 0, 0
-      glVertex3f TAM, 0, 0
+      glVertex3f -Tam, 0, 0
+      glVertex3f Tam, 0, 0
       
-      glVertex3f -TAM, DIST, 0
-      glVertex3f 1 - TAM, DIST, 0
-      glVertex3f TAM, DIST, 0
-      glVertex3f TAM - 1, DIST, 0
+      glVertex3f -Tam, DIST, 0
+      glVertex3f 1 - Tam, DIST, 0
+      glVertex3f Tam, DIST, 0
+      glVertex3f Tam - 1, DIST, 0
    glEnd
    
    glPointSize 3#
@@ -220,7 +220,7 @@ Public Sub Des_LT()
    glEnd
 End Sub
 Public Sub Des_Objetos(IdDoc As Integer, Modo As GLenum, Ferram As String)
- Dim i As Long
+ Dim I As Long
  Dim N_Obj As Long
  
  'já ocorreu um glPushName 0, inicializando a pilha de nomes arbitrariamente
@@ -229,26 +229,26 @@ Public Sub Des_Objetos(IdDoc As Integer, Modo As GLenum, Ferram As String)
  glPointSize (3#)
  'CAUSOU UM PONTO NA ORIGEM
  N_Obj = UBound(Doc(IdDoc).Obj)
- For i = 1 To N_Obj
-  If Modo = GL_SELECT Then glLoadName i
-  If i = Doc(IdDoc).frm.ObjApontado Then
+ For I = 1 To N_Obj
+  If Modo = GL_SELECT Then glLoadName I
+  If I = Doc(IdDoc).frm.ObjApontado Then
    glColor3d 0.8, 0#, 0.5: glPointSize (5#)
    glBegin bmPoints
-     glVertex3dv Doc(IdDoc).Obj(i).Coord(0)
+     glVertex3dv Doc(IdDoc).Obj(I).Coord(0)
    glEnd
    glColor3d 0#, 0#, 0#: glPointSize (3#)
-  ElseIf Doc(IdDoc).Obj(i).Selec > 0 Then
+  ElseIf Doc(IdDoc).Obj(I).Selec > 0 Then
    glColor3d 0.9, 0.4, 0#: glPointSize (3#)
    glBegin bmPoints
-     glVertex3dv Doc(IdDoc).Obj(i).Coord(0)
+     glVertex3dv Doc(IdDoc).Obj(I).Coord(0)
    glEnd
    glColor3d 0#, 0#, 0#: glPointSize (3#)
   Else
    glBegin bmPoints
-     glVertex3dv Doc(IdDoc).Obj(i).Coord(0)
+     glVertex3dv Doc(IdDoc).Obj(I).Coord(0)
    glEnd
   End If
- Next i
+ Next I
   
  Select Case UCase(Ferram)
   Case "PONTEIRO"

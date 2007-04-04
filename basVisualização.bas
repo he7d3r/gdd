@@ -7,6 +7,7 @@ Public Sub Inicializa_OpenGL(IdDoc As Integer)
    Dim v As Vista
    Dim Result As Long
    Dim Larg As GLsizei, Alt As GLsizei
+   Dim Cor_Neblina(0 To 3) As GLfloat
 
    If Doc(IdDoc).Deletado Then
       ErroFatal "Documento " & IdDoc & " não existe. Não pode ser inicializado!"
@@ -25,7 +26,7 @@ Public Sub Inicializa_OpenGL(IdDoc As Integer)
      
    'QObj = gluNewQuadric()
    With Doc(IdDoc).frm
-      .Phi = 60: .Ro = 20: .Theta = 20
+      .Phi = 70: .Ro = 20: .Theta = 15
       .Cam_X = .Ro * Sin(.Phi * DEG) * Cos(.Theta * DEG)
       .Cam_Y = .Ro * Sin(.Phi * DEG) * Sin(.Theta * DEG)
       .Cam_Z = .Ro * Cos(.Phi * DEG)
@@ -50,7 +51,7 @@ Public Sub Inicializa_OpenGL(IdDoc As Integer)
             Else
                .fAspect = 0
             End If
-            gluPerspective 35!, .fAspect, 1!, 100!
+            gluPerspective 35!, .fAspect, DIST_MIN_CENA, DIST_MAX_CENA
             'Define a matriz Troca_X_Y para inverter o sistema de coordenadas
             glMatrixMode GL_MODELVIEW
             glLoadIdentity
@@ -70,7 +71,19 @@ Public Sub Inicializa_OpenGL(IdDoc As Integer)
          
          Select Case v
          Case PERSPECTIVA
-            glClearColor 0.9, 1#, 1#, 1#
+            Cor_Neblina(0) = 0.9: Cor_Neblina(1) = 1#: Cor_Neblina(2) = 1#: Cor_Neblina(3) = 1#
+            'glClearColor 0.9, 1#, 1#, 1#
+            glClearColor Cor_Neblina(0), Cor_Neblina(1), Cor_Neblina(2), Cor_Neblina(3)
+            glEnable GL_FOG
+               glFogi GL_FOG_MODE, GL_LINEAR
+               'glFogi GL_FOG_MODE, GL_EXP2
+               'glFogi GL_FOG_MODE, GL_EXP '=default
+               glFogfv GL_FOG_COLOR, Cor_Neblina(0)
+               'glFogf GL_FOG_DENSITY, 0.35
+               glHint GL_FOG_HINT, GL_DONT_CARE
+               glFogf GL_FOG_START, .Ro
+               glFogf GL_FOG_END, DIST_MAX_CENA
+               
             glShadeModel (GL_SMOOTH)
             glEnable GL_COLOR_MATERIAL
             'glEnable GL_CULL_FACE  'glFrontFace GL_CCW

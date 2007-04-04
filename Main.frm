@@ -245,6 +245,10 @@ Private Sub Form_KeyPress(KeyAscii As Integer)
    If Chr(KeyAscii) = "c" Or Chr(KeyAscii) = "C" Then
     MsgBox "CAMERA: Phi = " & Phi & ", Ro = " & Ro & ", Theta = " & Theta & "."
    End If
+   If Chr(KeyAscii) = "e" Or Chr(KeyAscii) = "E" Then
+    MsgBox glGetError
+   End If
+   
    If Ro < MIN_RO Then Ro = MIN_RO
    If Ro > MAX_RO Then Ro = MAX_RO
    Cam_X = Ro * Sin(Phi * DEG) * Cos(Theta * DEG)
@@ -252,6 +256,7 @@ Private Sub Form_KeyPress(KeyAscii As Integer)
    Cam_Z = Ro * Cos(Phi * DEG)
    
    wglMakeCurrent hDC_Vista(PERSPECTIVA), hGLRC_Vista(PERSPECTIVA)
+   glFogf GL_FOG_START, Ro
    glMatrixMode GL_MODELVIEW
     glLoadIdentity
     gluLookAt Cam_X, Cam_Y, Cam_Z, 0, 0, 0, 0, 0, 1
@@ -301,7 +306,7 @@ Private Sub Form_Resize()
          End If
          glMatrixMode GL_PROJECTION
           glLoadIdentity
-          gluPerspective 35!, fAspect, 1!, 100!
+          gluPerspective 35!, fAspect, DIST_MIN_CENA, DIST_MAX_CENA
          glMatrixMode GL_MODELVIEW
       End If
    Next v
@@ -340,6 +345,7 @@ Private Sub picVista_MouseMove(Index As Integer, Button As Integer, Shift As Int
    Select Case Index
    Case PERSPECTIVA
       If ((Button And vbRightButton) = vbRightButton) Then
+         picVista(PERSPECTIVA).MousePointer = 99
          Posicionando = False
          ObjApontado = 0
          dx = VELOCIDADE * (X - X_Ini)
@@ -353,6 +359,14 @@ Private Sub picVista_MouseMove(Index As Integer, Button As Integer, Shift As Int
          Cam_X = Ro * Sin(Phi * DEG) * Cos(Theta * DEG)
          Cam_Y = Ro * Sin(Phi * DEG) * Sin(Theta * DEG)
          Cam_Z = Ro * Cos(Phi * DEG)
+         
+         frmMDIGeo3d.staInfo.Panels(2).Text = "CÂMERA:  ( " _
+                                             & Format(Cam_X, "0.0") & " ;  " _
+                                             & Format(Cam_Y, "0.0") & " ;  " _
+                                             & Format(Cam_Z, "0.0") & ")cart     ( " _
+                                             & Format(Phi, "0") & " ;  " _
+                                             & Format(Theta, "#0") & " ;  " _
+                                             & Format(Ro, "#0") & ")esf"
          
          wglMakeCurrent hDC_Vista(PERSPECTIVA), hGLRC_Vista(PERSPECTIVA)
          glMatrixMode GL_MODELVIEW
@@ -381,7 +395,7 @@ Private Sub picVista_MouseMove(Index As Integer, Button As Integer, Shift As Int
             glPushMatrix
              glLoadIdentity
              gluPickMatrix X, M_ViewPort(3) - Y, PROX, PROX, M_ViewPort(0)
-             gluPerspective 35!, fAspect, 1!, 100!
+             gluPerspective 35!, fAspect, DIST_MIN_CENA, DIST_MAX_CENA
              
              glClear clrDepthBufferBit Or clrColorBufferBit
              basGeometria.Des_Objetos Me.Tag, GL_SELECT, tbrFerramentas.Tag    'GL_RENDER
@@ -390,7 +404,7 @@ Private Sub picVista_MouseMove(Index As Integer, Button As Integer, Shift As Int
             glFlush
             'Envia dados sobre selecao para o basGeometria
             N_Hits = glRenderMode(GL_RENDER)
-               
+            frmMDIGeo3d.staInfo.Panels(1).Text = "Número de objetos próximos do mouse = " & N_Hits
             picVista(PERSPECTIVA).ToolTipText = basGeometria.Aponta_Objeto(Me.Tag, N_Hits, Buf_Selec)
          
          Case vbLeftButton 'Se aponta alguem, mova-o
@@ -491,11 +505,17 @@ Private Sub picVista_MouseMove(Index As Integer, Button As Integer, Shift As Int
                End If
             End Select
             If (Shift <> vbCtrlMask) Then
-               If (Pos < 0 Or 1 < Pos) Then Exit Sub
-               'Calcula a interseção do raio projetante com o plano escolhido
-               P_Aux(0) = x0 + Pos * vx
-               P_Aux(1) = y0 + Pos * vy
-               P_Aux(2) = z0 + Pos * vz
+               If (Pos < 0 Or 1 < Pos) Then
+                  Posicionando = False
+                  frmMDIGeo3d.staInfo.Panels(1).Text = ""
+                  Redesenhar_Todos
+                  Exit Sub
+               Else
+                  'Calcula a interseção do raio projetante com o plano escolhido
+                  P_Aux(0) = x0 + Pos * vx
+                  P_Aux(1) = y0 + Pos * vy
+                  P_Aux(2) = z0 + Pos * vz
+               End If
             End If
           
             If frmMDIGeo3d.mnuEditarMagnetismo.Checked Then
@@ -503,6 +523,10 @@ Private Sub picVista_MouseMove(Index As Integer, Button As Integer, Shift As Int
                P_Aux(1) = Round(P_Aux(1))
                P_Aux(2) = Round(P_Aux(2))
             End If
+            frmMDIGeo3d.staInfo.Panels(1).Text = "Posição atual: [ " _
+                                                & Format(P_Aux(0), "0.0") & " ;  " _
+                                                & Format(P_Aux(1), "0.0") & " ;  " _
+                                                & Format(P_Aux(2), "0.0") & "]"
          End Select
       Case "SEGMENTO"
       
@@ -521,7 +545,7 @@ Private Sub picVista_MouseDown(Index As Integer, Button As Integer, Shift As Int
       'Case "SEGMENTO"
       'End Select
       If (Button And vbRightButton) = vbRightButton Then
-         picVista(PERSPECTIVA).MousePointer = 99
+         'picVista(PERSPECTIVA).MousePointer = 99
          X_Ini = X: Y_Ini = Y
          Phi_Ini = Phi:  Theta_Ini = Theta
       End If
@@ -529,7 +553,7 @@ Private Sub picVista_MouseDown(Index As Integer, Button As Integer, Shift As Int
 End Sub
 
 Private Sub picVista_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
-   Dim i As Integer
+   Dim I As Integer
    Dim N_Obj As Integer 'Em geral = Ubound(Doc(me.tag).Obj)
    
    Select Case Index
@@ -559,9 +583,9 @@ Private Sub picVista_MouseUp(Index As Integer, Button As Integer, Shift As Integ
                      .Obj(ObjApontado).Selec = 1
                      .Obj_Sel(1) = ObjApontado
                   Else
-                     For i = 1 To N_Sel
-                      .Obj(.Obj_Sel(i)).Selec = 0 'duplicado
-                     Next i
+                     For I = 1 To N_Sel
+                      .Obj(.Obj_Sel(I)).Selec = 0 'duplicado
+                     Next I
                      If N_Sel > 1 Or .Obj(ObjApontado).Selec = 0 Then _
                                      .Obj(ObjApontado).Selec = 1
                      N_Sel = IIf((.Obj(ObjApontado).Selec = 0) And (N_Sel = 1), 0, 1)
@@ -573,10 +597,10 @@ Private Sub picVista_MouseUp(Index As Integer, Button As Integer, Shift As Integ
                Else 'not Shift = 0
                   If .Obj(ObjApontado).Selec > 0 Then
                      N_Sel = N_Sel - 1
-                     For i = .Obj(ObjApontado).Selec To N_Sel
-                      .Obj_Sel(i) = .Obj_Sel(i + 1)
-                      .Obj(.Obj_Sel(i + 1)).Selec = i
-                     Next i
+                     For I = .Obj(ObjApontado).Selec To N_Sel
+                      .Obj_Sel(I) = .Obj_Sel(I + 1)
+                      .Obj(.Obj_Sel(I + 1)).Selec = I
+                     Next I
                      If N_Sel > 0 Then ReDim Preserve .Obj_Sel(1 To N_Sel)
                      .Obj(ObjApontado).Selec = 0
                    
@@ -594,17 +618,19 @@ Private Sub picVista_MouseUp(Index As Integer, Button As Integer, Shift As Integ
          Redesenhar_Todos
       Case 2
          picVista(PERSPECTIVA).MousePointer = 0
-         If X_Ini = X And Y_Ini = Y And Not ObjApontado Then PopupMenu frmMDIGeo3d.mnuEditar
+         If Abs(X_Ini - X) < 5 And Abs(Y_Ini - Y) < 5 And Not ObjApontado Then PopupMenu frmMDIGeo3d.mnuEditar
       End Select 'Button
    End Select 'Index
 End Sub
 
 Private Sub picVista_Paint(Index As Integer)
    Dim v As Vista
+   
+   If glGetError <> glerrNoError Then ErroFatal glGetError
+   
    v = Index
    wglMakeCurrent hDC_Vista(v), hGLRC_Vista(v)
    glClear clrColorBufferBit Or clrDepthBufferBit
-      
    If Index <> EPURA Then
       If Index = PERSPECTIVA Then
          If Posicionando And UCase(tbrFerramentas.Tag) = "PONTO" Then
