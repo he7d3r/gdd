@@ -208,25 +208,25 @@ Property Get hGLRC_Vista(Index As Vista) As Long
    If Index > UBound(hGLRC_V) Then ErroFatal "Não existe uma Vista com índice " & Index & "!"
    hGLRC_Vista = hGLRC_V(Index)
 End Property
-Property Let hGLRC_Vista(Index As Vista, v As Long)
+Property Let hGLRC_Vista(Index As Vista, V As Long)
    If Index > UBound(hGLRC_V) Then ErroFatal "Não existe uma Vista com índice " & Index & "!"
-   hGLRC_V(Index) = v
+   hGLRC_V(Index) = V
 End Property
 
 Public Sub Redesenhar_Todos()
-   Dim v As Vista
+   Dim V As Vista
    
-   For v = PERSPECTIVA To EPURA
-      picVista_Paint (v)
-   Next v
+   For V = PERSPECTIVA To EPURA
+      picVista_Paint (V)
+   Next V
 End Sub
 
 Private Sub Form_Load()
-   Dim v As Vista
+   Dim V As Vista
    
-   For v = PERSPECTIVA To EPURA
-      hDC_V(v) = Me.picVista(v).hDC   'Identificador das ViewPort's
-   Next v
+   For V = PERSPECTIVA To EPURA
+      hDC_V(V) = Me.picVista(V).hDC   'Identificador das ViewPort's
+   Next V
    N_Sel = 0
 End Sub
 
@@ -270,7 +270,7 @@ Private Sub Form_Resize()
    Dim Linha(1 To 2) As Single
    Dim Coluna(1 To 3) As Single
    Dim l As Single, a As Single
-   Dim v As Vista
+   Dim V As Vista
     
    Barra = tbrFerramentas.Width
    a = (Me.ScaleHeight - 3 * ESP) / 2
@@ -286,17 +286,17 @@ Private Sub Form_Resize()
        picVista(LATERAL).Move Coluna(2), Linha(2), Tam, Tam
       picVista(SUPERIOR).Move Coluna(3), Linha(2), Tam, Tam
    
-   For v = PERSPECTIVA To EPURA
-      lblVista(v).Move picVista(v).Left, picVista(v).Top - 15
-   Next v
+   For V = PERSPECTIVA To EPURA
+      lblVista(V).Move picVista(V).Left, picVista(V).Top - 15
+   Next V
    
-   For v = PERSPECTIVA To EPURA
-      wglMakeCurrent hDC_Vista(v), hGLRC_Vista(v)
-      With picVista(v)
+   For V = PERSPECTIVA To EPURA
+      wglMakeCurrent hDC_Vista(V), hGLRC_Vista(V)
+      With picVista(V)
          l = .ScaleWidth: a = .ScaleHeight
       End With
       glViewport 0, 0, l, a
-      If v = PERSPECTIVA Then
+      If V = PERSPECTIVA Then
          If a > 0 Then
           fAspect = l / a
          Else
@@ -307,7 +307,7 @@ Private Sub Form_Resize()
           gluPerspective 35!, fAspect, DIST_MIN_CENA, DIST_MAX_CENA
          glMatrixMode GL_MODELVIEW
       End If
-   Next v
+   Next V
    Redesenhar_Todos
 End Sub
 
@@ -318,7 +318,7 @@ End Sub
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
  If Doc(Me.Tag).Alterado Then MsgBox "O documento foi alterado, mas não foi salvo."
 End Sub
-Private Sub Pos_Ponto(v As Vista, X As Single, Y As Single, Perpendicular As Boolean, ByRef Pt() As GLdouble)
+Private Sub Pos_Ponto(V As Vista, X As Single, Y As Single, Perpendicular As Boolean, ByRef Pt() As GLdouble)
    Dim Pos As GLdouble
    Dim Y_real As GLint
    Dim x1 As GLdouble, y1 As GLdouble, z1 As GLdouble
@@ -327,7 +327,7 @@ Private Sub Pos_Ponto(v As Vista, X As Single, Y As Single, Perpendicular As Boo
    Dim px1 As GLdouble, py1 As GLdouble, pz1 As GLdouble
    Dim px2 As GLdouble, py2 As GLdouble, pz2 As GLdouble
 
-   wglMakeCurrent hDC_Vista(v), hGLRC_Vista(v)
+   wglMakeCurrent hDC_Vista(V), hGLRC_Vista(V)
    glGetIntegerv GL_VIEWPORT, M_ViewPort(0)
    glGetDoublev GL_MODELVIEW_MATRIX, M_ModelView(0)
    glGetDoublev GL_PROJECTION_MATRIX, M_Projection(0)
@@ -435,10 +435,35 @@ Private Sub Pos_Ponto(v As Vista, X As Single, Y As Single, Perpendicular As Boo
                                        & Format(Pt(1), "0.0") & " ;  " _
                                        & Format(Pt(2), "0.0") & "]"
 End Sub
+Function Listar_Objetos_Sob(V As Vista, X As Single, Y As Single, B() As GLuint) As GLint
+   Const PROX = 7
 
+   'Obtem cópia da matriz de ViewPort, define qual será o Buffer e inicia modo de seleção
+   wglMakeCurrent hDC_Vista(V), hGLRC_Vista(V)
+   glGetIntegerv GL_VIEWPORT, M_ViewPort(0)
+   glSelectBuffer TAM_BUFER, B(0)
+   glRenderMode GL_SELECT
+   glInitNames
+   glPushName 0 'valor arbitrário para iniciar a pilha
+   
+   'Define uma matriz para desenhar apenas próximo do mouse
+   glMatrixMode GL_PROJECTION
+   glPushMatrix
+    glLoadIdentity
+    gluPickMatrix X, M_ViewPort(3) - Y, PROX, PROX, M_ViewPort(0)
+    gluPerspective 35!, fAspect, DIST_MIN_CENA, DIST_MAX_CENA
+    
+    glClear clrDepthBufferBit Or clrColorBufferBit
+    Des_Objetos Me.Tag, GL_SELECT, tbrFerramentas.Tag    'GL_RENDER
+    glMatrixMode GL_PROJECTION 'As rotinas de desenho mudam para GL_MODELVIEW
+   glPopMatrix
+   glFlush
+   
+   Listar_Objetos_Sob = glRenderMode(GL_RENDER)
+
+End Function
 Private Sub picVista_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
    Const VELOCIDADE = 0.5
-   Const PROX = 7
    Dim dx As Integer, dy As Integer
    Dim Buf_Selec(0 To TAM_BUFER - 1) As GLuint
    Dim N_Hits As GLint
@@ -481,41 +506,19 @@ Private Sub picVista_MouseMove(Index As Integer, Button As Integer, Shift As Int
          Exit Sub
       End If
       
+      If Button = 0 And tbrFerramentas.Tag = "PONTEIRO" Then 'Apontar objetos
+         N_Hits = Listar_Objetos_Sob(vt, X, Y, Buf_Selec)
+                                 
+         'Envia dados sobre a selecao atual
+         picVista(PERSPECTIVA).ToolTipText = Aponta_Primeiro_Objeto(Me.Tag, N_Hits, Buf_Selec)
+      End If
+            
       Select Case tbrFerramentas.Tag
       Case "PONTEIRO"
-         Select Case Button
-         Case 0 'Apontar objetos
-            'Obtem cópia da matriz de ViewPort, define qual será o Buffer e inicia modo de seleção
-            wglMakeCurrent hDC_Vista(PERSPECTIVA), hGLRC_Vista(PERSPECTIVA)
-            glGetIntegerv GL_VIEWPORT, M_ViewPort(0)
-            glSelectBuffer TAM_BUFER, Buf_Selec(0)
-            glRenderMode GL_SELECT
-            glInitNames
-            glPushName 0 'valor arbitrário para iniciar a pilha
-            
-            'Define uma matriz para desenhar apenas próximo do mouse
-            glMatrixMode GL_PROJECTION
-            glPushMatrix
-             glLoadIdentity
-             gluPickMatrix X, M_ViewPort(3) - Y, PROX, PROX, M_ViewPort(0)
-             gluPerspective 35!, fAspect, DIST_MIN_CENA, DIST_MAX_CENA
-             
-             glClear clrDepthBufferBit Or clrColorBufferBit
-             basGeometria.Des_Objetos Me.Tag, GL_SELECT, tbrFerramentas.Tag    'GL_RENDER
-             glMatrixMode GL_PROJECTION 'As rotinas de desenho mudam para GL_MODELVIEW
-            glPopMatrix
-            glFlush
-            'Envia dados sobre selecao para o basGeometria
-            N_Hits = glRenderMode(GL_RENDER)
-            frmMDIGeo3d.staInfo.Panels(1).Text = "Número de objetos próximos do mouse = " & N_Hits
-            picVista(PERSPECTIVA).ToolTipText = basGeometria.Aponta_Objeto(Me.Tag, N_Hits, Buf_Selec)
-         
-         Case vbLeftButton 'Se aponta alguem, mova-o
-            If Movendo Then
-               Posicionando = True
-               Pos_Ponto vt, X, Y, Shift = vbCtrlMask, Doc(Me.Tag).Obj(ObjApontado).Coord
-            End If
-         End Select
+         If Movendo Then 'Se aponta alguem, mova-o
+            Posicionando = True
+            Pos_Ponto vt, X, Y, Shift = vbCtrlMask, Doc(Me.Tag).Obj(ObjApontado).Coord
+         End If
       Case "PONTO"
          Select Case Button
          Case 0, vbLeftButton
@@ -561,7 +564,7 @@ Private Sub picVista_MouseUp(Index As Integer, Button As Integer, Shift As Integ
    Case PERSPECTIVA
       N_Obj = UBound(Doc(Me.Tag).Obj)
       Select Case Button
-      Case 1
+      Case vbLeftButton
          Select Case tbrFerramentas.Tag
          Case "PONTO"
            If N_Obj < MAX_OBJETOS Then
@@ -627,13 +630,13 @@ Private Sub picVista_MouseUp(Index As Integer, Button As Integer, Shift As Integ
 End Sub
 
 Private Sub picVista_Paint(Index As Integer)
-   Dim v As Vista
+   Dim V As Vista
    Dim err
    err = glGetError
    If err <> glerrNoError Then ErroFatal err
    
-   v = Index
-   wglMakeCurrent hDC_Vista(v), hGLRC_Vista(v)
+   V = Index
+   wglMakeCurrent hDC_Vista(V), hGLRC_Vista(V)
    glClear clrColorBufferBit Or clrDepthBufferBit
    If Index <> EPURA Then
       If Index = PERSPECTIVA Then
@@ -668,8 +671,8 @@ Private Sub picVista_Paint(Index As Integer)
          glRotatef 90, 0#, 0#, 1# 'Igual à vista SUPERIOR
          
    End If
-   v = Index
-   SwapBuffers hDC_Vista(v)
+   V = Index
+   SwapBuffers hDC_Vista(V)
 End Sub
 
 Private Sub tbrFerramentas_ButtonClick(ByVal Button As MSComctlLib.Button)

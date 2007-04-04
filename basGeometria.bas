@@ -51,7 +51,7 @@ Public Sub Marcar_Todos(IdDoc As Integer, Selecionar As Boolean)
    End With
 End Sub
 
-Public Function Aponta_Objeto(IdDoc As Integer, hits As GLint, Buf() As GLuint) As String
+Public Function Aponta_Primeiro_Objeto(IdDoc As Integer, hits As GLint, Buf() As GLuint) As String
  Dim h As Long, Id As Long
  Dim Qtd_Nomes As GLuint 'Cada nome é composto de 'tantas' coordenadas
  Dim Nome As GLuint 'Indice do objeto que está selecionado ao clicar o mouse
@@ -77,10 +77,10 @@ Public Function Aponta_Objeto(IdDoc As Integer, hits As GLint, Buf() As GLuint) 
  Next h
  
  If Nome > 0 Then
-  Aponta_Objeto = "Ponto " & Nome
+  Aponta_Primeiro_Objeto = "Ponto " & Nome
   Doc(IdDoc).frm.ObjApontado = Nome
  Else
-  Aponta_Objeto = ""
+  Aponta_Primeiro_Objeto = ""
   Doc(IdDoc).frm.ObjApontado = 0
  End If
 End Function
