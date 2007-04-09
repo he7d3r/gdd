@@ -18,7 +18,7 @@ Sub Inicializa_Barra_Ferramentas(IdDoc As Integer)
  Dim F() As Ferramenta ' IdImg, Key e TipText
  
  FileNumber = FreeFile
- On Error GoTo ERRO
+ On Error GoTo Erro
   Open App.Path & "\" & Arq_INI For Input As #FileNumber
  On Error GoTo 0
   
@@ -47,22 +47,19 @@ Sub Inicializa_Barra_Ferramentas(IdDoc As Integer)
     Set btnButton = .Buttons.Add(N, F(N).Key, "", tbrDefault, N)
     btnButton.ToolTipText = F(N).TipText
     btnButton.Style = tbrButtonGroup
-   If N > 2 Then btnButton.Enabled = False
+   If N > 3 Then btnButton.Enabled = False
    Next N
    .Buttons(1).Value = tbrPressed
    .Tag = .Buttons.Item(1).Key
  End With
  
  Exit Sub
-ERRO:
+Erro:
  'If Err.Number = 53 Then
   'Err.Clear
   'Recup_Arquivo
   'Inicializa
  'Else
-  Err.Raise Err.Number
+  err.Raise err.Number
  'End If
 End Sub
-
-
-
