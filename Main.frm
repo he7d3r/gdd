@@ -610,6 +610,15 @@ Private Sub picVista_MouseMove(Index As Integer, Button As Integer, Shift As Int
                Else
                   Pos_Ponto vt, X, Y, Shift = vbCtrlMask, Obj_Aux(2).Coord
                End If
+            Else
+               If UBound(Obj_Aux) > 1 Then
+                  With Doc(Me.Tag).Obj(ObjApontado)
+                     Obj_Aux(2).Coord(0) = .Coord(0)
+                     Obj_Aux(2).Coord(1) = .Coord(1)
+                     Obj_Aux(2).Coord(2) = .Coord(2)
+                     Obj_Aux(2).Coord(3) = .Coord(3)
+                  End With
+               End If
             End If
          Case vbLeftButton
             If Clicou_Sobre_Objeto Then
@@ -617,14 +626,26 @@ Private Sub picVista_MouseMove(Index As Integer, Button As Integer, Shift As Int
                If Abs(X - X_Ini) > PROX Or Abs(Y - Y_Ini) > PROX Then
                   Posicionando = True
                   Pos_Ponto vt, X, Y, Shift = vbCtrlMask, Doc(Me.Tag).Obj(ObjApontado).Coord
+                  If UBound(Obj_Aux) > 1 Then
+                     With Doc(Me.Tag).Obj(ObjApontado)
+                        Obj_Aux(2).Coord(0) = .Coord(0)
+                        Obj_Aux(2).Coord(1) = .Coord(1)
+                        Obj_Aux(2).Coord(2) = .Coord(2)
+                        Obj_Aux(2).Coord(3) = .Coord(3)
+                     End With
+                  End If
                End If
-            'Else
-            '   'aponte
-            '   N_Hits = Listar_Objetos_Sob(vt, X, Y, Buf_Selec)
-            '   picVista(PERSPECTIVA).ToolTipText = Aponta_Primeiro_Objeto(Me.Tag, N_Hits, Buf_Selec)
-            '   'arraste p_aux
-            '   Posicionando = True
-            '   Pos_Ponto vt, X, Y, Shift = vbCtrlMask, Obj_Aux(1).Coord 'P_Aux
+            Else
+               'aponte
+               N_Hits = Listar_Objetos_Sob(vt, X, Y, Buf_Selec)
+               picVista(PERSPECTIVA).ToolTipText = Aponta_Primeiro_Objeto(Me.Tag, N_Hits, Buf_Selec)
+               'arraste p_aux
+               Posicionando = True
+               If UBound(Obj_Aux) = 1 Then
+                  Pos_Ponto vt, X, Y, Shift = vbCtrlMask, Obj_Aux(1).Coord 'P_Aux
+               Else
+                  Pos_Ponto vt, X, Y, Shift = vbCtrlMask, Obj_Aux(2).Coord 'P_Aux
+               End If
             End If
          End Select
       End Select
@@ -713,12 +734,25 @@ Private Sub picVista_MouseUp(Index As Integer, Button As Integer, Shift As Integ
                End If
                Id = ObjApontado
             Else
-               If UBound(Obj_Aux) = 1 Then
-                  Def_Ponto Obj_Aux(1).Coord
+               If ObjApontado > 0 Then
+                  Id = ObjApontado
+                  If UBound(Obj_Aux) = 1 Then
+                     With Doc(Me.Tag).Obj(Id)
+                        Obj_Aux(1).Coord(0) = .Coord(0)
+                        Obj_Aux(1).Coord(1) = .Coord(1)
+                        Obj_Aux(1).Coord(2) = .Coord(2)
+                        Obj_Aux(1).Coord(3) = .Coord(3)
+                        Obj_Aux(1).Tam = 3
+                     End With
+                  End If
                Else
-                  Def_Ponto Obj_Aux(2).Coord
+                  If UBound(Obj_Aux) = 1 Then
+                     Def_Ponto Obj_Aux(1).Coord
+                  Else
+                     Def_Ponto Obj_Aux(2).Coord
+                  End If
+                  Id = UBound(Doc(Me.Tag).Obj)
                End If
-               Id = UBound(Doc(Me.Tag).Obj)
             End If
             
             If UBound(Obj_Aux) = 1 Then
