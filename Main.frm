@@ -244,7 +244,12 @@ Private Sub Form_KeyPress(KeyAscii As Integer)
    Const MIN_RO = 3
    If Chr(KeyAscii) = "+" Then Ro = Ro - 1
    If Chr(KeyAscii) = "-" Then Ro = Ro + 1
-   If KeyAscii = vbKeyEscape Then tbrFerramentas.Buttons(1).Value = tbrPressed: tbrFerramentas.Tag = "PONTEIRO"
+   If KeyAscii = vbKeyEscape Then
+      tbrFerramentas.Buttons(1).Value = tbrPressed: tbrFerramentas.Tag = "PONTEIRO"
+      ReDim Obj_Aux(1 To 1)
+      Obj_Aux(1).Coord(3) = 1
+      Posicionando = False
+   End If
    'O ALT NÃO ESTÁ COM PROBLEMA.
    'VOCÊ SELECIONOU O MENU!
    If Chr(KeyAscii) = "r" Or Chr(KeyAscii) = "R" Then
@@ -383,7 +388,7 @@ Private Sub Pos_Ponto(ByVal v As Vista, _
          If vx = 0 Then vx = x0: MsgBox "vx=0"
          'P1 sobre um PLANO DE PERFIL
          Pos = (Pt(0) - x0) / vx
-         If (Pos < 0 Or 1 < Pos) Then Exit Sub
+         'If (Pos < 0 Or 1 < Pos) Then Exit Sub
          px1 = Pt(0): py1 = y0 + Pos * vy: pz1 = z0 + Pos * vz
          
          If X < 5 Then X = 5
@@ -394,7 +399,7 @@ Private Sub Pos_Ponto(ByVal v As Vista, _
          vz = z1 - z0
          If vx = 0 Then vx = x0: MsgBox "vx=0"
          Pos = (Pt(0) - x0) / vx
-         If (Pos < 0 Or 1 < Pos) Then Exit Sub
+         'If (Pos < 0 Or 1 < Pos) Then Exit Sub
          px2 = Pt(0):  py2 = y0 + Pos * vy:  pz2 = z0 + Pos * vz
          'Pt(0) = Pt(0)
          'Pt(1) = Pt(1)
@@ -774,7 +779,11 @@ Private Sub picVista_Paint(Index As Integer)
             If ObjApontado > 0 Then
                Des_Plano Sobre_Plano, Doc(Me.Tag).Obj(ObjApontado).Coord
             Else
-               Des_Plano Sobre_Plano, Obj_Aux(1).Coord 'P_Aux
+               If UBound(Obj_Aux) > 1 Then
+                  Des_Plano Sobre_Plano, Obj_Aux(UBound(Obj_Aux) - 1).Coord 'P_Aux
+               Else
+                  Des_Plano Sobre_Plano, Obj_Aux(1).Coord 'P_Aux
+               End If
             End If
          End If
       End If
