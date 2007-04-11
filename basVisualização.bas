@@ -30,7 +30,7 @@ Public Sub Inicializa_OpenGL(IdDoc As Integer)
       .Cam_X = .Ro * Sin(.Phi * DEG) * Cos(.Theta * DEG)
       .Cam_Y = .Ro * Sin(.Phi * DEG) * Sin(.Theta * DEG)
       .Cam_Z = .Ro * Cos(.Phi * DEG)
-      frmMDIGeo3d.staInfo.Panels(2).Text = "CÂMERA:  ( " _
+      frmMDIGDD.staInfo.Panels(2).Text = "CÂMERA:  ( " _
                                              & Format(.Cam_X, "0.0") & " ;  " _
                                              & Format(.Cam_Y, "0.0") & " ;  " _
                                              & Format(.Cam_Z, "0.0") & ")cart     ( " _

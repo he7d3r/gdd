@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Begin VB.Form frmMain 
-   Caption         =   "Exemplo - Integrando Vb e OpenGl"
+   Caption         =   "GDD - Documento"
    ClientHeight    =   4050
    ClientLeft      =   255
    ClientTop       =   540
@@ -373,7 +373,7 @@ Private Sub Pos_Ponto(ByVal v As Vista, _
       End Select
       If (Pos < 0 Or 1 < Pos) Then
          Posicionando = False
-         frmMDIGeo3d.staInfo.Panels(1).Text = ""
+         frmMDIGDD.staInfo.Panels(1).Text = ""
          Redesenhar_Todos
          Exit Sub
       Else
@@ -445,7 +445,7 @@ Private Sub Pos_Ponto(ByVal v As Vista, _
       End Select
    End If
   
-   If frmMDIGeo3d.mnuEditarMagnetismo.Checked Then
+   If frmMDIGDD.mnuEditarMagnetismo.Checked Then
       Aux(0) = Round(Pt(0))
       Aux(1) = Round(Pt(1))
       Aux(2) = Round(Pt(2))
@@ -456,7 +456,7 @@ Private Sub Pos_Ponto(ByVal v As Vista, _
    End If
    Aux(3) = 1
    
-   frmMDIGeo3d.staInfo.Panels(1).Text = "Posição atual: [ " _
+   frmMDIGDD.staInfo.Panels(1).Text = "Posição atual: [ " _
                                        & Format(Aux(0), "0.0") & " ;  " _
                                        & Format(Aux(1), "0.0") & " ;  " _
                                        & Format(Aux(2), "0.0") & "]"
@@ -537,7 +537,7 @@ Private Sub picVista_MouseMove(Index As Integer, Button As Integer, Shift As Int
          Cam_Y = Ro * Sin(Phi * DEG) * Sin(Theta * DEG)
          Cam_Z = Ro * Cos(Phi * DEG)
          
-         frmMDIGeo3d.staInfo.Panels(2).Text = "CÂMERA:  ( " _
+         frmMDIGDD.staInfo.Panels(2).Text = "CÂMERA:  ( " _
                                              & Format(Cam_X, "0.0") & " ;  " _
                                              & Format(Cam_Y, "0.0") & " ;  " _
                                              & Format(Cam_Z, "0.0") & ")cart     ( " _
@@ -790,14 +790,16 @@ Private Sub picVista_MouseUp(Index As Integer, Button As Integer, Shift As Integ
             End If
          
          End Select 'tbrFerramentas.Tag
-         
-         Clicou_Sobre_Objeto = False
+                  
          Redesenhar_Todos
          
       Case vbRightButton
          picVista(PERSPECTIVA).MousePointer = 0
-         If Abs(X_Ini - X) < PROX And Abs(Y_Ini - Y) < PROX And Not ObjApontado Then PopupMenu frmMDIGeo3d.mnuEditar
+         If Abs(X_Ini - X) < PROX And Abs(Y_Ini - Y) < PROX And Not ObjApontado Then PopupMenu frmMDIGDD.mnuEditar
       End Select 'Button
+      
+      Clicou_Sobre_Objeto = False
+      
    End Select 'Index da Vista
 End Sub
 
@@ -854,9 +856,12 @@ End Sub
 
 Private Sub tbrFerramentas_ButtonClick(ByVal Button As MSComctlLib.Button)
 'Convenção: Tag guarda um nome igual aos da enumeração pública de tipos dos objetos
- tbrFerramentas.Tag = Button.Key
- 'If tbrFerramentas.Tag <> "PONTO" Then MsgBox "NAO SELECIONANDO!": Posicionando = False
- 
+   tbrFerramentas.Tag = Button.Key
+   If tbrFerramentas.Tag <> "SEGMENTO" Then
+      ReDim Obj_Aux(1 To 1)
+      Obj_Aux(1).Coord(3) = 1
+      Posicionando = False
+   End If
 End Sub
 
 Private Sub Def_Ponto(Pos() As GLdouble)

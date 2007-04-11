@@ -26,8 +26,8 @@ Public Sub ErroFatal(ByVal msgErro As String)
    MsgBox "ERRO FATAL: " & msgErro, _
       vbCritical + vbApplicationModal + vbOKOnly + vbDefaultButton1, _
       "Erro fatal com """ & App.Title & """"
-   Unload frmMDIGeo3d
-   Set frmMDIGeo3d = Nothing
+   Unload frmMDIGDD
+   Set frmMDIGDD = Nothing
    End
 End Sub
 Public Function Ajusta_FormatoPixel(ByVal hDC As Long) As Long

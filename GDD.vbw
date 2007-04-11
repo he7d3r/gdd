@@ -1,0 +1,8 @@
+frmMain = 0, 0, 0, 0, C, 44, 44, 625, 564, C
+basVbOpenGl = 0, 0, 0, 0, C
+basVisualização = 0, 0, 0, 0, C
+basGeometria = 0, 0, 0, 0, C
+frmMDIGDD = 0, 0, 0, 0, C, 22, 22, 603, 542, C
+basMDI = 0, 0, 0, 0, C
+basArquivos = 0, 0, 0, 0, C
+frmSplash1 = 0, 0, 0, 0, C, 88, 88, 669, 608, C

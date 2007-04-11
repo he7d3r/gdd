@@ -22,6 +22,24 @@ Begin VB.Form frmSplash1
       TabIndex        =   0
       Top             =   97
       Width           =   7080
+      Begin VB.Label Label1 
+         AutoSize        =   -1  'True
+         Caption         =   "Geometria Descritiva && Dinâmica"
+         BeginProperty Font 
+            Name            =   "Arial"
+            Size            =   9.75
+            Charset         =   0
+            Weight          =   700
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   240
+         Left            =   3105
+         TabIndex        =   4
+         Top             =   2700
+         Width           =   3150
+      End
       Begin VB.Image imgLogo 
          Height          =   480
          Left            =   2325
@@ -45,12 +63,12 @@ Begin VB.Form frmSplash1
          Height          =   285
          Left            =   6045
          TabIndex        =   1
-         Top             =   2835
+         Top             =   3375
          Width           =   810
       End
       Begin VB.Label lblProductName 
          AutoSize        =   -1  'True
-         Caption         =   "Geo3d"
+         Caption         =   "GDD"
          BeginProperty Font 
             Name            =   "Arial"
             Size            =   32.25
@@ -64,7 +82,7 @@ Begin VB.Form frmSplash1
          Left            =   3060
          TabIndex        =   3
          Top             =   2055
-         Width           =   1995
+         Width           =   1425
       End
       Begin VB.Label lblCompanyProduct 
          AutoSize        =   -1  'True

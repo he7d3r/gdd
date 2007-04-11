@@ -1,14 +1,14 @@
 VERSION 5.00
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
-Begin VB.MDIForm frmMDIGeo3d 
+Begin VB.MDIForm frmMDIGDD 
    AutoShowChildren=   0   'False
    BackColor       =   &H8000000C&
-   Caption         =   "Geo3d"
+   Caption         =   "GDD"
    ClientHeight    =   9600
    ClientLeft      =   60
    ClientTop       =   630
    ClientWidth     =   9885
-   Icon            =   "frmMDIGeo3d.frx":0000
+   Icon            =   "frmMDI_GDD.frx":0000
    LinkTopic       =   "MDIForm1"
    WindowState     =   2  'Maximized
    Begin MSComctlLib.StatusBar staInfo 
@@ -79,7 +79,7 @@ Begin VB.MDIForm frmMDIGeo3d
       End
    End
 End
-Attribute VB_Name = "frmMDIGeo3d"
+Attribute VB_Name = "frmMDIGDD"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
@@ -163,7 +163,7 @@ End Sub
 Private Sub mnuArquivoSair_Click()
  'Descarregando o form MDI, ocorrerá o evento QueryUnload
  'para cada form filho, seguido do próprio MDI
- Unload frmMDIGeo3d
+ Unload frmMDIGDD
 End Sub
 
 Private Sub mnuEditarDefPLano_Click(Index As Integer)
