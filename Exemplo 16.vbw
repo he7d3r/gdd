@@ -1,7 +1,7 @@
-frmMain = 44, 44, 619, 564, Z, 44, 44, 619, 564, C
-basVbOpenGl = 0, 0, 0, 0, C
+frmMain = 44, 44, 619, 564, C, 44, 44, 619, 564, C
+basVbOpenGl = 66, 66, 809, 455, 
 basVisualização = 0, 0, 0, 0, C
-basGeometria = 22, 22, 597, 542, 
+basGeometria = 22, 22, 597, 542, Z
 frmMDIGeo3d = 44, 44, 657, 564, C, 22, 22, 597, 542, C
 basMDI = 176, 176, 751, 696, C
 basArquivos = 0, 0, 0, 0, C

@@ -312,10 +312,12 @@ Public Sub Des_Objetos(ByVal IdDoc As Integer, ByVal Modo As GLenum, Ob() As Obj
                glVertex4dv .Coord(0)
             glEnd
          Case SEGMENTO
+            If Modo = GL_SELECT Then glPopName
             glBegin bmLines
                glVertex4dv Ob(.Id_Dep(1)).Coord(0)
                glVertex4dv Ob(.Id_Dep(2)).Coord(0)
             glEnd
+            glPushName 0
          End Select
       End With
    Next i
@@ -332,8 +334,8 @@ Public Sub Des_Objetos_Aux(ByVal IdDoc As Integer, Ob() As Objeto)
    For i = 1 To N_Obj
       With Ob(i)
          glColor3d 0.9, 0.4, 0#
-         glPointSize 3#
-         glLineWidth 2#
+         If .Tam > 0 Then glPointSize .Tam
+         If .Tam > 0 Then glLineWidth .Tam
          Select Case .Tipo
          Case PONTO
             With Doc(IdDoc).frm

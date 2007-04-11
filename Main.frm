@@ -600,7 +600,11 @@ Private Sub picVista_MouseMove(Index As Integer, Button As Integer, Shift As Int
             'posicione p_aux
             Posicionando = True
             If ObjApontado <= 0 Then
-               Pos_Ponto vt, X, Y, Shift = vbCtrlMask, Obj_Aux(1).Coord 'P_Aux
+               If UBound(Obj_Aux) = 1 Then
+                  Pos_Ponto vt, X, Y, Shift = vbCtrlMask, Obj_Aux(1).Coord
+               Else
+                  Pos_Ponto vt, X, Y, Shift = vbCtrlMask, Obj_Aux(2).Coord
+               End If
             End If
          Case vbLeftButton
             If Clicou_Sobre_Objeto Then
@@ -704,29 +708,37 @@ Private Sub picVista_MouseUp(Index As Integer, Button As Integer, Shift As Integ
                End If
                Id = ObjApontado
             Else
-               Def_Ponto Obj_Aux(1).Coord
+               If UBound(Obj_Aux) = 1 Then
+                  Def_Ponto Obj_Aux(1).Coord
+               Else
+                  Def_Ponto Obj_Aux(2).Coord
+               End If
                Id = UBound(Doc(Me.Tag).Obj)
             End If
             
             If UBound(Obj_Aux) = 1 Then
                ReDim Preserve Obj_Aux(1 To 3) 'dois pontos e um segmento
                If Clicou_Sobre_Objeto Then
-                  With Obj_Aux(1)
-                     .Coord(0) = Doc(Me.Tag).Obj(Id).Coord(0)
-                     .Coord(1) = Doc(Me.Tag).Obj(Id).Coord(1)
-                     .Coord(2) = Doc(Me.Tag).Obj(Id).Coord(2)
-                     .Coord(3) = Doc(Me.Tag).Obj(Id).Coord(3)
+                  With Doc(Me.Tag).Obj(Id)
+                     Obj_Aux(1).Coord(0) = .Coord(0)
+                     Obj_Aux(1).Coord(1) = .Coord(1)
+                     Obj_Aux(1).Coord(2) = .Coord(2)
+                     Obj_Aux(1).Coord(3) = .Coord(3)
+                     Obj_Aux(1).Tam = 3
                   End With
                End If
-               With Obj_Aux(2)
-                  .Coord(0) = Obj_Aux(1).Coord(0)
-                  .Coord(1) = Obj_Aux(1).Coord(1)
-                  .Coord(2) = Obj_Aux(1).Coord(2)
-                  .Coord(3) = Obj_Aux(1).Coord(3)
+               With Obj_Aux(1)
+                  Obj_Aux(2).Coord(0) = .Coord(0)
+                  Obj_Aux(2).Coord(1) = .Coord(1)
+                  Obj_Aux(2).Coord(2) = .Coord(2)
+                  Obj_Aux(2).Coord(3) = .Coord(3)
+                  .Tam = 3
                End With
                With Obj_Aux(3)
-                  .N_Dep = 2
                   .Tipo = SEGMENTO
+                  .N_Dep = 2
+                  .Cor(0) = 1#: .Cor(1) = 0#: .Cor(2) = 0# 'vermelho
+                  .Tam = 1
                   ReDim .Id_Dep(1 To .N_Dep)
                   .Id_Dep(1) = Id
                   .Id_Dep(2) = 2
