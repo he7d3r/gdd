@@ -91,7 +91,6 @@ Private Sub MDIForm_Load()
  GeraBarraStatus
  
  ReDim Doc(1 To 1)
- ReDim EstadoForm(1)
  Sobre_Plano = PL_HORIZONTAL
  
  Doc(1).frm.Tag = 1

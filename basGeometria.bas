@@ -4,6 +4,8 @@ Option Explicit
 Public Sub Inicializa_Objetos(IdDoc As Integer)
  ReDim Doc(IdDoc).Obj(1 To 1)
  ReDim Doc(IdDoc).Obj_Sel(1 To 1)
+ ReDim Obj_Aux(1 To 1)
+ Obj_Aux(1).Coord(3) = 1
 End Sub
 Public Sub Inverter_Todos(IdDoc As Integer)
    Dim N_Obj As Integer
@@ -133,6 +135,11 @@ Public Sub Des_Plano(Plano As Tipo_De_Plano, Aux() As GLdouble)
    Const RAIO = 3
    Dim k As GLdouble
    Dim PosX As GLdouble, PosY As GLdouble, PosZ As GLdouble
+   Dim Pt(0 To 2) As GLdouble
+   
+   Pt(0) = Aux(0) / Aux(3)
+   Pt(1) = Aux(1) / Aux(3)
+   Pt(2) = Aux(2) / Aux(3)
       
    glColor3f 0.5, 0.5, 0.5
    glLineWidth (1#)
@@ -140,38 +147,38 @@ Public Sub Des_Plano(Plano As Tipo_De_Plano, Aux() As GLdouble)
    Select Case Plano
    Case PL_HORIZONTAL
       For k = -RAIO To RAIO 'Desenhar "bola" sobre xOy
-         PosX = Fix(Aux(0) + k): PosY = Fix(Aux(1) + k)
-         If Abs(PosX - Aux(0)) < RAIO Then
-            glVertex3d PosX, Aux(1) + (RAIO - Abs(PosX - Aux(0))), 0#
-            glVertex3d PosX, Aux(1) - (RAIO - Abs(PosX - Aux(0))), 0#
+         PosX = Fix(Pt(0) + k): PosY = Fix(Pt(1) + k)
+         If Abs(PosX - Pt(0)) < RAIO Then
+            glVertex3d PosX, Pt(1) + (RAIO - Abs(PosX - Pt(0))), 0#
+            glVertex3d PosX, Pt(1) - (RAIO - Abs(PosX - Pt(0))), 0#
          End If
-         If Abs(PosY - Aux(1)) < RAIO Then
-            glVertex3d Aux(0) + (RAIO - Abs(PosY - Aux(1))), PosY, 0#
-            glVertex3d Aux(0) - (RAIO - Abs(PosY - Aux(1))), PosY, 0#
+         If Abs(PosY - Pt(1)) < RAIO Then
+            glVertex3d Pt(0) + (RAIO - Abs(PosY - Pt(1))), PosY, 0#
+            glVertex3d Pt(0) - (RAIO - Abs(PosY - Pt(1))), PosY, 0#
          End If
       Next k
    Case PL_PERFIL
       For k = -RAIO To RAIO 'Desenhar "bola" sobre yOz (lembre que o sistema é negativo)
-         PosZ = Fix(Aux(2) + k): PosY = Fix(Aux(1) + k)
-         If Abs(PosZ - Aux(2)) < RAIO Then
-            glVertex3d 0#, Aux(1) + (RAIO - Abs(PosZ - Aux(2))), PosZ
-            glVertex3d 0#, Aux(1) - (RAIO - Abs(PosZ - Aux(2))), PosZ
+         PosZ = Fix(Pt(2) + k): PosY = Fix(Pt(1) + k)
+         If Abs(PosZ - Pt(2)) < RAIO Then
+            glVertex3d 0#, Pt(1) + (RAIO - Abs(PosZ - Pt(2))), PosZ
+            glVertex3d 0#, Pt(1) - (RAIO - Abs(PosZ - Pt(2))), PosZ
          End If
-         If Abs(PosY - Aux(1)) < RAIO Then
-            glVertex3d 0#, PosY, Aux(2) + (RAIO - Abs(PosY - Aux(1)))
-            glVertex3d 0#, PosY, Aux(2) - (RAIO - Abs(PosY - Aux(1)))
+         If Abs(PosY - Pt(1)) < RAIO Then
+            glVertex3d 0#, PosY, Pt(2) + (RAIO - Abs(PosY - Pt(1)))
+            glVertex3d 0#, PosY, Pt(2) - (RAIO - Abs(PosY - Pt(1)))
          End If
       Next k
    Case PL_FRONTAL
       For k = -RAIO To RAIO 'Desenhar "bola" sobre xOz (lembre que o sistema é negativo)
-         PosX = Fix(Aux(0) + k): PosZ = Fix(Aux(2) + k)
-         If Abs(PosX - Aux(0)) < RAIO Then
-            glVertex3d PosX, 0#, Aux(2) + (RAIO - Abs(PosX - Aux(0)))
-            glVertex3d PosX, 0#, Aux(2) - (RAIO - Abs(PosX - Aux(0)))
+         PosX = Fix(Pt(0) + k): PosZ = Fix(Pt(2) + k)
+         If Abs(PosX - Pt(0)) < RAIO Then
+            glVertex3d PosX, 0#, Pt(2) + (RAIO - Abs(PosX - Pt(0)))
+            glVertex3d PosX, 0#, Pt(2) - (RAIO - Abs(PosX - Pt(0)))
          End If
-         If Abs(PosZ - Aux(2)) < RAIO Then
-            glVertex3d Aux(0) + (RAIO - Abs(PosZ - Aux(2))), 0#, PosZ
-            glVertex3d Aux(0) - (RAIO - Abs(PosZ - Aux(2))), 0#, PosZ
+         If Abs(PosZ - Pt(2)) < RAIO Then
+            glVertex3d Pt(0) + (RAIO - Abs(PosZ - Pt(2))), 0#, PosZ
+            glVertex3d Pt(0) - (RAIO - Abs(PosZ - Pt(2))), 0#, PosZ
          End If
       Next k
    End Select
@@ -183,7 +190,7 @@ Public Sub Des_Eixos()
  Const PONTA = 3
  Const INI_SETA = PONTA - PONTA / 10
  Const ABERTURA_SETA = PONTA / 20
- 'glLineWidth (2#)
+ glLineWidth (1#)
  glBegin bmLines
    glColor4f 1#, 0#, 0#, 1#
    glVertex3f 0#, 0#, 0#
@@ -219,23 +226,30 @@ Public Sub Des_Eixos()
  Erro = glGetError: If Erro <> glerrNoError Then ErroFatal Erro
 End Sub
 Public Sub Des_Ponto_Aux(Plano As Tipo_De_Plano, Aux() As GLdouble)
+   Dim Pt(0 To 2) As GLdouble
+   
+   Pt(0) = Aux(0) / Aux(3)
+   Pt(1) = Aux(1) / Aux(3)
+   Pt(2) = Aux(2) / Aux(3)
+   
    glColor3d 1#, 0.4, 0.1
    
    glPointSize (3#)
    glBegin bmPoints
-      glVertex3dv Aux(0)
+      glVertex4dv Aux(0)
    glEnd
-   'If Not Posicionando Then Exit Sub
+   
    glColor3d 0.7, 0.7, 0.7
+   glLineWidth (1#)
    glBegin bmLines
-      glVertex3dv Aux(0) ', Aux(1), Aux(2)
+      glVertex3dv Pt(0)
       Select Case Plano
       Case PL_HORIZONTAL 'Segmento vertical
-         glVertex3d Aux(0), Aux(1), 0#
+         glVertex3d Pt(0), Pt(1), 0#
       Case PL_PERFIL 'Segmento fronto-horizontal
-         glVertex3d 0#, Aux(1), Aux(2)
+         glVertex3d 0#, Pt(1), Pt(2)
       Case PL_FRONTAL 'Segmento de topo
-         glVertex3d Aux(0), 0#, Aux(2)
+         glVertex3d Pt(0), 0#, Pt(2)
       End Select
    glEnd
    
@@ -265,7 +279,7 @@ Public Sub Des_LT()
    
    Erro = glGetError: If Erro <> glerrNoError Then ErroFatal Erro
 End Sub
-Public Sub Des_Objetos(IdDoc As Integer, Modo As GLenum, Ferram As String)
+Public Sub Des_Objetos(ByVal IdDoc As Integer, ByVal Modo As GLenum, Ob() As Objeto)
    Dim i As Long
    Dim N_Obj As Long
    
@@ -274,40 +288,78 @@ Public Sub Des_Objetos(IdDoc As Integer, Modo As GLenum, Ferram As String)
    glColor3d 0#, 0#, 0#
    glPointSize (3#)
    'CAUSOU UM PONTO NA ORIGEM
-   N_Obj = UBound(Doc(IdDoc).Obj)
+   N_Obj = UBound(Ob) '(Doc(IdDoc).Obj)
    For i = 1 To N_Obj
-      If Modo = GL_SELECT Then glLoadName i
-      If i = Doc(IdDoc).frm.ObjApontado Then
-         glColor3d 0.8, 0#, 0.5: glPointSize (5#)
-         glBegin bmPoints
-           glVertex3dv Doc(IdDoc).Obj(i).Coord(0)
-         glEnd
-         glColor3d 0#, 0#, 0#: glPointSize (3#)
-      ElseIf Doc(IdDoc).Obj(i).Selec > 0 Then
-         glColor3d 0.9, 0.4, 0#: glPointSize (3#)
-         glBegin bmPoints
-           glVertex3dv Doc(IdDoc).Obj(i).Coord(0)
-         glEnd
-         glColor3d 0#, 0#, 0#: glPointSize (3#)
-      Else
-         glBegin bmPoints
-           glVertex3dv Doc(IdDoc).Obj(i).Coord(0)
-         glEnd
-      End If
-   Next i
-   
-   'objetos auxiliares não podem ser apontados
-   If Modo = GL_SELECT Then Exit Sub
-   
-   With Doc(IdDoc).frm
-      If .Posicionando Then
-         If .ObjApontado > 0 Then
-            Des_Ponto_Aux Sobre_Plano, Doc(IdDoc).Obj(.ObjApontado).Coord
+      With Ob(i) 'Doc(IdDoc).Obj(i)
+         If i = Doc(IdDoc).frm.ObjApontado Then
+            glColor3d 0.8, 0#, 0.5
+            glPointSize 5#
+            glLineWidth 2#
+         ElseIf .Selec > 0 Then
+            glColor3d 0.9, 0.4, 0#
+            If .Tam > 0 Then glPointSize .Tam
+            If .Tam > 0 Then glLineWidth .Tam
          Else
-            Des_Ponto_Aux Sobre_Plano, P_Aux
+            glColor3dv .Cor(0)
+            If .Tam > 0 Then glPointSize .Tam
+            If .Tam > 0 Then glLineWidth .Tam
          End If
-      End If
-   End With
+
+         Select Case .Tipo
+         Case PONTO
+            If Modo = GL_SELECT Then glLoadName i
+            glBegin bmPoints
+               glVertex4dv .Coord(0)
+            glEnd
+         Case SEGMENTO
+            glBegin bmLines
+               glVertex4dv Ob(.Id_Dep(1)).Coord(0)
+               glVertex4dv Ob(.Id_Dep(2)).Coord(0)
+            glEnd
+         End Select
+      End With
+   Next i
+
+   Erro = glGetError: If Erro <> glerrNoError Then ErroFatal Erro
+End Sub
+Public Sub Des_Objetos_Aux(ByVal IdDoc As Integer, Ob() As Objeto)
+   Dim i As Long
+   Dim N_Obj As Long
    
+   glColor3d 0#, 0#, 0#
+   glPointSize (3#)
+   N_Obj = UBound(Ob)
+   For i = 1 To N_Obj
+      With Ob(i)
+         glColor3d 0.9, 0.4, 0#
+         glPointSize 3#
+         glLineWidth 2#
+         Select Case .Tipo
+         Case PONTO
+            With Doc(IdDoc).frm
+               If .Posicionando Then
+                  If .ObjApontado > 0 Then
+                     Des_Ponto_Aux Sobre_Plano, Doc(IdDoc).Obj(Doc(IdDoc).frm.ObjApontado).Coord
+                  Else
+                     If i < N_Obj - 1 Then
+                        glBegin bmPoints
+                           glVertex4dv Ob(i).Coord(0)
+                        glEnd
+                     Else
+                        Des_Ponto_Aux Sobre_Plano, Ob(i).Coord
+                     End If
+                  End If
+               End If
+            End With
+
+         Case SEGMENTO
+            glBegin bmLines
+               'Em um segmento aux, o segundo vértice é aux mas o primeiro não
+               glVertex4dv Doc(IdDoc).Obj(.Id_Dep(1)).Coord(0) 'Ob(.Id_Dep(1)).Coord(0)
+               glVertex4dv Ob(.Id_Dep(2)).Coord(0)
+            glEnd
+         End Select
+      End With
+   Next i
    Erro = glGetError: If Erro <> glerrNoError Then ErroFatal Erro
 End Sub

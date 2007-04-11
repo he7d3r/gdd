@@ -15,8 +15,10 @@ End Enum
 Public Const PI = 3.14159265
 Public Const DEG = PI / 180
 Public Const ZERO = 0.0000001 'Usado em rotinas que tem problemas com o número zero=0.0
+
 Public Const DIST_MAX_CENA = 100
 Public Const DIST_MIN_CENA = 1
+Public Const PROX = 8
 
 'Constantes limitadoras do tamanho de cada construção
 Public Const MAX_OBJETOS = 10000       'usado como extremo superior da matriz Obj()
@@ -42,17 +44,18 @@ End Enum
 
 'A estrutura de cada objeto na construção tem estes atributos
 Public Type Objeto
-   'Id As Integer 'Identifica exclusivamente o objeto (por tipo??). Como o indice de Obj?
-   'Tipo As Tipo_De_Objeto 'Que item será guardado
-   'N_Param As Byte 'Número de objetos dos quais este é dependente
-   'Cor As Long 'Cor utilizada para desenhar na tela
-   'Espessura As Byte 'Raio dos pontos ou a largura de curvas e contornos
-   'Traço(1 To 2) As Byte 'Tipo de pontilhado
-   Selec As Integer 'Indica que o objeto foi o "Selec-ésimo" a ser selecionado
-   Mostrar As Boolean ' Aparência 'Indica como o objeto será exibido
-   'Nome As String 'Um rótulo para exibição em tela
-   'Id_Dep() As Long 'Indices dos parametros (objetos)dos quais este depende
-   Coord(0 To 2) As GLdouble 'Coordenadas e angulos livres
+   Tipo As Tipo_De_Objeto     'Que item será guardado
+   Id_Dep() As Long           'Indices dos parametros (objetos)dos quais este depende
+   N_Dep As Byte              'Número de objetos dos quais este depende
+   Coord(0 To 3) As GLdouble  'Coordenadas e angulos livres
+   Selec As Integer           'Qdo<>0, diz que o objeto foi o "Selec-ésimo" a ser selecionado
+   Cor(0 To 2) As GLdouble         'Cor utilizada na exibição normal do objeto
+   Tam As GLfloat              'Raio dos pontos ou a largura de curvas e contornos
+   
+   'Id As Integer             'Identifica exclusivamente o objeto (por tipo??). Como o indice de Obj?
+   'Traço(1 To 2) As Byte     'Tipo de pontilhado
+   'Mostrar As Boolean        ' Aparência 'Indica como o objeto será exibido
+   'Nome As String            'Um rótulo para exibição em tela
 End Type
 
 'Informações disponíveis sobre cada documento aberto
@@ -67,7 +70,8 @@ End Type
 
 Public Doc() As udtDocumento        'Matriz contendo cada documento.
                                     '(Cada atributo 'frm' é um 'child' do frmMDIGeo3d)
-Public P_Aux(0 To 2) As GLdouble    'Coordenadas de um ponto auxiliar para a definir objetos
+'Public P_Aux(0 To 3) As GLdouble    'Coordenadas de um ponto auxiliar para a definir objetos
+Public Obj_Aux() As Objeto
 Public Sobre_Plano As Tipo_De_Plano 'Indica plano usado ao definir pontos do espaço
 Public Erro As glErrorConstants
 

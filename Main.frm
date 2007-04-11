@@ -199,7 +199,7 @@ Public Phi As GLfloat, Theta As GLfloat, Ro As GLfloat   'Coord. esféricas da câ
 Public N_Sel As Integer             'Em geral = Ubound(Obj_Sel)
 Public ObjApontado As Long          'Indica o índice do objeto sob o mouse
 Public Posicionando As Boolean      'Indica se está sendo posicionado um ponto no espaço
-Private Movendo As Boolean          'Indica se um objeto já definido será reposicionado
+Private Clicou_Sobre_Objeto As Boolean          'Indica se um objeto já definido será reposicionado
 Public fAspect As GLfloat           'Proporção entre os lados da picPerspectiva
 
 Property Get hDC_Vista(ByVal Index As Vista) As Long
@@ -230,6 +230,8 @@ Private Sub Form_Load()
       hDC_V(v) = Me.picVista(v).hDC   'Identificador das ViewPort's
    Next v
    N_Sel = 0
+   'P_Aux(3) = 1
+   
 End Sub
 
 Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
@@ -325,7 +327,7 @@ End Sub
 Private Sub Pos_Ponto(ByVal v As Vista, _
                      ByVal X As Single, ByVal Y As Single, _
                      ByVal Perpendicular As Boolean, _
-                     ByRef Pt() As GLdouble)
+                     ByRef Aux() As GLdouble)
 
    Dim Pos As GLdouble
    Dim Y_real As GLint
@@ -334,6 +336,11 @@ Private Sub Pos_Ponto(ByVal v As Vista, _
    Dim vx As GLdouble, vy As GLdouble, vz As GLdouble
    Dim px1 As GLdouble, py1 As GLdouble, pz1 As GLdouble
    Dim px2 As GLdouble, py2 As GLdouble, pz2 As GLdouble
+   Dim Pt(0 To 3) As GLdouble
+      
+   Pt(0) = Aux(0) / Aux(3)
+   Pt(1) = Aux(1) / Aux(3)
+   Pt(2) = Aux(2) / Aux(3)
 
    wglMakeCurrent hDC_Vista(v), hGLRC_Vista(v)
    glGetIntegerv GL_VIEWPORT, M_ViewPort(0)
@@ -432,24 +439,29 @@ Private Sub Pos_Ponto(ByVal v As Vista, _
          'Pt(2) = Pt(2)
       End Select
    End If
-   
+  
    If frmMDIGeo3d.mnuEditarMagnetismo.Checked Then
-      Pt(0) = Round(Pt(0))
-      Pt(1) = Round(Pt(1))
-      Pt(2) = Round(Pt(2))
+      Aux(0) = Round(Pt(0))
+      Aux(1) = Round(Pt(1))
+      Aux(2) = Round(Pt(2))
+   Else
+      Aux(0) = Pt(0)
+      Aux(1) = Pt(1)
+      Aux(2) = Pt(2)
    End If
+   Aux(3) = 1
+   
    frmMDIGeo3d.staInfo.Panels(1).Text = "Posição atual: [ " _
-                                       & Format(Pt(0), "0.0") & " ;  " _
-                                       & Format(Pt(1), "0.0") & " ;  " _
-                                       & Format(Pt(2), "0.0") & "]"
+                                       & Format(Aux(0), "0.0") & " ;  " _
+                                       & Format(Aux(1), "0.0") & " ;  " _
+                                       & Format(Aux(2), "0.0") & "]"
    
    Erro = glGetError: If Erro <> glerrNoError Then ErroFatal Erro
 End Sub
 Function Listar_Objetos_Sob(ByVal v As Vista, _
                            ByVal X As Single, ByVal Y As Single, _
                            ByRef B() As GLuint) As GLint
-   Const PROX = 8
-
+   
    'Obtem cópia da matriz de ViewPort, define qual será o Buffer e inicia modo de seleção
    wglMakeCurrent hDC_Vista(v), hGLRC_Vista(v)
    glGetIntegerv GL_VIEWPORT, M_ViewPort(0)
@@ -466,7 +478,7 @@ Function Listar_Objetos_Sob(ByVal v As Vista, _
     gluPerspective 35!, fAspect, DIST_MIN_CENA, DIST_MAX_CENA
     
     glClear clrDepthBufferBit Or clrColorBufferBit
-    Des_Objetos Me.Tag, GL_SELECT, tbrFerramentas.Tag    'GL_RENDER
+    Des_Objetos Me.Tag, GL_SELECT, Doc(Me.Tag).Obj 'GL_RENDER
     glMatrixMode GL_PROJECTION 'As rotinas de desenho mudam para GL_MODELVIEW
    glPopMatrix
    glFlush
@@ -483,13 +495,14 @@ Private Sub picVista_MouseDown(Index As Integer, Button As Integer, Shift As Int
       'Case "PONTO"
       'Case "SEGMENTO"
       'End Select
+      X_Ini = X: Y_Ini = Y
       Select Case Button
       Case vbRightButton
          'picVista(PERSPECTIVA).MousePointer = 99
-         X_Ini = X: Y_Ini = Y
          Phi_Ini = Phi:  Theta_Ini = Theta
       Case vbLeftButton
-         Movendo = (ObjApontado > 0)
+         Clicou_Sobre_Objeto = (ObjApontado > 0)
+'         Me.Caption = Clicou_Sobre_Objeto
       End Select
    End Select
 End Sub
@@ -545,7 +558,7 @@ Private Sub picVista_MouseMove(Index As Integer, Button As Integer, Shift As Int
             N_Hits = Listar_Objetos_Sob(vt, X, Y, Buf_Selec)
             picVista(PERSPECTIVA).ToolTipText = Aponta_Primeiro_Objeto(Me.Tag, N_Hits, Buf_Selec)
          Case vbLeftButton
-            If Movendo Then 'O mouse estava sobre 'ObjApontado' ao clicar
+            If Clicou_Sobre_Objeto Then 'O mouse estava sobre 'ObjApontado' ao clicar
                'mova ObjApontado
                Posicionando = True
                Pos_Ponto vt, X, Y, Shift = vbCtrlMask, Doc(Me.Tag).Obj(ObjApontado).Coord
@@ -559,13 +572,13 @@ Private Sub picVista_MouseMove(Index As Integer, Button As Integer, Shift As Int
             'aponte
             N_Hits = Listar_Objetos_Sob(vt, X, Y, Buf_Selec)
             picVista(PERSPECTIVA).ToolTipText = Aponta_Primeiro_Objeto(Me.Tag, N_Hits, Buf_Selec)
-            'arraste p_aux
+            'posicione p_aux
             Posicionando = True
             If ObjApontado <= 0 Then
-               Pos_Ponto vt, X, Y, Shift = vbCtrlMask, P_Aux
+               Pos_Ponto vt, X, Y, Shift = vbCtrlMask, Obj_Aux(1).Coord 'P_Aux
             End If
          Case vbLeftButton
-            If Movendo Then
+            If Clicou_Sobre_Objeto Then
                'mova ObjApontado
                Posicionando = True
                Pos_Ponto vt, X, Y, Shift = vbCtrlMask, Doc(Me.Tag).Obj(ObjApontado).Coord
@@ -575,11 +588,36 @@ Private Sub picVista_MouseMove(Index As Integer, Button As Integer, Shift As Int
                picVista(PERSPECTIVA).ToolTipText = Aponta_Primeiro_Objeto(Me.Tag, N_Hits, Buf_Selec)
                'arraste p_aux
                Posicionando = True
-               Pos_Ponto vt, X, Y, Shift = vbCtrlMask, P_Aux
+               Pos_Ponto vt, X, Y, Shift = vbCtrlMask, Obj_Aux(1).Coord 'P_Aux
             End If
          End Select
       Case "SEGMENTO"
-      
+         Select Case Button
+         Case 0
+            'aponte
+            N_Hits = Listar_Objetos_Sob(vt, X, Y, Buf_Selec)
+            picVista(PERSPECTIVA).ToolTipText = Aponta_Primeiro_Objeto(Me.Tag, N_Hits, Buf_Selec)
+            'posicione p_aux
+            Posicionando = True
+            If ObjApontado <= 0 Then
+               Pos_Ponto vt, X, Y, Shift = vbCtrlMask, Obj_Aux(1).Coord 'P_Aux
+            End If
+         Case vbLeftButton
+            If Clicou_Sobre_Objeto Then
+               'mova ObjApontado
+               If Abs(X - X_Ini) > PROX Or Abs(Y - Y_Ini) > PROX Then
+                  Posicionando = True
+                  Pos_Ponto vt, X, Y, Shift = vbCtrlMask, Doc(Me.Tag).Obj(ObjApontado).Coord
+               End If
+            'Else
+            '   'aponte
+            '   N_Hits = Listar_Objetos_Sob(vt, X, Y, Buf_Selec)
+            '   picVista(PERSPECTIVA).ToolTipText = Aponta_Primeiro_Objeto(Me.Tag, N_Hits, Buf_Selec)
+            '   'arraste p_aux
+            '   Posicionando = True
+            '   Pos_Ponto vt, X, Y, Shift = vbCtrlMask, Obj_Aux(1).Coord 'P_Aux
+            End If
+         End Select
       End Select
       
       Redesenhar_Todos
@@ -594,36 +632,19 @@ Private Sub picVista_MouseMove(Index As Integer, Button As Integer, Shift As Int
    Erro = glGetError: If Erro <> glerrNoError Then ErroFatal Erro
 End Sub
 
-
 Private Sub picVista_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
    Dim i As Integer
-   Dim N_Obj As Integer 'Em geral = Ubound(Doc(me.tag).Obj)
+   Dim Id As Long
+   'Dim N_Obj As Integer 'Em geral = Ubound(Doc(me.tag).Obj)
          
    Select Case Index
    Case PERSPECTIVA
       
-      Movendo = False
-      N_Obj = UBound(Doc(Me.Tag).Obj)
+      'N_Obj = UBound(Doc(Me.Tag).Obj)
       
       Select Case Button
       Case vbLeftButton
          Select Case tbrFerramentas.Tag
-         Case "PONTO"
-            'não define um ponto sobre outro
-            'não cria novo ponto ao mover um existente
-            If ObjApontado > 0 Then Exit Sub
-            
-            If N_Obj < MAX_OBJETOS Then
-               N_Obj = N_Obj + 1
-               ReDim Preserve Doc(Me.Tag).Obj(1 To N_Obj)
-               With Doc(Me.Tag).Obj(N_Obj)
-               .Coord(0) = P_Aux(0)
-               .Coord(1) = P_Aux(1)
-               .Coord(2) = P_Aux(2)
-               'P_Aux(0) = 0: P_Aux(1) = 0: P_Aux(2) = 0
-               End With
-            End If
-         
          Case "PONTEIRO"
             Posicionando = False
             If ObjApontado <= 0 Then
@@ -668,11 +689,63 @@ Private Sub picVista_MouseUp(Index As Integer, Button As Integer, Shift As Integ
                End If 'Shift = 0
                End With
             End If 'ObjApontado > 0
+         Case "PONTO"
+            'não define um ponto sobre outro
+            'não cria novo ponto ao mover um existente
+            If ObjApontado > 0 Then Exit Sub
+            
+            Def_Ponto Obj_Aux(1).Coord
+            
+         Case "SEGMENTO"
+            If Clicou_Sobre_Objeto Then
+               If Posicionando Then
+                  If Abs(X - X_Ini) > PROX Then Posicionando = False: Exit Sub
+                  If Abs(Y - Y_Ini) > PROX Then Posicionando = False: Exit Sub
+               End If
+               Id = ObjApontado
+            Else
+               Def_Ponto Obj_Aux(1).Coord
+               Id = UBound(Doc(Me.Tag).Obj)
+            End If
+            
+            If UBound(Obj_Aux) = 1 Then
+               ReDim Preserve Obj_Aux(1 To 3) 'dois pontos e um segmento
+               If Clicou_Sobre_Objeto Then
+                  With Obj_Aux(1)
+                     .Coord(0) = Doc(Me.Tag).Obj(Id).Coord(0)
+                     .Coord(1) = Doc(Me.Tag).Obj(Id).Coord(1)
+                     .Coord(2) = Doc(Me.Tag).Obj(Id).Coord(2)
+                     .Coord(3) = Doc(Me.Tag).Obj(Id).Coord(3)
+                  End With
+               End If
+               With Obj_Aux(2)
+                  .Coord(0) = Obj_Aux(1).Coord(0)
+                  .Coord(1) = Obj_Aux(1).Coord(1)
+                  .Coord(2) = Obj_Aux(1).Coord(2)
+                  .Coord(3) = Obj_Aux(1).Coord(3)
+               End With
+               With Obj_Aux(3)
+                  .N_Dep = 2
+                  .Tipo = SEGMENTO
+                  ReDim .Id_Dep(1 To .N_Dep)
+                  .Id_Dep(1) = Id
+                  .Id_Dep(2) = 2
+               End With
+            Else
+               Def_Seg Obj_Aux(3).Id_Dep(1), Id
+               
+               ReDim Obj_Aux(1 To 1)
+               Obj_Aux(1).Coord(3) = 1
+            End If
+         
          End Select 'tbrFerramentas.Tag
+         
+         Clicou_Sobre_Objeto = False
          Redesenhar_Todos
+         
       Case vbRightButton
          picVista(PERSPECTIVA).MousePointer = 0
-         If Abs(X_Ini - X) < 5 And Abs(Y_Ini - Y) < 5 And Not ObjApontado Then PopupMenu frmMDIGeo3d.mnuEditar
+         If Abs(X_Ini - X) < PROX And Abs(Y_Ini - Y) < PROX And Not ObjApontado Then PopupMenu frmMDIGeo3d.mnuEditar
       End Select 'Button
    End Select 'Index da Vista
 End Sub
@@ -689,17 +762,19 @@ Private Sub picVista_Paint(Index As Integer)
             If ObjApontado > 0 Then
                Des_Plano Sobre_Plano, Doc(Me.Tag).Obj(ObjApontado).Coord
             Else
-               Des_Plano Sobre_Plano, P_Aux
+               Des_Plano Sobre_Plano, Obj_Aux(1).Coord 'P_Aux
             End If
          End If
       End If
       Des_Eixos
       'Des_Planos
-      Des_Objetos Me.Tag, GL_RENDER, tbrFerramentas.Tag 'GL_SELECT
+      Des_Objetos Me.Tag, GL_RENDER, Doc(Me.Tag).Obj 'GL_SELECT
+      Des_Objetos_Aux Me.Tag, Obj_Aux
    Else
       'Desenha usando vista superior
       Des_LT
-      Des_Objetos Me.Tag, GL_RENDER, tbrFerramentas.Tag 'GL_SELECT
+      Des_Objetos Me.Tag, GL_RENDER, Doc(Me.Tag).Obj 'GL_SELECT
+      Des_Objetos_Aux Me.Tag, Obj_Aux
       
       'Redesenha usando vista frontal
       glMatrixMode GL_MODELVIEW
@@ -707,7 +782,8 @@ Private Sub picVista_Paint(Index As Integer)
          glMultMatrixf Troca_X_Y(0)
          glRotatef 90, 0#, 0#, 1#
          glRotatef 90, 1#, 0#, 0#
-      Des_Objetos Me.Tag, GL_RENDER, tbrFerramentas.Tag 'GL_SELECT
+      Des_Objetos Me.Tag, GL_RENDER, Doc(Me.Tag).Obj 'GL_SELECT
+      Des_Objetos_Aux Me.Tag, Obj_Aux
       
       'Reposiciona para a vista superior usada no próximo evento
       glMatrixMode GL_MODELVIEW
@@ -727,3 +803,51 @@ Private Sub tbrFerramentas_ButtonClick(ByVal Button As MSComctlLib.Button)
  'If tbrFerramentas.Tag <> "PONTO" Then MsgBox "NAO SELECIONANDO!": Posicionando = False
  
 End Sub
+
+Private Sub Def_Ponto(Pos() As GLdouble)
+   Dim N_Obj As Integer 'Em geral = Ubound(Doc(me.tag).Obj)
+   
+   N_Obj = UBound(Doc(Me.Tag).Obj)
+
+   If N_Obj < MAX_OBJETOS Then
+      N_Obj = N_Obj + 1
+      ReDim Preserve Doc(Me.Tag).Obj(1 To N_Obj)
+      With Doc(Me.Tag).Obj(N_Obj)
+      .Coord(0) = Pos(0)
+      .Coord(1) = Pos(1)
+      .Coord(2) = Pos(2)
+      .Coord(3) = Pos(3)
+      
+      .Cor(0) = 0#: .Cor(1) = 0#: .Cor(2) = 0# 'preto
+      .N_Dep = 0
+      .Selec = 0
+      .Tam = 3
+      .Tipo = PONTO
+      End With
+   Else
+      ErroFatal "Você excedeu o número máximo de objetos nesta construção!"
+   End If
+End Sub
+Private Sub Def_Seg(De As Long, Para As Long)
+   Dim N_Obj As Integer 'Em geral = Ubound(Doc(me.tag).Obj)
+   
+   N_Obj = UBound(Doc(Me.Tag).Obj)
+
+   If N_Obj < MAX_OBJETOS Then
+      N_Obj = N_Obj + 1
+      ReDim Preserve Doc(Me.Tag).Obj(1 To N_Obj)
+      With Doc(Me.Tag).Obj(N_Obj)
+      ReDim .Id_Dep(1 To 2)
+      .Id_Dep(1) = De
+      .Id_Dep(2) = Para
+      .Cor(0) = 1#: .Cor(1) = 0.8: .Cor(2) = 0#  'laranja
+      .N_Dep = 0
+      .Selec = 0
+      .Tam = 1
+      .Tipo = SEGMENTO
+      End With
+   Else
+      ErroFatal "Você excedeu o número máximo de objetos nesta construção!"
+   End If
+End Sub
+
