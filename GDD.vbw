@@ -1,4 +1,4 @@
-frmMain = 0, 0, 0, 0, C, 44, 44, 625, 564, C
+frmMain = 22, 22, 603, 542, Z, 44, 44, 625, 564, C
 basVbOpenGl = 0, 0, 0, 0, C
 basVisualização = 0, 0, 0, 0, C
 basGeometria = 0, 0, 0, 0, C

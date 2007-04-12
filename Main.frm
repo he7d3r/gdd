@@ -855,13 +855,39 @@ Private Sub picVista_Paint(Index As Integer)
 End Sub
 
 Private Sub tbrFerramentas_ButtonClick(ByVal Button As MSComctlLib.Button)
+   Dim i As Long
+   Dim De As Long, Para As Long
 'Convenção: Tag guarda um nome igual aos da enumeração pública de tipos dos objetos
    tbrFerramentas.Tag = Button.Key
-   If tbrFerramentas.Tag <> "SEGMENTO" Then
+   Select Case tbrFerramentas.Tag
+   Case "PONTO"
+      
+   Case "SEGMENTO"
+      'If N_Sel >= 2 Then
+      With Doc(Me.Tag)
+         For i = 1 To N_Sel
+            If .Obj(.Obj_Sel(i)).Tipo = PONTO Then
+               If De = 0 Then
+                  De = .Obj_Sel(i)
+               ElseIf Para = 0 Then
+                  Para = .Obj_Sel(i)
+               Else
+                  Def_Seg De, Para
+                  De = Para: Para = .Obj_Sel(i)
+               End If
+            End If
+         Next i
+         If De <> 0 And Para <> 0 Then Def_Seg De, Para
+      End With
+      'End If
+   Case Else
       ReDim Obj_Aux(1 To 1)
       Obj_Aux(1).Coord(3) = 1
       Posicionando = False
-   End If
+   End Select
+   
+   Redesenhar_Todos
+   
 End Sub
 
 Private Sub Def_Ponto(Pos() As GLdouble)
