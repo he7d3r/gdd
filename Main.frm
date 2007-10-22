@@ -446,9 +446,9 @@ Private Sub Pos_Ponto(ByVal v As Vista, _
    End If
   
    If frmMDIGDD.mnuEditarMagnetismo.Checked Then
-      Aux(0) = Round(Pt(0))
-      Aux(1) = Round(Pt(1))
-      Aux(2) = Round(Pt(2))
+      Aux(0) = Round(2 * Pt(0)) / 2
+      Aux(1) = Round(2 * Pt(1)) / 2
+      Aux(2) = Round(2 * Pt(2)) / 2
    Else
       Aux(0) = Pt(0)
       Aux(1) = Pt(1)
@@ -538,12 +538,12 @@ Private Sub picVista_MouseMove(Index As Integer, Button As Integer, Shift As Int
          Cam_Z = Ro * Cos(Phi * DEG)
          
          frmMDIGDD.staInfo.Panels(2).Text = "CÂMERA:  ( " _
-                                             & Format(Cam_X, "0.0") & " ;  " _
-                                             & Format(Cam_Y, "0.0") & " ;  " _
-                                             & Format(Cam_Z, "0.0") & ")cart     ( " _
                                              & Format(Phi, "0") & " ;  " _
                                              & Format(Theta, "#0") & " ;  " _
-                                             & Format(Ro, "#0") & ")esf"
+                                             & Format(Ro, "#0") & ")esf   " & "( " _
+                                             & Format(Cam_X, "0.0") & " ;  " _
+                                             & Format(Cam_Y, "0.0") & " ;  " _
+                                             & Format(Cam_Z, "0.0") & ")cart"
          
          wglMakeCurrent hDC_Vista(PERSPECTIVA), hGLRC_Vista(PERSPECTIVA)
          glMatrixMode GL_MODELVIEW
@@ -742,7 +742,7 @@ Private Sub picVista_MouseUp(Index As Integer, Button As Integer, Shift As Integ
                         Obj_Aux(1).Coord(1) = .Coord(1)
                         Obj_Aux(1).Coord(2) = .Coord(2)
                         Obj_Aux(1).Coord(3) = .Coord(3)
-                        Obj_Aux(1).Tam = 3
+                        Obj_Aux(1).Tam = 5
                      End With
                   End If
                Else
@@ -763,7 +763,7 @@ Private Sub picVista_MouseUp(Index As Integer, Button As Integer, Shift As Integ
                      Obj_Aux(1).Coord(1) = .Coord(1)
                      Obj_Aux(1).Coord(2) = .Coord(2)
                      Obj_Aux(1).Coord(3) = .Coord(3)
-                     Obj_Aux(1).Tam = 3
+                     Obj_Aux(1).Tam = 5
                   End With
                End If
                With Obj_Aux(1)
@@ -771,13 +771,13 @@ Private Sub picVista_MouseUp(Index As Integer, Button As Integer, Shift As Integ
                   Obj_Aux(2).Coord(1) = .Coord(1)
                   Obj_Aux(2).Coord(2) = .Coord(2)
                   Obj_Aux(2).Coord(3) = .Coord(3)
-                  .Tam = 3
+                  .Tam = 5
                End With
                With Obj_Aux(3)
                   .Tipo = SEGMENTO
                   .N_Dep = 2
                   .Cor(0) = 1#: .Cor(1) = 0#: .Cor(2) = 0# 'vermelho
-                  .Tam = 1
+                  .Tam = 3
                   ReDim .Id_Dep(1 To .N_Dep)
                   .Id_Dep(1) = Id
                   .Id_Dep(2) = 2
@@ -907,7 +907,7 @@ Private Sub Def_Ponto(Pos() As GLdouble)
       .Cor(0) = 0#: .Cor(1) = 0#: .Cor(2) = 0# 'preto
       .N_Dep = 0
       .Selec = 0
-      .Tam = 3
+      .Tam = 5
       .Tipo = PONTO
       End With
    Else
@@ -929,7 +929,7 @@ Private Sub Def_Seg(De As Long, Para As Long)
       .Cor(0) = 1#: .Cor(1) = 0.8: .Cor(2) = 0#  'laranja
       .N_Dep = 0
       .Selec = 0
-      .Tam = 1
+      .Tam = 3
       .Tipo = SEGMENTO
       End With
    Else

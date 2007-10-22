@@ -96,7 +96,7 @@ Public Sub Des_Planos()
  Dim k As GLdouble
   
  glColor4f 0.7, 0.7, 0.7, 0.1
- glLineWidth (1#)
+ glLineWidth (2#)
  glPolygonMode GL_FRONT_AND_BACK, pgmFILL
  glBegin bmPolygon
    glEdgeFlag GL_FALSE
@@ -142,7 +142,7 @@ Public Sub Des_Plano(Plano As Tipo_De_Plano, Aux() As GLdouble)
    Pt(2) = Aux(2) / Aux(3)
       
    glColor3f 0.5, 0.5, 0.5
-   glLineWidth (1#)
+   glLineWidth (2#)
    glBegin bmLines
    Select Case Plano
    Case PL_HORIZONTAL
@@ -190,7 +190,7 @@ Public Sub Des_Eixos()
  Const PONTA = 3
  Const INI_SETA = PONTA - PONTA / 10
  Const ABERTURA_SETA = PONTA / 20
- glLineWidth (1#)
+ glLineWidth (2#)
  glBegin bmLines
    glColor4f 1#, 0#, 0#, 1#
    glVertex3f 0#, 0#, 0#
@@ -234,13 +234,13 @@ Public Sub Des_Ponto_Aux(Plano As Tipo_De_Plano, Aux() As GLdouble)
    
    glColor3d 1#, 0.4, 0.1
    
-   glPointSize (3#)
+   glPointSize (5#)
    glBegin bmPoints
       glVertex4dv Aux(0)
    glEnd
    
    glColor3d 0.7, 0.7, 0.7
-   glLineWidth (1#)
+   glLineWidth (2#)
    glBegin bmLines
       glVertex3dv Pt(0)
       Select Case Plano
@@ -260,7 +260,7 @@ Public Sub Des_LT()
    Const Tam = 7
    Const DIST = 0.3
    glColor3d 0.5, 0, 0
-   glLineWidth (1#)
+   glLineWidth (2#)
    glBegin GL_LINES
       glColor3d 0.5, 0, 0
       glVertex3f -Tam, 0, 0
@@ -272,7 +272,7 @@ Public Sub Des_LT()
       glVertex3f Tam - 1, DIST, 0
    glEnd
    
-   glPointSize 3#
+   glPointSize 5#
    glBegin GL_POINTS
       glVertex3f 0, 0, 0
    glEnd
@@ -286,14 +286,14 @@ Public Sub Des_Objetos(ByVal IdDoc As Integer, ByVal Modo As GLenum, Ob() As Obj
    'já ocorreu um glPushName 0, inicializando a pilha de nomes arbitrariamente
    
    glColor3d 0#, 0#, 0#
-   glPointSize (3#)
+   glPointSize (5#)
    'CAUSOU UM PONTO NA ORIGEM
    N_Obj = UBound(Ob) '(Doc(IdDoc).Obj)
    For i = 1 To N_Obj
       With Ob(i) 'Doc(IdDoc).Obj(i)
          If i = Doc(IdDoc).frm.ObjApontado Then
             glColor3d 0.8, 0#, 0.5
-            glPointSize 5#
+            glPointSize 7#
             glLineWidth 2#
          ElseIf .Selec > 0 Then
             glColor3d 0.9, 0.4, 0#
@@ -329,7 +329,7 @@ Public Sub Des_Objetos_Aux(ByVal IdDoc As Integer, Ob() As Objeto)
    Dim N_Obj As Long
    
    glColor3d 0#, 0#, 0#
-   glPointSize (3#)
+   glPointSize (5#)
    N_Obj = UBound(Ob)
    For i = 1 To N_Obj
       With Ob(i)

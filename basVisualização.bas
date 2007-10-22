@@ -26,7 +26,7 @@ Public Sub Inicializa_OpenGL(IdDoc As Integer)
      
    'QObj = gluNewQuadric()
    With Doc(IdDoc).frm
-      .Phi = 70: .Ro = 20: .Theta = 15
+      .Phi = 70: .Ro = 15: .Theta = 15
       .Cam_X = .Ro * Sin(.Phi * DEG) * Cos(.Theta * DEG)
       .Cam_Y = .Ro * Sin(.Phi * DEG) * Sin(.Theta * DEG)
       .Cam_Z = .Ro * Cos(.Phi * DEG)
@@ -69,7 +69,7 @@ Public Sub Inicializa_OpenGL(IdDoc As Integer)
             
             gluLookAt .Cam_X, .Cam_Y, .Cam_Z, 0, 0, 0, 0, 0, 1
          Else
-            glOrtho -10, 10, -10, 10, -10, 10
+            glOrtho -5, 5, -5, 5, -5, 5 '-10, 10, -10, 10, -10, 10
             glMatrixMode GL_MODELVIEW
             glLoadIdentity
          End If
